@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Your CampusConnect dashboard - discover events, connect with communities.">
+  <title>Dashboard - CampusConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="dashboard-header">
+    <div class="dashboard-nav">
+      <a href="index.html" class="brand">CampusConnect</a>
+      <button class="btn ghost logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <div class="welcome-section">
+      <div class="welcome-content">
+        <h1>Welcome, <span id="userNameDisplay">Student</span>!</h1>
+        <div class="user-info">
+          <p><strong>School:</strong> <span id="userSchoolDisplay">—</span></p>
+          <p><strong>Diploma/Course:</strong> <span id="userDiplomaDisplay">—</span></p>
+        </div>
+      </div>
+      <div class="about-platform">
+        <h2>About CampusConnect</h2>
+        <p>CampusConnect helps students connect with events, activities, clubs, and peers on campus in one central platform.</p>
+        <p>The platform focuses on improving student engagement, communication, and overall campus life by making it easy to discover opportunities, join communities, and stay informed.</p>
+        <p>CampusConnect is positioned as a practical, student-centric solution designed to support real campus needs, rather than just another social media platform.</p>
+      </div>
+    </div>
+
+    <section class="dashboard-section">
+      <h2>Upcoming Campus Events</h2>
+      <div class="grid cards">
+        <article class="event-card">
+          <div class="event-meta">Wed · Student Center</div>
+          <h3>Career Accelerator Fair</h3>
+          <p>Meet employers, polish your resume, and book on-the-spot mentoring.</p>
+          <div class="pill-row">
+            <span class="pill ghost">Career</span>
+            <span class="pill ghost">Mentorship</span>
+          </div>
+          <button class="btn inline">RSVP</button>
+        </article>
+        <article class="event-card">
+          <div class="event-meta">Thu · Innovation Hub</div>
+          <h3>Rapid Prototyping Night</h3>
+          <p>Learn FDM printing basics, laser cutting, and get help from mentors.</p>
+          <div class="pill-row">
+            <span class="pill ghost">Makerspace</span>
+            <span class="pill ghost">Design</span>
+          </div>
+          <button class="btn inline">RSVP</button>
+        </article>
+        <article class="event-card">
+          <div class="event-meta">Sat · Recreation Center</div>
+          <h3>Community Sports Day</h3>
+          <p>Pick-up games, wellness booths, and healthy snacks for everyone.</p>
+          <div class="pill-row">
+            <span class="pill ghost">Wellness</span>
+            <span class="pill ghost">Social</span>
+          </div>
+          <button class="btn inline">RSVP</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="dashboard-section">
+      <h2>Suggested Communities & Clubs</h2>
+      <div class="grid three">
+        <article class="tile">
+          <h3>Sustainability Circle</h3>
+          <p>Join students passionate about environmental initiatives and green campus practices.</p>
+          <button class="btn inline">Join</button>
+        </article>
+        <article class="tile">
+          <h3>Women in Tech</h3>
+          <p>Build networks and support each other in the tech industry with skill-sharing and mentorship.</p>
+          <button class="btn inline">Join</button>
+        </article>
+        <article class="tile">
+          <h3>Film Society</h3>
+          <p>Watch screenings, discuss cinema, and collaborate on student film projects.</p>
+          <button class="btn inline">Join</button>
+        </article>
+        <article class="tile">
+          <h3>Intramural Soccer</h3>
+          <p>Play casual friendly matches and build friendships through sports.</p>
+          <button class="btn inline">Join</button>
+        </article>
+        <article class="tile">
+          <h3>Debate Club</h3>
+          <p>Sharpen your speaking skills and engage in thoughtful discussions on current topics.</p>
+          <button class="btn inline">Join</button>
+        </article>
+        <article class="tile">
+          <h3>Music Ensemble</h3>
+          <p>Perform, collaborate, and enjoy music with fellow musicians and enthusiasts.</p>
+          <button class="btn inline">Join</button>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <p class="brand-mark">CampusConnect</p>
+      <p class="footer-text">Designed for engaged, inclusive campuses.</p>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="#">Settings</a>
+      <a href="#">Help</a>
+    </div>
+  </footer>
+
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/app.js" defer></script>
+  <script>
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      window.handleLogout();
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      window.initDashboard();
+    });
+  </script>
+</body>
+</html>

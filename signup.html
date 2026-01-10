@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Join CampusConnect and connect with your campus community.">
+  <title>Sign Up - CampusConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="auth-page">
+  <div class="auth-container">
+    <div class="auth-card wide">
+      <a href="index.html" class="auth-logo">CampusConnect</a>
+      <div class="auth-header">
+        <h1>Join CampusConnect</h1>
+        <p>Create your account to start discovering campus events and communities</p>
+      </div>
+
+      <form id="signupForm" class="auth-form">
+        <div class="form-group">
+          <label for="schoolEmail">School email</label>
+          <input type="email" id="schoolEmail" name="schoolEmail" placeholder="you@school.edu" required>
+          <span class="error-msg" id="emailError"></span>
+          <span class="helper-text">Use your official school email address</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="school">School</label>
+            <select id="school" name="school" required>
+              <option value="">Select your school</option>
+              <option value="infocomm">School of Infocomm</option>
+              <option value="business">School of Business</option>
+              <option value="appliedscience">School of Applied Science</option>
+              <option value="engineering">School of Engineering</option>
+              <option value="tech-arts">School of Technology for the Arts</option>
+            </select>
+            <span class="error-msg" id="schoolError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="diploma">Diploma / Course</label>
+            <select id="diploma" name="diploma" required>
+              <option value="">Select your course</option>
+            </select>
+            <span class="error-msg" id="diplomaError"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+            <span class="error-msg" id="passwordError"></span>
+            <span class="helper-text">At least 8 characters, mix of letters and numbers</span>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirm password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••" required>
+            <span class="error-msg" id="confirmError"></span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn primary full-width">Create account</button>
+        <span class="error-msg" id="signupError"></span>
+      </form>
+
+      <div class="auth-footer">
+        <p>Already have an account? <a href="login.html">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js" defer></script>
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      window.handleSignup();
+    });
+
+    document.getElementById('school').addEventListener('change', (e) => {
+      window.populateDiplomaDropdown(e.target.value);
+    });
+  </script>
+</body>
+</html>
