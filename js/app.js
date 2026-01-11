@@ -297,11 +297,176 @@
     setTimeout(() => {
       window.location.href = "index.html";
     }, 1200);
-  };
 
+    // Sample student database
+    const studentsDatabase = [
+      {
+        id: "STU001",
+        username: "Alex Chen",
+        school: "infocomm",
+        schoolName: "School of Infocomm",
+        diploma: "Information Technology",
+        interests: ["Programming", "Web Development", "Machine Learning"]
+      },
+      {
+        id: "STU002",
+        username: "Jordan Smith",
+        school: "business",
+        schoolName: "School of Business",
+        diploma: "Business",
+        interests: ["Group Projects", "Business Strategy", "Data Analysis"]
+      },
+      {
+        id: "STU003",
+        username: "Maya Patel",
+        school: "infocomm",
+        schoolName: "School of Infocomm",
+        diploma: "Financial Technology",
+        interests: ["Programming", "Data Analysis", "Exam Prep"]
+      },
+      {
+        id: "STU004",
+        username: "Chris Lee",
+        school: "engineering",
+        schoolName: "School of Engineering",
+        diploma: "Mechanical Engineering",
+        interests: ["Group Projects", "Machine Learning", "Research"]
+      },
+      {
+        id: "STU005",
+        username: "Sam Wilson",
+        school: "appliedscience",
+        schoolName: "School of Applied Science",
+        diploma: "Biomedical Science",
+        interests: ["Research", "Exam Prep", "Group Projects"]
+      },
+      {
+        id: "STU006",
+        username: "Taylor Brown",
+        school: "infocomm",
+        schoolName: "School of Infocomm",
+        diploma: "Digital Design & Development",
+        interests: ["Web Development", "Programming", "Group Projects"]
+      },
+      {
+        id: "STU007",
+        username: "Morgan Davis",
+        school: "tech-arts",
+        schoolName: "School of Technology for the Arts",
+        diploma: "Design for User Experience",
+        interests: ["Web Development", "Group Projects", "Research"]
+      },
+      {
+        id: "STU008",
+        username: "Casey Martinez",
+        school: "business",
+        schoolName: "School of Business",
+        diploma: "Supply Chain Management",
+        interests: ["Business Strategy", "Data Analysis", "Exam Prep"]
+      }
+    ];
+
+    // Initialize student connection section
+    window.initStudentConnections = function() {
+      const filterSchool = document.getElementById("filterSchool");
+      const filterInterest = document.getElementById("filterInterest");
+      const resetBtn = document.getElementById("resetFiltersBtn");
+      const studentsGrid = document.getElementById("studentsGrid");
+      const session = localStorage.getItem("campusconnect_session");
+
+      if (!filterSchool || !studentsGrid) return;
+  };
+      // Get current user
+      const user = JSON.parse(session);
+
+      // Render students with default prioritization
+      const renderStudents = () => {
+        const schoolFilter = filterSchool.value;
+        const interestFilter = filterInterest.value;
+
+        let filtered = studentsDatabase.filter((student) => {
+          let matches = true;
+          if (schoolFilter && student.school !== schoolFilter) matches = false;
+          if (interestFilter && !student.interests.includes(interestFilter)) matches = false;
+          return matches;
+        });
   // Initialize on DOMContentLoaded
+        // Prioritize same school or diploma
+        filtered.sort((a, b) => {
+          const aScore = (a.school === user.school ? 2 : 0) + (a.diploma === user.diploma ? 1 : 0);
+          const bScore = (b.school === user.school ? 2 : 0) + (b.diploma === user.diploma ? 1 : 0);
+          return bScore - aScore;
+        });
   document.addEventListener("DOMContentLoaded", () => {
+        if (filtered.length === 0) {
+          studentsGrid.innerHTML = '<div class="no-students"><p>No students match your filters. Try adjusting your search.</p></div>';
+          return;
+        }
     animate();
+        studentsGrid.innerHTML = filtered.map((student) => {
+          const connections = JSON.parse(localStorage.getItem("campusconnect_connections") || "[]");
+          const isRequested = connections.includes(student.id);
+          return `
+            <div class="student-card">
+              <div class="student-header">
+                <div class="student-id">${student.username}</div>
+                <div class="student-badge">${student.id}</div>
+              </div>
+              <div class="student-info">
+                <div class="student-info-item"><span class="student-info-label">School:</span> ${student.schoolName}</div>
+                <div class="student-info-item"><span class="student-info-label">Course:</span> ${student.diploma}</div>
+              </div>
+              <div class="student-interests">
+                ${student.interests.map((interest) => `<span class="interest-tag">${interest}</span>`).join("")}
+              </div>
+              <div class="student-action">
+                <button class="connect-btn ${isRequested ? "requested" : ""}" data-student-id="${student.id}" ${isRequested ? "disabled" : ""}>
+                  ${isRequested ? "✓ Requested" : "Connect"}
+                </button>
+              </div>
+            </div>
+          `;
+        }).join("");
     wireRsvpButtons();
+        // Wire up connect buttons
+        document.querySelectorAll(".connect-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const studentId = btn.dataset.studentId;
+            const connections = JSON.parse(localStorage.getItem("campusconnect_connections") || "[]");
+            if (!connections.includes(studentId)) {
+              connections.push(studentId);
+              localStorage.setItem("campusconnect_connections", JSON.stringify(connections));
+              btn.classList.add("requested");
+              btn.disabled = true;
+              btn.textContent = "✓ Requested";
+              showToast("Connection request sent!");
+              renderStudents();
+            }
+          });
+        });
+      };
   });
+      renderStudents();
 })();
+      filterSchool.addEventListener("change", renderStudents);
+      filterInterest.addEventListener("change", renderStudents);
+      resetBtn.addEventListener("click", () => {
+        filterSchool.value = "";
+        filterInterest.value = "";
+        renderStudents();
+      });
+    };
+
+    // Smooth scroll to connect section
+    document.addEventListener("DOMContentLoaded", () => {
+      const connectLinks = document.querySelectorAll('a[href="#connect-section"]');
+      connectLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const section = document.getElementById("connect-section");
+          if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+          }
+        });
+      });
+    });

@@ -755,6 +755,22 @@ a:focus-visible {
   align-items: center;
   max-width: 1400px;
   margin: 0 auto;
+
+.dashboard-nav-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.dashboard-nav-links a {
+  color: #f9fbff;
+  font-weight: 600;
+  transition: color 160ms ease;
+}
+
+.dashboard-nav-links a:hover {
+  color: var(--sky);
+}
 }
 
 .dashboard-nav .brand {
@@ -867,6 +883,183 @@ a:focus-visible {
 
 .tile .btn {
   margin-top: auto;
+
+/* Find a Study Partner Section */
+.section-description {
+  color: var(--muted);
+  font-size: 15px;
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 14px;
+  border: 1px solid var(--stone);
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-group label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.filter-select {
+  padding: 10px 12px;
+  border: 1px solid var(--stone);
+  border-radius: 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  background: #ffffff;
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 160ms ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230b6b8e' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+
+.filter-select:hover,
+.filter-select:focus {
+  border-color: var(--deep-teal);
+}
+
+.students-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.student-card {
+  background: #ffffff;
+  border: 1px solid var(--stone);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  transition: all 200ms ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.student-card:hover {
+  border-color: var(--sky);
+  box-shadow: 0 8px 24px rgba(53, 179, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.student-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.student-id {
+  font-weight: 700;
+  color: var(--deep-teal);
+  font-size: 16px;
+}
+
+.student-badge {
+  background: #f0f4ff;
+  color: var(--deep-teal);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.student-info {
+  display: grid;
+  gap: 8px;
+}
+
+.student-info-item {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.student-info-label {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.student-interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.interest-tag {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.student-action {
+  margin-top: auto;
+}
+
+.connect-btn {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--deep-teal);
+  background: transparent;
+  color: var(--deep-teal);
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.connect-btn:hover {
+  background: var(--deep-teal);
+  color: #ffffff;
+}
+
+.connect-btn.requested {
+  border-color: #cbd5e1;
+  background: #f3f4f6;
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.no-students {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--muted);
+}
+
+.no-students p {
+  margin: 0;
+  font-size: 16px;
+}
 }
 
 @media (max-width: 900px) {

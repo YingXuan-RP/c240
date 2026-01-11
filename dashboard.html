@@ -14,7 +14,10 @@
   <header class="dashboard-header">
     <div class="dashboard-nav">
       <a href="index.html" class="brand">CampusConnect</a>
-      <button class="btn ghost logout-btn" id="logoutBtn">Logout</button>
+      <nav class="dashboard-nav-links">
+        <a href="#connect-section">Connect</a>
+        <button class="btn ghost logout-btn" id="logoutBtn">Logout</button>
+      </nav>
     </div>
   </header>
 
@@ -106,7 +109,46 @@
         </article>
       </div>
     </section>
+    <section id="connect-section" class="dashboard-section">
+      <h2>Find a Study Partner</h2>
+      <p class="section-description">Connect with peers from your school or diploma and find study partners who share your interests.</p>
+      
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label for="filterSchool">School</label>
+          <select id="filterSchool" class="filter-select">
+            <option value="">All Schools</option>
+            <option value="infocomm">School of Infocomm</option>
+            <option value="business">School of Business</option>
+            <option value="appliedscience">School of Applied Science</option>
+            <option value="engineering">School of Engineering</option>
+            <option value="tech-arts">School of Technology for the Arts</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filterInterest">Study Interest</label>
+          <select id="filterInterest" class="filter-select">
+            <option value="">All Interests</option>
+            <option value="Programming">Programming</option>
+            <option value="Exam Prep">Exam Prep</option>
+            <option value="Group Projects">Group Projects</option>
+            <option value="Machine Learning">Machine Learning</option>
+            <option value="Web Development">Web Development</option>
+            <option value="Data Analysis">Data Analysis</option>
+            <option value="Business Strategy">Business Strategy</option>
+            <option value="Research">Research</option>
+          </select>
+        </div>
+        <button class="btn ghost" id="resetFiltersBtn">Reset Filters</button>
+      </div>
+
+      <div class="students-grid" id="studentsGrid">
+        <!-- Student cards will be populated here by JavaScript -->
+      </div>
+    </section>
   </main>
+
+  <footer class="footer">
 
   <footer class="footer">
     <div>
