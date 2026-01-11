@@ -755,6 +755,7 @@ a:focus-visible {
   align-items: center;
   max-width: 1400px;
   margin: 0 auto;
+}
 
 .dashboard-nav-links {
   display: flex;
@@ -770,7 +771,6 @@ a:focus-visible {
 
 .dashboard-nav-links a:hover {
   color: var(--sky);
-}
 }
 
 .dashboard-nav .brand {
@@ -883,8 +883,8 @@ a:focus-visible {
 
 .tile .btn {
   margin-top: auto;
+}
 
-/* Find a Study Partner Section */
 .section-description {
   color: var(--muted);
   font-size: 15px;
@@ -963,6 +963,11 @@ a:focus-visible {
   border-color: var(--sky);
   box-shadow: 0 8px 24px rgba(53, 179, 255, 0.1);
   transform: translateY(-2px);
+}
+
+.student-card.recommended {
+  border-color: var(--coral);
+  box-shadow: 0 10px 26px rgba(255, 122, 106, 0.18);
 }
 
 .student-header {
@@ -1060,6 +1065,123 @@ a:focus-visible {
   margin: 0;
   font-size: 16px;
 }
+
+.event-card.recommended,
+.tile.recommended {
+  box-shadow: 0 12px 32px rgba(255, 122, 106, 0.16);
+  border-color: rgba(255, 122, 106, 0.6);
+}
+
+/* Chatbot */
+.chat-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--sky), #51d1ff);
+  color: #0b1220;
+  font-weight: 800;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  z-index: 30;
+}
+
+.chat-widget {
+  position: fixed;
+  bottom: 88px;
+  right: 20px;
+  width: 320px;
+  max-height: 480px;
+  background: #ffffff;
+  border: 1px solid var(--stone);
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 30;
+}
+
+.chat-widget.open {
+  display: flex;
+}
+
+.chat-header {
+  background: #0f1f36;
+  color: #f9fbff;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat-header button {
+  background: transparent;
+  border: none;
+  color: #f9fbff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chat-messages {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  max-height: 320px;
+}
+
+.chat-bubble {
+  padding: 10px 12px;
+  border-radius: 12px;
+  max-width: 80%;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.chat-bubble.bot {
+  background: #f1f5f9;
+  color: var(--text);
+  border: 1px solid #e2e8f0;
+}
+
+.chat-bubble.user {
+  background: var(--sky);
+  color: #0b1220;
+  margin-left: auto;
+}
+
+.chat-input {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--stone);
+}
+
+.chat-input input {
+  flex: 1;
+  border: 1px solid var(--stone);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-family: "DM Sans", sans-serif;
+}
+
+.chat-input button {
+  border: none;
+  background: var(--deep-teal);
+  color: #f9fbff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.black-text {
+  color: #000000 !important;
 }
 
 @media (max-width: 900px) {
@@ -1101,187 +1223,10 @@ a:focus-visible {
   .about-platform {
     padding: 20px;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0ms !important;
-    transition-duration: 0ms !important;
-  }
-}
-
-/* Dashboard */
-.dashboard-header {
-  background: linear-gradient(135deg, var(--ink), #0a2d47 40%, #0f1f36 100%);
-  color: #f9fbff;
-  padding: 16px 5vw;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.dashboard-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.dashboard-nav .brand {
-  font-family: "Space Grotesk", sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-}
-
-.logout-btn {
-  font-size: 14px;
-}
-
-.dashboard {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 48px 5vw;
-}
-
-.welcome-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  margin-bottom: 48px;
-}
-
-.welcome-content {
-  background: linear-gradient(135deg, var(--deep-teal), #0b4360);
-  color: #f9fbff;
-  padding: 32px;
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-}
-
-.welcome-content h1 {
-  margin: 0 0 20px;
-  font-size: 32px;
-  line-height: 1.2;
-}
-
-.user-info {
-  display: grid;
-  gap: 10px;
-}
-
-.user-info p {
-  margin: 0;
-  font-size: 14px;
-  opacity: 0.95;
-}
-
-.about-platform {
-  background: #ffffff;
-  padding: 28px;
-  border-radius: 18px;
-  border: 1px solid var(--stone);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-}
-
-.about-platform h2 {
-  margin: 0 0 14px;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.about-platform p {
-  margin: 0 0 14px;
-  color: var(--muted);
-  line-height: 1.6;
-  font-size: 14px;
-}
-
-.about-platform p:last-child {
-  margin-bottom: 0;
-}
-
-.dashboard-section {
-  margin-bottom: 48px;
-}
-
-.dashboard-section h2 {
-  margin: 0 0 24px;
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.btn.inline {
-  margin-top: 12px;
-  display: inline-block;
-}
-
-.tile {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.tile h3 {
-  margin: 0;
-  font-size: 16px;
-}
-
-.tile p {
-  margin: 0;
-  font-size: 14px;
-  color: var(--muted);
-  flex-grow: 1;
-}
-
-.tile .btn {
-  margin-top: auto;
-}
-
-@media (max-width: 900px) {
-  .welcome-section {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-section h2 {
-    font-size: 22px;
-  }
-}
-
-@media (max-width: 768px) {
-  .auth-card {
-    padding: 32px 24px;
-  }
-
-  .auth-card.wide {
-    max-width: 100%;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .auth-header h1 {
-    font-size: 26px;
-  }
-
-  .welcome-section {
-    gap: 24px;
-  }
-
-  .welcome-content {
-    padding: 24px;
-  }
-
-  .about-platform {
-    padding: 20px;
+  .chat-widget,
+  .chat-toggle {
+    right: 12px;
   }
 }
 
@@ -1295,12 +1240,3 @@ a:focus-visible {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0ms !important;
-    transition-duration: 0ms !important;
-  }
-}
