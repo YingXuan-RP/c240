@@ -24,21 +24,101 @@
   <main class="dashboard">
     <div class="welcome-section">
       <div class="welcome-content">
-        <p class="eyebrow">CampusConnect central hub</p>
-        <h1>Welcome, <span id="userNameDisplay">Student</span>!</h1>
+        <h1>Welcome to Your Study Hub</h1>
+        <p class="subtitle">Hello <span id="userNameDisplay">Student</span>, ready to find your perfect study partner?</p>
         <div class="user-info">
           <p><strong>School:</strong> <span id="userSchoolDisplay">—</span></p>
           <p><strong>Diploma/Course:</strong> <span id="userDiplomaDisplay">—</span></p>
         </div>
       </div>
-      <div class="about-platform">
-        <h2>About CampusConnect</h2>
-        <p>CampusConnect helps students connect with events, activities, clubs, and peers on campus in one central platform.</p>
-        <p>The platform focuses on improving student engagement, communication, and overall campus life by making it easy to discover opportunities, join communities, and stay informed.</p>
-        <p>CampusConnect is positioned as a practical, student-centric solution designed to support real campus needs, rather than just another social media platform.</p>
-      </div>
     </div>
 
+    <section id="connect-section" class="dashboard-section primary-section">
+      <h2>Find a Study Partner</h2>
+      <p class="section-description">Connect with peers from your school or diploma and find study partners who share your interests.</p>
+      
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label for="filterSchool">School</label>
+          <select id="filterSchool" class="filter-select">
+            <option value="">All Schools</option>
+            <option value="infocomm">School of Infocomm</option>
+            <option value="business">School of Business</option>
+            <option value="appliedscience">School of Applied Science</option>
+            <option value="engineering">School of Engineering</option>
+            <option value="tech-arts">School of Technology for the Arts</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filterInterest">Study Interest</label>
+          <select id="filterInterest" class="filter-select">
+            <option value="">All Interests</option>
+            <option value="Programming">Programming</option>
+            <option value="Exam Prep">Exam Prep</option>
+            <option value="Group Projects">Group Projects</option>
+            <option value="Machine Learning">Machine Learning</option>
+            <option value="Web Development">Web Development</option>
+            <option value="Data Analysis">Data Analysis</option>
+            <option value="Business Strategy">Business Strategy</option>
+            <option value="Research">Research</option>
+          </select>
+        </div>
+        <button class="btn ghost" id="resetFiltersBtn">Reset Filters</button>
+      </div>
+
+      <div class="students-grid" id="studentsGrid">
+        <!-- Student cards will be populated here by JavaScript -->
+      </div>
+    </section>
+
+    <section class="dashboard-section">
+      <h2>Quick Actions</h2>
+      <div class="grid dashboard-cards">
+        <article class="dashboard-card">
+          <div class="card-icon">📚</div>
+          <h3>Study Profile</h3>
+          <p>Build your comprehensive study profile to get better matches</p>
+          <span class="badge incomplete">Incomplete</span>
+          <button class="btn inline">Build Profile</button>
+        </article>
+        <article class="dashboard-card">
+          <div class="card-icon">⚙️</div>
+          <h3>Study Preferences</h3>
+          <p>Set your study preferences for better partner matching</p>
+          <span class="badge not-set">Not Set</span>
+          <button class="btn inline">Set Preferences</button>
+        </article>
+        <article class="dashboard-card">
+          <div class="card-icon">🔍</div>
+          <h3>Browse Study Requests</h3>
+          <p>Explore study sessions posted by other students</p>
+          <span class="badge count">5 new requests</span>
+          <button class="btn inline">Browse Requests</button>
+        </article>
+        <article class="dashboard-card">
+          <div class="card-icon">📅</div>
+          <h3>Create Study Session</h3>
+          <p>Post your own study session and invite partners</p>
+          <button class="btn inline">Create Session</button>
+        </article>
+        <article class="dashboard-card">
+          <div class="card-icon">💬</div>
+          <h3>Messages</h3>
+          <p>Chat with your study partners and coordinate sessions</p>
+          <span class="badge count">2 new messages</span>
+          <button class="btn inline">View Messages</button>
+        </article>
+        <article class="dashboard-card">
+          <div class="card-icon">⭐</div>
+          <h3>Favourite Partners</h3>
+          <p>Your trusted study partners for easy reconnection</p>
+          <span class="badge count">1 saved</span>
+          <button class="btn inline">View Favourites</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="dashboard-section">
     <section class="dashboard-section">
       <h2>Upcoming Campus Events</h2>
       <div class="grid cards">
@@ -93,58 +173,6 @@
           <p>Watch screenings, discuss cinema, and collaborate on student film projects.</p>
           <button class="btn inline">Join</button>
         </article>
-        <article class="tile">
-          <h3>Intramural Soccer</h3>
-          <p>Play casual friendly matches and build friendships through sports.</p>
-          <button class="btn inline">Join</button>
-        </article>
-        <article class="tile">
-          <h3>Debate Club</h3>
-          <p>Sharpen your speaking skills and engage in thoughtful discussions on current topics.</p>
-          <button class="btn inline">Join</button>
-        </article>
-        <article class="tile">
-          <h3>Music Ensemble</h3>
-          <p>Perform, collaborate, and enjoy music with fellow musicians and enthusiasts.</p>
-          <button class="btn inline">Join</button>
-        </article>
-      </div>
-    </section>
-    <section id="connect-section" class="dashboard-section">
-      <h2>Find a Study Partner</h2>
-      <p class="section-description">Connect with peers from your school or diploma and find study partners who share your interests.</p>
-      
-      <div class="filter-bar">
-        <div class="filter-group">
-          <label for="filterSchool">School</label>
-          <select id="filterSchool" class="filter-select">
-            <option value="">All Schools</option>
-            <option value="infocomm">School of Infocomm</option>
-            <option value="business">School of Business</option>
-            <option value="appliedscience">School of Applied Science</option>
-            <option value="engineering">School of Engineering</option>
-            <option value="tech-arts">School of Technology for the Arts</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="filterInterest">Study Interest</label>
-          <select id="filterInterest" class="filter-select">
-            <option value="">All Interests</option>
-            <option value="Programming">Programming</option>
-            <option value="Exam Prep">Exam Prep</option>
-            <option value="Group Projects">Group Projects</option>
-            <option value="Machine Learning">Machine Learning</option>
-            <option value="Web Development">Web Development</option>
-            <option value="Data Analysis">Data Analysis</option>
-            <option value="Business Strategy">Business Strategy</option>
-            <option value="Research">Research</option>
-          </select>
-        </div>
-        <button class="btn ghost" id="resetFiltersBtn">Reset Filters</button>
-      </div>
-
-      <div class="students-grid" id="studentsGrid">
-        <!-- Student cards will be populated here by JavaScript -->
       </div>
     </section>
   </main>
