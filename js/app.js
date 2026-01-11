@@ -374,12 +374,10 @@
       const studentsGrid = document.getElementById("studentsGrid");
       const session = localStorage.getItem("campusconnect_session");
 
-      if (!filterSchool || !studentsGrid) return;
-  };
-      // Get current user
+      if (!filterSchool || !studentsGrid || !session) return;
+
       const user = JSON.parse(session);
 
-      // Render students with default prioritization
       const renderStudents = () => {
         const schoolFilter = filterSchool.value;
         const interestFilter = filterInterest.value;
@@ -390,47 +388,49 @@
           if (interestFilter && !student.interests.includes(interestFilter)) matches = false;
           return matches;
         });
-  // Initialize on DOMContentLoaded
+
         // Prioritize same school or diploma
         filtered.sort((a, b) => {
           const aScore = (a.school === user.school ? 2 : 0) + (a.diploma === user.diploma ? 1 : 0);
           const bScore = (b.school === user.school ? 2 : 0) + (b.diploma === user.diploma ? 1 : 0);
           return bScore - aScore;
         });
-  document.addEventListener("DOMContentLoaded", () => {
+
         if (filtered.length === 0) {
           studentsGrid.innerHTML = '<div class="no-students"><p>No students match your filters. Try adjusting your search.</p></div>';
           return;
         }
-    animate();
-        studentsGrid.innerHTML = filtered.map((student) => {
-          const connections = JSON.parse(localStorage.getItem("campusconnect_connections") || "[]");
-          const isRequested = connections.includes(student.id);
-          return `
-            <div class="student-card">
-              <div class="student-header">
-                <div class="student-id">${student.username}</div>
-                <div class="student-badge">${student.id}</div>
+
+        studentsGrid.innerHTML = filtered
+          .map((student) => {
+            const connections = JSON.parse(localStorage.getItem("campusconnect_connections") || "[]");
+            const isRequested = connections.includes(student.id);
+            return `
+              <div class="student-card">
+                <div class="student-header">
+                  <div class="student-id">${student.username}</div>
+                  <div class="student-badge">${student.id}</div>
+                </div>
+                <div class="student-info">
+                  <div class="student-info-item"><span class="student-info-label">School:</span> ${student.schoolName}</div>
+                  <div class="student-info-item"><span class="student-info-label">Course:</span> ${student.diploma}</div>
+                </div>
+                <div class="student-interests">
+                  ${student.interests.map((interest) => `<span class="interest-tag">${interest}</span>`).join("")}
+                </div>
+                <div class="student-action">
+                  <button class="connect-btn ${isRequested ? "requested" : ""}" data-student-id="${student.id}" ${isRequested ? "disabled" : ""}>
+                    ${isRequested ? "✓ Requested" : "Connect"}
+                  </button>
+                </div>
               </div>
-              <div class="student-info">
-                <div class="student-info-item"><span class="student-info-label">School:</span> ${student.schoolName}</div>
-                <div class="student-info-item"><span class="student-info-label">Course:</span> ${student.diploma}</div>
-              </div>
-              <div class="student-interests">
-                ${student.interests.map((interest) => `<span class="interest-tag">${interest}</span>`).join("")}
-              </div>
-              <div class="student-action">
-                <button class="connect-btn ${isRequested ? "requested" : ""}" data-student-id="${student.id}" ${isRequested ? "disabled" : ""}>
-                  ${isRequested ? "✓ Requested" : "Connect"}
-                </button>
-              </div>
-            </div>
-          `;
-        }).join("");
-    wireRsvpButtons();
+            `;
+          })
+          .join("");
+
         // Wire up connect buttons
         document.querySelectorAll(".connect-btn").forEach((btn) => {
-          btn.addEventListener("click", (e) => {
+          btn.addEventListener("click", () => {
             const studentId = btn.dataset.studentId;
             const connections = JSON.parse(localStorage.getItem("campusconnect_connections") || "[]");
             if (!connections.includes(studentId)) {
@@ -445,9 +445,9 @@
           });
         });
       };
-  });
+
       renderStudents();
-})();
+
       filterSchool.addEventListener("change", renderStudents);
       filterInterest.addEventListener("change", renderStudents);
       resetBtn.addEventListener("click", () => {
