@@ -77,12 +77,18 @@
 
   <script src="js/app.js"></script>
   <script>
+    console.log("Inline script loaded. Checking window.populateDiplomaDropdown:", typeof window.populateDiplomaDropdown);
+    
     document.getElementById('signupForm').addEventListener('submit', (e) => {
       e.preventDefault();
       window.handleSignup();
     });
 
-    document.getElementById('school').addEventListener('change', (e) => {
+    const schoolDropdown = document.getElementById('school');
+    console.log("School dropdown found:", schoolDropdown);
+    
+    schoolDropdown.addEventListener('change', (e) => {
+      console.log("School changed! Value:", e.target.value);
       window.populateDiplomaDropdown(e.target.value);
     });
   </script>
