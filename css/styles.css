@@ -578,7 +578,7 @@ a:focus-visible {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 48px 24px 64px;
+  padding: 24px 24px 64px;
 }
 
 .profile-highlights {
@@ -607,17 +607,18 @@ a:focus-visible {
 .auth-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 18px 24px 0;
-  max-width: 1200px;
-  margin: 0 auto 12px;
+  justify-content: flex-start;
+  padding: 24px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .auth-header .brand {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  color: #0b2237;
-  letter-spacing: 0.5px;
+  color: #ffffff;
+  letter-spacing: 0.6px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .auth-card.wide {
