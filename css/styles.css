@@ -578,7 +578,7 @@ a:focus-visible {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 24px 24px 64px;
+  padding: 8px 24px 64px;
 }
 
 .profile-highlights {
