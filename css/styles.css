@@ -565,20 +565,24 @@ a:focus-visible {
 
 /* Authentication Pages */
 .auth-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f4ff 0%, #e0f2ff 50%, #f0f4ff 100%);
-  padding: 16px;
+  font-family: "DM Sans", sans-serif;
+}
+
+.auth-shell {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
 
 .profile-highlights {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   margin-top: 12px;
-}
-  font-family: "DM Sans", sans-serif;
 }
 
 .auth-container {
@@ -593,6 +597,17 @@ a:focus-visible {
   padding: 48px 36px;
   box-shadow: 0 20px 60px rgba(11, 107, 142, 0.15);
   backdrop-filter: blur(10px);
+}
+
+.auth-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;
+}
+
+.auth-header .brand {
+  font-size: 18px;
 }
 
 .auth-card.wide {
