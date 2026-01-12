@@ -20,6 +20,11 @@
       <div class="auth-header-content">
         <h1>Set Up Your Study Profile</h1>
         <p>Tell us about yourself to find compatible study partners</p>
+          <div class="profile-highlights">
+            <span class="pill ghost">No login needed</span>
+            <span class="pill ghost">Under 1 minute</span>
+            <span class="pill ghost">Saved on this device</span>
+          </div>
       </div>
 
       <form id="profileForm" class="auth-form" novalidate>
@@ -27,6 +32,13 @@
           <label for="studentName">Your Name</label>
           <input type="text" id="studentName" name="studentName" placeholder="Enter your name" required>
           <span class="error-msg" id="nameError"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="schoolEmail">School Email</label>
+          <input type="email" id="schoolEmail" name="schoolEmail" placeholder="name@school.edu" required>
+          <span class="helper-text">Use your school email so peers know how to reach you</span>
+          <span class="error-msg" id="emailError"></span>
         </div>
 
         <div class="form-row">

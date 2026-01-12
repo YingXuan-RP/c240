@@ -206,6 +206,12 @@
     }
   };
 
+  const validateSchoolEmail = (email) => {
+    // Accept common academic domains like .edu, .edu.xx, .ac.xx
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(edu|edu\.[a-z]{2}|ac\.[a-z]{2})$/i;
+    return emailRegex.test(email);
+  };
+
   // Populate diploma dropdown based on school selection
   window.populateDiplomaDropdown = function(school) {
     const diplomaSelect = document.getElementById("diploma");
@@ -230,6 +236,7 @@
   // Profile setup form handling
   window.handleProfileSetup = function() {
     const name = document.getElementById("studentName").value.trim();
+    const email = document.getElementById("schoolEmail").value.trim();
     const school = document.getElementById("school").value;
     const diploma = document.getElementById("diploma").value;
     const interestCheckboxes = document.querySelectorAll('input[name="interests"]:checked');
@@ -237,6 +244,7 @@
 
     // Clear all errors
     clearError("nameError");
+    clearError("emailError");
     clearError("schoolError");
     clearError("diplomaError");
     clearError("interestsError");
@@ -245,6 +253,14 @@
 
     if (!name) {
       showError("nameError", "Please enter your name");
+      isValid = false;
+    }
+
+    if (!email) {
+      showError("emailError", "Please enter your school email");
+      isValid = false;
+    } else if (!validateSchoolEmail(email)) {
+      showError("emailError", "Use a valid school email (e.g., name@school.edu)");
       isValid = false;
     }
 
@@ -276,6 +292,7 @@
 
     const profile = {
       name,
+      email,
       school,
       schoolName: schoolNames[school],
       diploma,
@@ -302,6 +319,9 @@
     const user = JSON.parse(profile);
     const userNameEl = document.getElementById("userNameDisplay");
     if (userNameEl) userNameEl.textContent = user.name;
+
+    const emailEl = document.getElementById("userEmailDisplay");
+    if (emailEl) emailEl.textContent = user.email || "—";
 
     const schoolEl = document.getElementById("userSchoolDisplay");
     const diplomaEl = document.getElementById("userDiplomaDisplay");
