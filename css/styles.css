@@ -590,7 +590,7 @@ a:focus-visible {
 
 .auth-container {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -598,7 +598,7 @@ a:focus-visible {
   background: #ffffff;
   border: none;
   border-radius: 24px;
-  padding: 48px 36px;
+  padding: 56px 48px;
   box-shadow: 0 24px 70px rgba(5, 19, 38, 0.35);
   backdrop-filter: blur(10px);
   margin: 0 auto;
@@ -654,13 +654,24 @@ a:focus-visible {
   line-height: 1.6;
 }
 
-.auth-card h1 {
-  color: #0b2237;
+.auth-header-content {
+  margin-bottom: 32px;
 }
 
-.auth-card p,
+.auth-header-content h1 {
+  color: #0b2237;
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.auth-header-content p {
+  color: #0b2237;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
 .auth-card .helper-text {
-  color: #334155;
+  color: #64748b;
 }
 
 .auth-form .btn {
@@ -669,9 +680,9 @@ a:focus-visible {
 
 .auth-form {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 18px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 24px;
+  margin-bottom: 24px;
   max-width: 100%;
 }
 
@@ -686,8 +697,9 @@ a:focus-visible {
 
 .form-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 18px;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  grid-column: 1 / -1;
 }
 
 .form-group label {
@@ -791,9 +803,9 @@ a:focus-visible {
 
 .checkbox-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
   gap: 12px;
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
 .checkbox-label {
