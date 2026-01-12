@@ -190,16 +190,6 @@
   };
 
   // Form validation utilities
-  const validateSchoolEmail = (email) => {
-    // Require an academic-style domain (e.g., .edu, .edu.sg, .ac.uk)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.(edu|edu\.\w{2}|ac\.\w{2})$/i;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    return password.length >= 8 && /[a-zA-Z]/.test(password) && /[0-9]/.test(password);
-  };
-
   const clearError = (fieldId) => {
     const errorEl = document.getElementById(fieldId);
     if (errorEl) {
@@ -237,29 +227,24 @@
     });
   };
 
-  // Signup form handling
-  window.handleSignup = function() {
-    const email = document.getElementById("schoolEmail").value.trim();
+  // Profile setup form handling
+  window.handleProfileSetup = function() {
+    const name = document.getElementById("studentName").value.trim();
     const school = document.getElementById("school").value;
     const diploma = document.getElementById("diploma").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
+    const interestCheckboxes = document.querySelectorAll('input[name="interests"]:checked');
+    const interests = Array.from(interestCheckboxes).map(cb => cb.value);
 
     // Clear all errors
-    clearError("emailError");
+    clearError("nameError");
     clearError("schoolError");
     clearError("diplomaError");
-    clearError("passwordError");
-    clearError("confirmError");
-    clearError("signupError");
+    clearError("interestsError");
 
     let isValid = true;
 
-    if (!email) {
-      showError("emailError", "Email is required");
-      isValid = false;
-    } else if (!validateSchoolEmail(email)) {
-      showError("emailError", "Use your school email (e.g., name@school.edu)");
+    if (!name) {
+      showError("nameError", "Please enter your name");
       isValid = false;
     }
 
@@ -273,91 +258,14 @@
       isValid = false;
     }
 
-    if (!password) {
-      showError("passwordError", "Password is required");
-      isValid = false;
-    } else if (!validatePassword(password)) {
-      showError("passwordError", "Min 8 chars, mix of letters and numbers");
-      isValid = false;
-    }
-
-    if (!confirmPassword) {
-      showError("confirmError", "Please confirm your password");
-      isValid = false;
-    } else if (password !== confirmPassword) {
-      showError("confirmError", "Passwords do not match");
+    if (interests.length === 0) {
+      showError("interestsError", "Please select at least one study interest");
       isValid = false;
     }
 
     if (!isValid) return;
 
-    const user = { email, school, diploma, password: btoa(password) };
-    localStorage.setItem("campusconnect_user", JSON.stringify(user));
-    showToast("Account created successfully! Redirecting...");
-
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1200);
-  };
-
-  // Login form handling
-  window.handleLogin = function() {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-
-    clearError("emailError");
-    clearError("passwordError");
-    clearError("loginError");
-
-    let isValid = true;
-
-    if (!email) {
-      showError("emailError", "Email is required");
-      isValid = false;
-    } else if (!validateSchoolEmail(email)) {
-      showError("emailError", "Please enter a valid school email");
-      isValid = false;
-    }
-
-    if (!password) {
-      showError("passwordError", "Password is required");
-      isValid = false;
-    }
-
-    if (!isValid) return;
-
-    const storedUser = localStorage.getItem("campusconnect_user");
-    if (!storedUser) {
-      showError("loginError", "No account found. Please sign up first.");
-      return;
-    }
-
-    const user = JSON.parse(storedUser);
-    if (user.email !== email || btoa(password) !== user.password) {
-      showError("loginError", "Invalid email or password");
-      return;
-    }
-
-    localStorage.setItem("campusconnect_session", JSON.stringify(user));
-    showToast("Logged in successfully! Redirecting...");
-
-    setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 1200);
-  };
-
-  // Dashboard initialization
-  window.initDashboard = function() {
-    const session = localStorage.getItem("campusconnect_session");
-    if (!session) {
-      window.location.href = "login.html";
-      return;
-    }
-
-    const user = JSON.parse(session);
-    const userNameEl = document.getElementById("userNameDisplay");
-    if (userNameEl) userNameEl.textContent = user.email.split("@")[0];
-
+    // Get school name for display
     const schoolNames = {
       infocomm: "School of Infocomm",
       business: "School of Business",
@@ -366,24 +274,49 @@
       "tech-arts": "School of Technology for the Arts"
     };
 
+    const profile = {
+      name,
+      school,
+      schoolName: schoolNames[school],
+      diploma,
+      interests
+    };
+
+    localStorage.setItem("studyfinder_profile", JSON.stringify(profile));
+    showToast("Profile created successfully! Redirecting...");
+
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 1200);
+  };
+
+  // Dashboard initialization
+  window.initDashboard = function() {
+    const profile = localStorage.getItem("studyfinder_profile");
+    if (!profile) {
+      // If no profile, redirect to profile setup
+      window.location.href = "profile.html";
+      return;
+    }
+
+    const user = JSON.parse(profile);
+    const userNameEl = document.getElementById("userNameDisplay");
+    if (userNameEl) userNameEl.textContent = user.name;
+
     const schoolEl = document.getElementById("userSchoolDisplay");
     const diplomaEl = document.getElementById("userDiplomaDisplay");
-    if (schoolEl) schoolEl.textContent = schoolNames[user.school] || user.school;
+    if (schoolEl) schoolEl.textContent = user.schoolName || user.school;
     if (diplomaEl) diplomaEl.textContent = user.diploma;
 
     if (document.getElementById("studentsGrid")) {
       window.initStudentConnections();
       runAgentRecommendations(user);
     }
-  };
 
-  // Logout handler
-  window.handleLogout = function() {
-    localStorage.removeItem("campusconnect_session");
-    showToast("Logged out successfully!");
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 1200);
+    // Initialize chatbot if widget exists
+    if (document.getElementById("chatToggle")) {
+      initChatbotUI();
+    }
   };
 
   // Initialize student connection section
@@ -409,7 +342,7 @@
         return;
       }
 
-      const connections = JSON.parse(localStorage.getItem("campusconnect_connections") || "[]");
+      const connections = JSON.parse(localStorage.getItem("studyfinder_connections") || "[]");
 
       studentsGrid.innerHTML = filtered
         .map((student) => {
@@ -440,10 +373,10 @@
       document.querySelectorAll(".connect-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
           const studentId = btn.dataset.studentId;
-          const connectionsLatest = JSON.parse(localStorage.getItem("campusconnect_connections") || "[]");
+          const connectionsLatest = JSON.parse(localStorage.getItem("studyfinder_connections") || "[]");
           if (!connectionsLatest.includes(studentId)) {
             connectionsLatest.push(studentId);
-            localStorage.setItem("campusconnect_connections", JSON.stringify(connectionsLatest));
+            localStorage.setItem("studyfinder_connections", JSON.stringify(connectionsLatest));
             btn.classList.add("requested");
             btn.disabled = true;
             btn.textContent = "✓ Requested";

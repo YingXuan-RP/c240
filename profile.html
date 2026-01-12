@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Set up your study profile to find compatible study partners.">
+  <title>Profile Setup - StudyFinder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="auth-header">
+    <a href="index.html" class="brand">StudyFinder</a>
+  </header>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header-content">
+        <h1>Set Up Your Study Profile</h1>
+        <p>Tell us about yourself to find compatible study partners</p>
+      </div>
+
+      <form id="profileForm" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="studentName">Your Name</label>
+          <input type="text" id="studentName" name="studentName" placeholder="Enter your name" required>
+          <span class="error-msg" id="nameError"></span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="school">School</label>
+            <select id="school" name="school" required>
+              <option value="">Select your school</option>
+              <option value="infocomm">School of Infocomm</option>
+              <option value="business">School of Business</option>
+              <option value="appliedscience">School of Applied Science</option>
+              <option value="engineering">School of Engineering</option>
+              <option value="tech-arts">School of Technology for the Arts</option>
+            </select>
+            <span class="error-msg" id="schoolError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="diploma">Diploma / Course</label>
+            <select id="diploma" name="diploma" required>
+              <option value="">Select your course</option>
+            </select>
+            <span class="error-msg" id="diplomaError"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Study Interests</label>
+          <p class="helper-text">Select all that apply (at least one required)</p>
+          <div class="checkbox-grid">
+            <label class="checkbox-label">
+              <input type="checkbox" name="interests" value="Programming">
+              <span>Programming</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="interests" value="Exam Prep">
+              <span>Exam Prep</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="interests" value="Group Projects">
+              <span>Group Projects</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="interests" value="Design">
+              <span>Design</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="interests" value="Research">
+              <span>Research</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="interests" value="Machine Learning">
+              <span>Machine Learning</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="interests" value="Web Development">
+              <span>Web Development</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="interests" value="Data Analysis">
+              <span>Data Analysis</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="interests" value="Business Strategy">
+              <span>Business Strategy</span>
+            </label>
+          </div>
+          <span class="error-msg" id="interestsError"></span>
+        </div>
+
+        <button type="submit" class="btn primary full">Continue to Dashboard</button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Already have a profile? <a href="dashboard.html">Go to Dashboard</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    console.log("Profile page loaded. Checking window.populateDiplomaDropdown:", typeof window.populateDiplomaDropdown);
+    console.log("Checking window.handleProfileSetup:", typeof window.handleProfileSetup);
+    
+    document.getElementById('profileForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      window.handleProfileSetup();
+    });
+
+    const schoolDropdown = document.getElementById('school');
+    console.log("School dropdown found:", schoolDropdown);
+    
+    schoolDropdown.addEventListener('change', (e) => {
+      console.log("School changed! Value:", e.target.value);
+      window.populateDiplomaDropdown(e.target.value);
+    });
+  </script>
+</body>
+</html>

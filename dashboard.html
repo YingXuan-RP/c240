@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Your CampusConnect dashboard - discover events, connect with communities.">
-  <title>Dashboard - CampusConnect</title>
+  <meta name="description" content="Your StudyFinder dashboard - find study partners, discover events, and connect with your campus community.">
+  <title>Dashboard - StudyFinder</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,10 +13,11 @@
 <body>
   <header class="dashboard-header">
     <div class="dashboard-nav">
-      <a href="index.html" class="brand">CampusConnect</a>
+      <a href="index.html" class="brand">StudyFinder</a>
       <nav class="dashboard-nav-links">
-        <a href="#connect-section">Connect</a>
-        <button class="btn ghost logout-btn" id="logoutBtn">Logout</button>
+        <a href="#connect-section">Find Partners</a>
+        <a href="#events-section">Events</a>
+        <a href="profile.html">Edit Profile</a>
       </nav>
     </div>
   </header>
@@ -32,6 +33,13 @@
         </div>
       </div>
     </div>
+
+    <section class="dashboard-section description-section">
+      <h2>About StudyFinder</h2>
+      <p>StudyFinder helps students find compatible study partners, discover campus events, and collaborate more effectively.</p>
+      <p>The platform focuses on improving academic collaboration, engagement, and student life by making it easy to connect with peers who share similar courses and study interests.</p>
+      <p>StudyFinder is designed as a practical, student-centric solution that supports real study needs rather than functioning as a traditional social media platform.</p>
+    </section>
 
     <section id="connect-section" class="dashboard-section primary-section">
       <h2>Find a Study Partner</h2>
@@ -118,8 +126,7 @@
       </div>
     </section>
 
-    <section class="dashboard-section">
-    <section class="dashboard-section">
+    <section id="events-section" class="dashboard-section">
       <h2>Upcoming Campus Events</h2>
       <div class="grid cards">
         <article class="event-card">
@@ -179,8 +186,8 @@
 
   <footer class="footer">
     <div>
-      <p class="brand-mark">CampusConnect</p>
-      <p class="footer-text">Designed for engaged, inclusive campuses.</p>
+      <p class="brand-mark">StudyFinder</p>
+      <p class="footer-text">Designed for collaborative, engaged students.</p>
     </div>
     <div class="footer-links">
       <a href="index.html">Home</a>
@@ -189,15 +196,15 @@
     </div>
   </footer>
 
-  <button id="chatToggle" class="chat-toggle" aria-label="Open CampusConnect assistant">CC</button>
+  <button id="chatToggle" class="chat-toggle" aria-label="Open StudyFinder assistant">SF</button>
   <div id="chatWidget" class="chat-widget" aria-live="polite">
     <div class="chat-header">
-      <span>CampusConnect Assistant</span>
+      <span>StudyFinder Assistant</span>
       <button id="chatClose" aria-label="Close chat">Close</button>
     </div>
     <div id="chatMessages" class="chat-messages"></div>
     <div class="chat-input">
-      <input id="chatInput" type="text" placeholder="Ask about events, study partners, or navigation" aria-label="Chat input">
+      <input id="chatInput" type="text" placeholder="Ask about study partners or events" aria-label="Chat input">
       <button id="chatSend" aria-label="Send message">Send</button>
     </div>
   </div>
@@ -206,10 +213,6 @@
 
   <script src="js/app.js" defer></script>
   <script>
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      window.handleLogout();
-    });
-
     window.addEventListener('DOMContentLoaded', () => {
       window.initDashboard();
     });

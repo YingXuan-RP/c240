@@ -738,6 +738,53 @@ a:focus-visible {
   color: var(--sky);
 }
 
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--stone);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+.checkbox-label:hover {
+  border-color: var(--accent);
+  background: #f0f9ff;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.checkbox-label input[type="checkbox"]:checked + span {
+  font-weight: 600;
+  color: var(--deep-teal);
+}
+
+.checkbox-label:has(input:checked) {
+  border-color: var(--deep-teal);
+  background: #e0f2fe;
+}
+
+.checkbox-label span {
+  font-size: 14px;
+  color: var(--ink);
+  user-select: none;
+}
+
 /* Dashboard */
 .dashboard-header {
   background: linear-gradient(135deg, var(--ink), #0a2d47 40%, #0f1f36 100%);
@@ -856,6 +903,31 @@ a:focus-visible {
   font-size: 26px;
   font-weight: 700;
   color: var(--text);
+}
+
+.description-section {
+  background: linear-gradient(to bottom, #f0f9ff, #ffffff);
+  padding: 28px;
+  border-radius: 16px;
+  border: 1px solid #e0f2fe;
+  margin-bottom: 40px;
+}
+
+.description-section h2 {
+  margin: 0 0 16px;
+  font-size: 22px;
+  color: var(--deep-teal);
+}
+
+.description-section p {
+  margin: 0 0 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.description-section p:last-child {
+  margin-bottom: 0;
 }
 
 .btn.inline {
