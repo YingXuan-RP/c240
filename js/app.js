@@ -282,7 +282,7 @@
       interests
     };
 
-    localStorage.setItem("studyfinder_profile", JSON.stringify(profile));
+    localStorage.setItem("studyconnect_profile", JSON.stringify(profile));
     showToast("Profile created successfully! Redirecting...");
 
     setTimeout(() => {
@@ -292,7 +292,7 @@
 
   // Dashboard initialization
   window.initDashboard = function() {
-    const profile = localStorage.getItem("studyfinder_profile");
+    const profile = localStorage.getItem("studyconnect_profile");
     if (!profile) {
       // If no profile, redirect to profile setup
       window.location.href = "profile.html";
@@ -342,7 +342,7 @@
         return;
       }
 
-      const connections = JSON.parse(localStorage.getItem("studyfinder_connections") || "[]");
+      const connections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
 
       studentsGrid.innerHTML = filtered
         .map((student) => {
@@ -373,10 +373,10 @@
       document.querySelectorAll(".connect-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
           const studentId = btn.dataset.studentId;
-          const connectionsLatest = JSON.parse(localStorage.getItem("studyfinder_connections") || "[]");
+          const connectionsLatest = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
           if (!connectionsLatest.includes(studentId)) {
             connectionsLatest.push(studentId);
-            localStorage.setItem("studyfinder_connections", JSON.stringify(connectionsLatest));
+            localStorage.setItem("studyconnect_connections", JSON.stringify(connectionsLatest));
             btn.classList.add("requested");
             btn.disabled = true;
             btn.textContent = "✓ Requested";
