@@ -606,16 +606,16 @@ a:focus-visible {
 .auth-header {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   padding: 18px 24px 0;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 12px;
 }
 
 .auth-header .brand {
   font-size: 20px;
   font-weight: 700;
-  color: #e9f0f8;
+  color: #0b2237;
   letter-spacing: 0.5px;
 }
 
