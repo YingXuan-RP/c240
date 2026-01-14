@@ -420,6 +420,19 @@
     });
   };
 
+  // Flowise API integration
+  async function queryFlowise(data) {
+    const response = await fetch(
+      "https://cloud.flowiseai.com/api/v1/prediction/4919fadf-112c-4393-93be-0eb7b16b1c40",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      }
+    );
+    return await response.json();
+  }
+
   // Chatbot intents and responses
   const chatbotIntents = [
     {
@@ -456,6 +469,20 @@
     container.scrollTop = container.scrollHeight;
   };
 
+  const showTypingIndicator = (container) => {
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble bot typing-indicator";
+    bubble.innerHTML = '<span></span><span></span><span></span>';
+    bubble.id = "typing-indicator";
+    container.appendChild(bubble);
+    container.scrollTop = container.scrollHeight;
+  };
+
+  const removeTypingIndicator = (container) => {
+    const indicator = container.querySelector("#typing-indicator");
+    if (indicator) indicator.remove();
+  };
+
   const initChatbotUI = () => {
     const toggle = document.getElementById("chatToggle");
     const widget = document.getElementById("chatWidget");
@@ -466,13 +493,40 @@
 
     if (!toggle || !widget || !messages || !input || !sendBtn) return;
 
-    const sendMessage = () => {
+    const sendMessage = async () => {
       const text = input.value.trim();
       if (!text) return;
+      
       appendChatMessage(messages, "user", text);
       input.value = "";
-      const reply = window.chatbotResponse(text);
-      setTimeout(() => appendChatMessage(messages, "bot", reply), 200);
+      
+      // Show typing indicator
+      showTypingIndicator(messages);
+      
+      try {
+        // Call Flowise API
+        const response = await queryFlowise({ question: text });
+        removeTypingIndicator(messages);
+        
+        // Extract response text - Flowise returns various formats
+        let botReply = "I'm not sure how to respond. Please try again.";
+        
+        if (response.text) {
+          botReply = response.text;
+        } else if (response.answer) {
+          botReply = response.answer;
+        } else if (response.response) {
+          botReply = response.response;
+        } else if (typeof response === 'string') {
+          botReply = response;
+        }
+        
+        appendChatMessage(messages, "bot", botReply);
+      } catch (error) {
+        removeTypingIndicator(messages);
+        console.error("Flowise API error:", error);
+        appendChatMessage(messages, "bot", "Sorry, I encountered an error. Please try again.");
+      }
     };
 
     toggle.addEventListener("click", () => {
@@ -481,7 +535,7 @@
       if (widget.classList.contains("open")) {
         input.focus();
         if (!messages.dataset.welcome) {
-          appendChatMessage(messages, "bot", "Hi! I can help you find study partners, events, or features.");
+          appendChatMessage(messages, "bot", "Hi! I'm your Study Connect assistant. How can I help you today?");
           messages.dataset.welcome = "true";
         }
       }

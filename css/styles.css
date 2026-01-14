@@ -1436,6 +1436,41 @@ a:focus-visible {
   margin-left: auto;
 }
 
+.chat-bubble.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+}
+
+.chat-bubble.typing-indicator span {
+  width: 6px;
+  height: 6px;
+  background: #64748b;
+  border-radius: 50%;
+  display: inline-block;
+  animation: typing 1.4s infinite;
+}
+
+.chat-bubble.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.chat-bubble.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-6px);
+  }
+}
+
 .chat-input {
   display: flex;
   gap: 8px;
