@@ -538,4 +538,493 @@
     wireRsvpButtons();
     initChatbotUI();
   });
+
+  // ==================== NEW FUNCTIONALITY FOR STUDY CONNECT ====================
+
+  // Initialize Preferences Page
+  window.initPreferences = function() {
+    const form = document.getElementById("preferencesForm");
+    if (!form) return;
+
+    // Load existing preferences if any
+    const savedPrefs = localStorage.getItem("studyconnect_preferences");
+    if (savedPrefs) {
+      const prefs = JSON.parse(savedPrefs);
+      document.getElementById("studyStyle").value = prefs.studyStyle || "";
+      document.getElementById("sessionLength").value = prefs.sessionLength || "";
+      document.getElementById("studyLocation").value = prefs.studyLocation || "";
+      
+      // Set availability checkboxes
+      if (prefs.availability) {
+        prefs.availability.forEach(avail => {
+          const checkbox = document.querySelector(`input[name="availability"][value="${avail}"]`);
+          if (checkbox) checkbox.checked = true;
+        });
+      }
+
+      // Set interests checkboxes
+      if (prefs.interests) {
+        prefs.interests.forEach(interest => {
+          const checkbox = document.querySelector(`input[name="interests"][value="${interest}"]`);
+          if (checkbox) checkbox.checked = true;
+        });
+      }
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      
+      const studyStyle = document.getElementById("studyStyle").value;
+      const sessionLength = document.getElementById("sessionLength").value;
+      const studyLocation = document.getElementById("studyLocation").value;
+      
+      const availabilityBoxes = document.querySelectorAll('input[name="availability"]:checked');
+      const availability = Array.from(availabilityBoxes).map(cb => cb.value);
+      
+      const interestBoxes = document.querySelectorAll('input[name="interests"]:checked');
+      const interests = Array.from(interestBoxes).map(cb => cb.value);
+
+      if (!studyStyle || !sessionLength || !studyLocation) {
+        showToast("Please fill in all required fields");
+        return;
+      }
+
+      if (availability.length === 0) {
+        showToast("Please select at least one availability slot");
+        return;
+      }
+
+      const preferences = {
+        studyStyle,
+        sessionLength,
+        studyLocation,
+        availability,
+        interests
+      };
+
+      localStorage.setItem("studyconnect_preferences", JSON.stringify(preferences));
+      showToast("Preferences saved successfully!");
+
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1200);
+    });
+  };
+
+  // Initialize Study Requests Page
+  window.initRequests = async function() {
+    const requestsGrid = document.getElementById("requestsGrid");
+    if (!requestsGrid) return;
+
+    try {
+      const response = await fetch("data/study-requests.json");
+      const requests = await response.json();
+      
+      let filteredRequests = [...requests];
+
+      const renderRequests = () => {
+        if (filteredRequests.length === 0) {
+          requestsGrid.innerHTML = '<div class="empty-state"><p>No study requests found matching your filters.</p></div>';
+          return;
+        }
+
+        requestsGrid.innerHTML = filteredRequests.map(req => `
+          <article class="event-card">
+            <div class="event-meta">${req.date} · ${req.time}</div>
+            <h3>${req.title}</h3>
+            <p><strong>By:</strong> ${req.author} · <strong>School:</strong> ${req.diploma}</p>
+            <p>${req.description}</p>
+            <p><strong>Location:</strong> ${req.location}</p>
+            <p><strong>Participants:</strong> ${req.participants}</p>
+            <div class="pill-row">
+              ${req.interests.map(interest => `<span class="pill ghost">${interest}</span>`).join("")}
+            </div>
+            <button class="btn inline connect-btn" data-request-id="${req.id}">Connect</button>
+          </article>
+        `).join("");
+
+        // Add event listeners to Connect buttons
+        document.querySelectorAll(".connect-btn").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            const requestId = e.target.getAttribute("data-request-id");
+            handleRequestConnect(requestId, requests);
+            e.target.textContent = "Request Sent!";
+            e.target.disabled = true;
+          });
+        });
+      };
+
+      // Filter functionality
+      const filterSchool = document.getElementById("filterSchool");
+      const filterSubject = document.getElementById("filterSubject");
+      const resetBtn = document.getElementById("resetFiltersBtn");
+
+      const applyFilters = () => {
+        filteredRequests = requests.filter(req => {
+          const schoolMatch = !filterSchool.value || req.school === filterSchool.value;
+          const subjectMatch = !filterSubject.value || req.interests.includes(filterSubject.value);
+          return schoolMatch && subjectMatch;
+        });
+        renderRequests();
+      };
+
+      if (filterSchool) filterSchool.addEventListener("change", applyFilters);
+      if (filterSubject) filterSubject.addEventListener("change", applyFilters);
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+          if (filterSchool) filterSchool.value = "";
+          if (filterSubject) filterSubject.value = "";
+          filteredRequests = [...requests];
+          renderRequests();
+        });
+      }
+
+      renderRequests();
+    } catch (error) {
+      console.error("Error loading study requests:", error);
+      requestsGrid.innerHTML = '<div class="empty-state"><p>Error loading study requests. Please try again later.</p></div>';
+    }
+  };
+
+  const handleRequestConnect = (requestId, requests) => {
+    const request = requests.find(r => r.id === requestId);
+    if (!request) return;
+
+    // Get current connections from localStorage
+    let connections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
+    
+    // Add this request to connections if not already there
+    if (!connections.find(c => c.id === requestId)) {
+      connections.push({
+        id: requestId,
+        name: request.author,
+        type: "request",
+        date: new Date().toISOString()
+      });
+      localStorage.setItem("studyconnect_connections", JSON.stringify(connections));
+    }
+
+    showToast(`Connected with ${request.author}!`);
+  };
+
+  // Initialize Messages Page
+  window.initMessages = function() {
+    const conversationsList = document.getElementById("conversationsList");
+    const chatContent = document.getElementById("chatContent");
+    const chatHeader = document.getElementById("chatHeader");
+    const chatInput = document.getElementById("chatInput");
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendMessageBtn");
+
+    if (!conversationsList) return;
+
+    // Get connections from localStorage
+    const connections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
+    
+    // Sample messages data
+    const messagesData = {
+      partner1: [
+        { sender: "Alice Zhang", text: "Hey! Ready for the ML study session tomorrow?", time: "10:30 AM" },
+        { sender: "You", text: "Yes! I've prepared notes on supervised learning", time: "10:35 AM" },
+        { sender: "Alice Zhang", text: "Perfect! See you at the library.", time: "10:36 AM" }
+      ],
+      partner2: [
+        { sender: "Ben Tan", text: "Can you help me with React hooks?", time: "Yesterday" },
+        { sender: "You", text: "Sure! Let's meet at the lab tomorrow", time: "Yesterday" }
+      ]
+    };
+
+    // Create sample conversations from connections
+    const conversations = connections.length > 0 
+      ? connections.map((conn, idx) => ({
+          id: `partner${idx + 1}`,
+          name: conn.name,
+          lastMessage: "Let's schedule our next study session",
+          time: "2 hours ago",
+          unread: idx === 0 ? 1 : 0
+        }))
+      : [
+          { id: "partner1", name: "Alice Zhang", lastMessage: "Perfect! See you at the library.", time: "10:36 AM", unread: 0 },
+          { id: "partner2", name: "Ben Tan", lastMessage: "Sure! Let's meet at the lab tomorrow", time: "Yesterday", unread: 1 }
+        ];
+
+    // Render conversations list
+    conversationsList.innerHTML = conversations.map(conv => `
+      <div class="conversation-item ${conv.unread > 0 ? 'unread' : ''}" data-conversation-id="${conv.id}">
+        <div class="conversation-avatar">${conv.name.charAt(0)}</div>
+        <div class="conversation-info">
+          <div class="conversation-name">${conv.name}</div>
+          <div class="conversation-preview">${conv.lastMessage}</div>
+        </div>
+        <div class="conversation-meta">
+          <div class="conversation-time">${conv.time}</div>
+          ${conv.unread > 0 ? `<span class="unread-badge">${conv.unread}</span>` : ''}
+        </div>
+      </div>
+    `).join("");
+
+    // Handle conversation click
+    document.querySelectorAll(".conversation-item").forEach(item => {
+      item.addEventListener("click", () => {
+        const convId = item.getAttribute("data-conversation-id");
+        const conv = conversations.find(c => c.id === convId);
+        
+        // Update active state
+        document.querySelectorAll(".conversation-item").forEach(i => i.classList.remove("active"));
+        item.classList.add("active");
+        item.classList.remove("unread");
+
+        // Show chat header
+        chatHeader.innerHTML = `<h3>${conv.name}</h3>`;
+        
+        // Show messages
+        const messages = messagesData[convId] || [
+          { sender: conv.name, text: "Hi! Looking forward to studying together!", time: "Just now" }
+        ];
+
+        chatContent.innerHTML = messages.map(msg => `
+          <div class="message ${msg.sender === 'You' ? 'sent' : 'received'}">
+            <div class="message-bubble">
+              <div class="message-text">${msg.text}</div>
+              <div class="message-time">${msg.time}</div>
+            </div>
+          </div>
+        `).join("");
+
+        // Show input area
+        chatInput.style.display = "flex";
+      });
+    });
+
+    // Handle send message
+    if (sendBtn) {
+      sendBtn.addEventListener("click", () => {
+        const text = messageInput.value.trim();
+        if (!text) return;
+
+        const messageHTML = `
+          <div class="message sent">
+            <div class="message-bubble">
+              <div class="message-text">${text}</div>
+              <div class="message-time">Just now</div>
+            </div>
+          </div>
+        `;
+
+        chatContent.insertAdjacentHTML("beforeend", messageHTML);
+        messageInput.value = "";
+        chatContent.scrollTop = chatContent.scrollHeight;
+      });
+
+      messageInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          sendBtn.click();
+        }
+      });
+    }
+  };
+
+  // Initialize Favourites Page
+  window.initFavourites = async function() {
+    const favouritesGrid = document.getElementById("favouritesGrid");
+    const emptyState = document.getElementById("emptyState");
+    if (!favouritesGrid) return;
+
+    try {
+      const response = await fetch("data/study-partners.json");
+      const allPartners = await response.json();
+
+      // Get favourites from localStorage
+      const favouriteIds = JSON.parse(localStorage.getItem("studyconnect_favourites") || "[]");
+
+      if (favouriteIds.length === 0) {
+        favouritesGrid.style.display = "none";
+        emptyState.style.display = "block";
+        return;
+      }
+
+      const favouritePartners = allPartners.filter(p => favouriteIds.includes(p.id));
+
+      favouritesGrid.innerHTML = favouritePartners.map(partner => `
+        <article class="student-card">
+          <div class="student-avatar">${partner.name.charAt(0)}</div>
+          <h3>${partner.name}</h3>
+          <p class="student-school">${partner.diploma}</p>
+          <div class="pill-row">
+            ${partner.interests.slice(0, 3).map(interest => `<span class="pill">${interest}</span>`).join("")}
+          </div>
+          <p class="student-bio">${partner.bio}</p>
+          <div class="student-actions">
+            <button class="btn primary message-btn" data-partner-id="${partner.id}">Message</button>
+            <button class="btn ghost unfavourite-btn" data-partner-id="${partner.id}">Remove</button>
+          </div>
+        </article>
+      `).join("");
+
+      // Add event listeners
+      document.querySelectorAll(".message-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          window.location.href = "messages.html";
+        });
+      });
+
+      document.querySelectorAll(".unfavourite-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          const partnerId = e.target.getAttribute("data-partner-id");
+          const updatedFavourites = favouriteIds.filter(id => id !== partnerId);
+          localStorage.setItem("studyconnect_favourites", JSON.stringify(updatedFavourites));
+          showToast("Removed from favourites");
+          
+          // Reload page
+          setTimeout(() => {
+            window.location.reload();
+          }, 800);
+        });
+      });
+
+    } catch (error) {
+      console.error("Error loading favourites:", error);
+      favouritesGrid.innerHTML = '<div class="empty-state"><p>Error loading favourites. Please try again later.</p></div>';
+    }
+  };
+
+  // Enhanced dashboard initialization with partners data
+  window.initDashboardWithPartners = async function() {
+    // Call original dashboard init
+    window.initDashboard();
+
+    const studentsGrid = document.getElementById("studentsGrid");
+    if (!studentsGrid) return;
+
+    try {
+      const response = await fetch("data/study-partners.json");
+      const partners = await response.json();
+
+      const profile = JSON.parse(localStorage.getItem("studyconnect_profile") || "{}");
+      const connections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
+      const favourites = JSON.parse(localStorage.getItem("studyconnect_favourites") || "[]");
+
+      let filteredPartners = [...partners];
+
+      const renderPartners = () => {
+        if (filteredPartners.length === 0) {
+          studentsGrid.innerHTML = '<div class="empty-state"><p>No study partners found matching your filters.</p></div>';
+          return;
+        }
+
+        studentsGrid.innerHTML = filteredPartners.map(partner => {
+          const isConnected = connections.some(c => c.id === partner.id);
+          const isFavourite = favourites.includes(partner.id);
+
+          return `
+            <article class="student-card">
+              <div class="student-avatar">${partner.name.charAt(0)}</div>
+              <h3>${partner.name}</h3>
+              <p class="student-school">${partner.diploma}</p>
+              <div class="pill-row">
+                ${partner.interests.slice(0, 3).map(interest => `<span class="pill">${interest}</span>`).join("")}
+              </div>
+              <p class="student-bio">${partner.bio}</p>
+              <div class="student-actions">
+                ${isConnected 
+                  ? '<button class="btn primary message-btn" data-partner-id="' + partner.id + '">Message</button>'
+                  : '<button class="btn primary connect-partner-btn" data-partner-id="' + partner.id + '">Connect</button>'
+                }
+                <button class="btn ghost favourite-btn ${isFavourite ? 'active' : ''}" data-partner-id="${partner.id}">
+                  ${isFavourite ? '★' : '☆'}
+                </button>
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        // Add event listeners
+        document.querySelectorAll(".connect-partner-btn").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            const partnerId = e.target.getAttribute("data-partner-id");
+            const partner = partners.find(p => p.id === partnerId);
+            
+            // Add to connections
+            const updatedConnections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
+            if (!updatedConnections.find(c => c.id === partnerId)) {
+              updatedConnections.push({
+                id: partnerId,
+                name: partner.name,
+                type: "partner",
+                date: new Date().toISOString()
+              });
+              localStorage.setItem("studyconnect_connections", JSON.stringify(updatedConnections));
+              
+              showToast(`Connected with ${partner.name}!`);
+              
+              // Update button
+              e.target.textContent = "Message";
+              e.target.classList.remove("connect-partner-btn");
+              e.target.classList.add("message-btn");
+              
+              // Reload to update state
+              setTimeout(() => renderPartners(), 800);
+            }
+          });
+        });
+
+        document.querySelectorAll(".message-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            window.location.href = "messages.html";
+          });
+        });
+
+        document.querySelectorAll(".favourite-btn").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            const partnerId = e.target.getAttribute("data-partner-id");
+            const currentFavourites = JSON.parse(localStorage.getItem("studyconnect_favourites") || "[]");
+            
+            if (currentFavourites.includes(partnerId)) {
+              const updated = currentFavourites.filter(id => id !== partnerId);
+              localStorage.setItem("studyconnect_favourites", JSON.stringify(updated));
+              showToast("Removed from favourites");
+            } else {
+              currentFavourites.push(partnerId);
+              localStorage.setItem("studyconnect_favourites", JSON.stringify(currentFavourites));
+              showToast("Added to favourites");
+            }
+            
+            setTimeout(() => renderPartners(), 600);
+          });
+        });
+      };
+
+      // Filter functionality
+      const filterSchool = document.getElementById("filterSchool");
+      const filterInterest = document.getElementById("filterInterest");
+      const resetBtn = document.getElementById("resetFiltersBtn");
+
+      const applyFilters = () => {
+        filteredPartners = partners.filter(partner => {
+          const schoolMatch = !filterSchool.value || partner.school === filterSchool.value;
+          const interestMatch = !filterInterest.value || partner.interests.includes(filterInterest.value);
+          return schoolMatch && interestMatch;
+        });
+        renderPartners();
+      };
+
+      if (filterSchool) filterSchool.addEventListener("change", applyFilters);
+      if (filterInterest) filterInterest.addEventListener("change", applyFilters);
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+          if (filterSchool) filterSchool.value = "";
+          if (filterInterest) filterInterest.value = "";
+          filteredPartners = [...partners];
+          renderPartners();
+        });
+      }
+
+      renderPartners();
+
+    } catch (error) {
+      console.error("Error loading partners:", error);
+      studentsGrid.innerHTML = '<div class="empty-state"><p>Error loading study partners. Please try again later.</p></div>';
+    }
+  };
+
 })();

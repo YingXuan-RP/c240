@@ -1,0 +1,134 @@
+[
+  {
+    "id": "partner1",
+    "name": "Alice Zhang",
+    "school": "infocomm",
+    "diploma": "Diploma in Information Technology",
+    "email": "alice.zhang@edu.sg",
+    "interests": ["Programming", "Machine Learning", "Web Development"],
+    "studyStyle": "collaborative",
+    "availability": ["Weekday Afternoons", "Weekend Mornings"],
+    "bio": "Third-year IT student specializing in AI and machine learning. Love collaborative problem-solving!"
+  },
+  {
+    "id": "partner2",
+    "name": "Ben Tan",
+    "school": "infocomm",
+    "diploma": "Diploma in Information Technology",
+    "email": "ben.tan@edu.sg",
+    "interests": ["Web Development", "Programming", "Group Projects"],
+    "studyStyle": "problem-solving",
+    "availability": ["Weekday Evenings", "Weekend Afternoons"],
+    "bio": "Full-stack developer in training. Currently building a portfolio of web apps."
+  },
+  {
+    "id": "partner3",
+    "name": "Catherine Lim",
+    "school": "business",
+    "diploma": "Diploma in Business Administration",
+    "email": "catherine.lim@edu.sg",
+    "interests": ["Business Strategy", "Research", "Exam Prep"],
+    "studyStyle": "review-sessions",
+    "availability": ["Weekday Mornings", "Weekday Afternoons"],
+    "bio": "Business major passionate about strategic management and market analysis."
+  },
+  {
+    "id": "partner4",
+    "name": "Daniel Wong",
+    "school": "infocomm",
+    "diploma": "Diploma in Information Technology",
+    "email": "daniel.wong@edu.sg",
+    "interests": ["Data Analysis", "Machine Learning", "Research"],
+    "studyStyle": "solo-focus",
+    "availability": ["Weekday Afternoons", "Weekday Evenings"],
+    "bio": "Data science enthusiast. Working on predictive modeling and analytics projects."
+  },
+  {
+    "id": "partner5",
+    "name": "Emma Chen",
+    "school": "appliedscience",
+    "diploma": "Diploma in Applied Science",
+    "email": "emma.chen@edu.sg",
+    "interests": ["Research", "Data Analysis", "Exam Prep"],
+    "studyStyle": "teaching",
+    "availability": ["Weekend Mornings", "Weekend Afternoons"],
+    "bio": "Science major with a focus on data-driven research. Happy to explain complex concepts!"
+  },
+  {
+    "id": "partner6",
+    "name": "Frank Lee",
+    "school": "engineering",
+    "diploma": "Diploma in Engineering",
+    "email": "frank.lee@edu.sg",
+    "interests": ["Group Projects", "Design", "Research"],
+    "studyStyle": "collaborative",
+    "availability": ["Weekday Evenings", "Weekend Evenings"],
+    "bio": "Engineering student interested in sustainable design and prototyping."
+  },
+  {
+    "id": "partner7",
+    "name": "Grace Koh",
+    "school": "infocomm",
+    "diploma": "Diploma in Information Technology",
+    "email": "grace.koh@edu.sg",
+    "interests": ["Programming", "Exam Prep", "Web Development"],
+    "studyStyle": "review-sessions",
+    "availability": ["Weekday Mornings", "Weekend Mornings"],
+    "bio": "IT student preparing for certifications. Regular study sessions help me stay on track!"
+  },
+  {
+    "id": "partner8",
+    "name": "Henry Ng",
+    "school": "infocomm",
+    "diploma": "Diploma in Cybersecurity",
+    "email": "henry.ng@edu.sg",
+    "interests": ["Programming", "Machine Learning", "Research"],
+    "studyStyle": "problem-solving",
+    "availability": ["Weekday Afternoons", "Weekend Afternoons"],
+    "bio": "Cybersecurity student exploring AI-powered security solutions."
+  },
+  {
+    "id": "partner9",
+    "name": "Iris Tan",
+    "school": "business",
+    "diploma": "Diploma in Marketing",
+    "email": "iris.tan@edu.sg",
+    "interests": ["Business Strategy", "Group Projects", "Research"],
+    "studyStyle": "collaborative",
+    "availability": ["Weekday Mornings", "Weekday Afternoons"],
+    "bio": "Marketing student working on consumer behavior research and branding strategies."
+  },
+  {
+    "id": "partner10",
+    "name": "Jason Lim",
+    "school": "infocomm",
+    "diploma": "Diploma in Information Technology",
+    "email": "jason.lim@edu.sg",
+    "interests": ["Web Development", "Programming", "Data Analysis"],
+    "studyStyle": "solo-focus",
+    "availability": ["Weekday Evenings", "Weekend Evenings"],
+    "bio": "Developer focused on building data visualization tools and dashboards."
+  },
+  {
+    "id": "partner11",
+    "name": "Kelly Seah",
+    "school": "tech-arts",
+    "diploma": "Diploma in Digital Media Design",
+    "email": "kelly.seah@edu.sg",
+    "interests": ["Design", "Web Development", "Group Projects"],
+    "studyStyle": "collaborative",
+    "availability": ["Weekend Mornings", "Weekend Afternoons"],
+    "bio": "Digital designer interested in UI/UX and interactive web experiences."
+  },
+  {
+    "id": "partner12",
+    "name": "Leo Chan",
+    "school": "infocomm",
+    "diploma": "Diploma in Information Technology",
+    "email": "leo.chan@edu.sg",
+    "interests": ["Machine Learning", "Data Analysis", "Programming"],
+    "studyStyle": "teaching",
+    "availability": ["Weekday Afternoons", "Weekday Evenings"],
+    "bio": "AI enthusiast working on neural networks and deep learning projects. Love teaching others!"
+  }
+]

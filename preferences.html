@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Set your study preferences for better partner matching.">
+  <title>Study Preferences - Study Connect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="auth-page">
+  <header class="auth-header">
+    <a href="index.html" class="brand">Study Connect</a>
+  </header>
+
+  <main class="auth-shell">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header-content">
+          <h1>Study Preferences</h1>
+          <p>Set your preferences for better partner matching</p>
+        </div>
+
+        <form id="preferencesForm" class="auth-form">
+          <div class="full-span">
+            <label for="studyStyle">Preferred Study Style</label>
+            <select id="studyStyle" name="studyStyle" required>
+              <option value="">Select your preferred study style</option>
+              <option value="solo-focus">Solo Focus (work independently, ask when stuck)</option>
+              <option value="collaborative">Collaborative (discuss concepts together)</option>
+              <option value="teaching">Teaching & Explaining (learn by teaching others)</option>
+              <option value="problem-solving">Problem Solving (work through exercises together)</option>
+              <option value="review-sessions">Review Sessions (recap before exams)</option>
+            </select>
+          </div>
+
+          <div class="full-span">
+            <label for="sessionLength">Preferred Session Length</label>
+            <select id="sessionLength" name="sessionLength" required>
+              <option value="">Select session length</option>
+              <option value="30min">30 minutes</option>
+              <option value="1hour">1 hour</option>
+              <option value="2hours">2 hours</option>
+              <option value="3hours">3+ hours</option>
+            </select>
+          </div>
+
+          <div class="full-span">
+            <label for="studyLocation">Preferred Study Location</label>
+            <select id="studyLocation" name="studyLocation" required>
+              <option value="">Select preferred location</option>
+              <option value="library">Library</option>
+              <option value="cafe">Café</option>
+              <option value="campus">Campus Study Rooms</option>
+              <option value="online">Online/Virtual</option>
+              <option value="flexible">Flexible</option>
+            </select>
+          </div>
+
+          <div class="full-span">
+            <label for="availability">General Availability</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-label">
+                <input type="checkbox" name="availability" value="Weekday Mornings">
+                <span>Weekday Mornings</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="availability" value="Weekday Afternoons">
+                <span>Weekday Afternoons</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="availability" value="Weekday Evenings">
+                <span>Weekday Evenings</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="availability" value="Weekend Mornings">
+                <span>Weekend Mornings</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="availability" value="Weekend Afternoons">
+                <span>Weekend Afternoons</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="availability" value="Weekend Evenings">
+                <span>Weekend Evenings</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="full-span">
+            <label>Study Interests (optional - override profile)</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-label">
+                <input type="checkbox" name="interests" value="Programming">
+                <span>Programming</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="interests" value="Exam Prep">
+                <span>Exam Prep</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="interests" value="Group Projects">
+                <span>Group Projects</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="interests" value="Machine Learning">
+                <span>Machine Learning</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="interests" value="Web Development">
+                <span>Web Development</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="interests" value="Data Analysis">
+                <span>Data Analysis</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="interests" value="Business Strategy">
+                <span>Business Strategy</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="interests" value="Research">
+                <span>Research</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="interests" value="Design">
+                <span>Design</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="full-span button-row">
+            <button type="submit" class="btn primary">Save Preferences</button>
+            <a href="dashboard.html" class="btn ghost">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/app.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.initPreferences();
+    });
+  </script>
+</body>
+</html>

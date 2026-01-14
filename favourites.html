@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="View your favourite study partners.">
+  <title>Favourite Partners - Study Connect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="dashboard-header">
+    <div class="dashboard-nav">
+      <a href="index.html" class="brand">Study Connect</a>
+      <nav class="dashboard-nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="profile.html">Edit Profile</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <div class="welcome-section">
+      <div class="welcome-content">
+        <h1>Favourite Partners</h1>
+        <p class="subtitle">Your trusted study partners for easy reconnection</p>
+      </div>
+    </div>
+
+    <section class="dashboard-section">
+      <div id="favouritesGrid" class="students-grid">
+        <!-- Favourite partner cards will be populated here by JavaScript -->
+      </div>
+      
+      <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="card-icon" style="font-size: 48px;">⭐</div>
+        <h3>No favourites yet</h3>
+        <p>Start adding study partners to your favourites to see them here!</p>
+        <a href="dashboard.html" class="btn primary">Find Study Partners</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <p class="brand-mark">Study Connect</p>
+      <p class="footer-text">Designed for collaborative, engaged students.</p>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#">Help</a>
+    </div>
+  </footer>
+
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.initFavourites();
+    });
+  </script>
+</body>
+</html>
