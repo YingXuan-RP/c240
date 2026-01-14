@@ -1363,11 +1363,22 @@ a:focus-visible {
   border-radius: 50%;
   border: none;
   background: linear-gradient(135deg, var(--sky), #51d1ff);
-  color: #0b1220;
+  color: #ffffff;
   font-weight: 800;
-  box-shadow: var(--shadow);
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(38, 166, 91, 0.3);
   cursor: pointer;
-  z-index: 30;
+  z-index: 29;
+  transition: all 0.3s ease;
+}
+
+.chat-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(38, 166, 91, 0.4);
+}
+
+.chat-toggle.open {
+  background: linear-gradient(135deg, #26a65b, #1e8449);
 }
 
 .chat-widget {
@@ -1383,7 +1394,7 @@ a:focus-visible {
   display: none;
   flex-direction: column;
   overflow: hidden;
-  z-index: 30;
+  z-index: 29;
 }
 
 .chat-widget.open {

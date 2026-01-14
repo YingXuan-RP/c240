@@ -947,6 +947,9 @@
     // Call original dashboard init
     window.initDashboard();
 
+    // Initialize chatbot
+    initChatbotUI();
+
     const studentsGrid = document.getElementById("studentsGrid");
     if (!studentsGrid) return;
 
