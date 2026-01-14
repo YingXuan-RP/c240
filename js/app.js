@@ -1027,4 +1027,281 @@
     }
   };
 
+  // ==================== CREATE STUDY SESSION FUNCTIONALITY ====================
+
+  // Initialize Create Session Page
+  window.initCreateSession = function() {
+    const form = document.getElementById("createSessionForm");
+    if (!form) return;
+
+    // Set minimum date to today
+    const dateInput = document.getElementById("sessionDate");
+    if (dateInput) {
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.setAttribute('min', today);
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // Get form values
+      const title = document.getElementById("sessionTitle").value.trim();
+      const subject = document.getElementById("subject").value;
+      const date = document.getElementById("sessionDate").value;
+      const time = document.getElementById("sessionTime").value;
+      const duration = document.getElementById("duration").value;
+      const location = document.getElementById("location").value;
+      const maxParticipants = document.getElementById("maxParticipants").value;
+      const description = document.getElementById("description").value.trim();
+      
+      const interestCheckboxes = document.querySelectorAll('input[name="interests"]:checked');
+      const interests = Array.from(interestCheckboxes).map(cb => cb.value);
+
+      // Clear all errors
+      ["titleError", "subjectError", "dateError", "timeError", "durationError", "locationError", "participantsError", "interestsError"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = "";
+      });
+
+      // Validation
+      let isValid = true;
+
+      if (!title) {
+        showError("titleError", "Please enter a session title");
+        isValid = false;
+      }
+
+      if (!subject) {
+        showError("subjectError", "Please select a subject");
+        isValid = false;
+      }
+
+      if (!date) {
+        showError("dateError", "Please select a date");
+        isValid = false;
+      }
+
+      if (!time) {
+        showError("timeError", "Please select a time");
+        isValid = false;
+      }
+
+      if (!duration) {
+        showError("durationError", "Please select a duration");
+        isValid = false;
+      }
+
+      if (!location) {
+        showError("locationError", "Please select a location");
+        isValid = false;
+      }
+
+      if (!maxParticipants || maxParticipants < 2) {
+        showError("participantsError", "Must allow at least 2 participants");
+        isValid = false;
+      }
+
+      if (interests.length === 0) {
+        showError("interestsError", "Please select at least one study interest");
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Get user profile
+      const profile = JSON.parse(localStorage.getItem("studyconnect_profile") || "{}");
+      if (!profile.name) {
+        showToast("Please complete your profile first");
+        setTimeout(() => {
+          window.location.href = "profile.html";
+        }, 1500);
+        return;
+      }
+
+      // Create session object
+      const sessionId = "session_" + Date.now();
+      const session = {
+        id: sessionId,
+        title,
+        subject,
+        date,
+        time,
+        duration,
+        location,
+        maxParticipants: parseInt(maxParticipants),
+        currentParticipants: 1,
+        description: description || "No additional details provided.",
+        interests,
+        author: profile.name,
+        authorEmail: profile.email,
+        school: profile.school,
+        schoolName: profile.schoolName,
+        diploma: profile.diploma,
+        createdAt: new Date().toISOString(),
+        participants: [profile.name],
+        requests: []
+      };
+
+      // Save to localStorage
+      const existingSessions = JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
+      existingSessions.push(session);
+      localStorage.setItem("studyconnect_sessions", JSON.stringify(existingSessions));
+
+      showToast("Study session created successfully!");
+
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1200);
+    });
+  };
+
+  // Update initRequests to include user-created sessions
+  const originalInitRequests = window.initRequests;
+  window.initRequests = async function() {
+    const requestsGrid = document.getElementById("requestsGrid");
+    if (!requestsGrid) return;
+
+    try {
+      // Load both JSON requests and localStorage sessions
+      const response = await fetch("data/study-requests.json");
+      const jsonRequests = await response.json();
+      
+      const userSessions = JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
+      const sessionRequests = JSON.parse(localStorage.getItem("studyconnect_session_requests") || "{}");
+      const profile = JSON.parse(localStorage.getItem("studyconnect_profile") || "{}");
+
+      // Convert user sessions to request format
+      const formattedSessions = userSessions.map(session => ({
+        id: session.id,
+        title: session.title,
+        author: session.author,
+        school: session.school,
+        diploma: session.diploma,
+        subject: session.subject,
+        description: session.description,
+        date: session.date,
+        time: `${session.time} (${session.duration})`,
+        location: session.location,
+        participants: `${session.currentParticipants}/${session.maxParticipants}`,
+        interests: session.interests,
+        isUserCreated: true
+      }));
+
+      // Combine both arrays
+      const allRequests = [...jsonRequests, ...formattedSessions];
+      let filteredRequests = [...allRequests];
+
+      const renderRequests = () => {
+        if (filteredRequests.length === 0) {
+          requestsGrid.innerHTML = '<div class="empty-state"><p>No study requests found matching your filters.</p></div>';
+          return;
+        }
+
+        requestsGrid.innerHTML = filteredRequests.map(req => {
+          const requestStatus = sessionRequests[req.id];
+          let buttonHTML = '';
+          
+          if (req.isUserCreated && req.author === profile.name) {
+            buttonHTML = '<button class="btn inline" disabled style="opacity: 0.6;">Your Session</button>';
+          } else if (requestStatus === 'requested') {
+            buttonHTML = '<button class="btn inline" disabled style="background: #fbbf24; border-color: #fbbf24;">Requested</button>';
+          } else if (requestStatus === 'joined') {
+            buttonHTML = '<button class="btn primary" disabled>Joined ✓</button>';
+          } else {
+            buttonHTML = `<button class="btn inline connect-btn" data-request-id="${req.id}">Request to Join</button>`;
+          }
+
+          return `
+            <article class="event-card">
+              <div class="event-meta">${req.date} · ${req.time}</div>
+              <h3>${req.title}</h3>
+              <p><strong>By:</strong> ${req.author} · <strong>School:</strong> ${req.diploma}</p>
+              <p>${req.description}</p>
+              <p><strong>Location:</strong> ${req.location}</p>
+              <p><strong>Participants:</strong> ${req.participants}</p>
+              <div class="pill-row">
+                ${req.interests.map(interest => `<span class="pill ghost">${interest}</span>`).join("")}
+              </div>
+              ${buttonHTML}
+            </article>
+          `;
+        }).join("");
+
+        // Add event listeners to Request to Join buttons
+        document.querySelectorAll(".connect-btn").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            const requestId = e.target.getAttribute("data-request-id");
+            handleRequestToJoin(requestId, allRequests);
+          });
+        });
+      };
+
+      // Filter functionality
+      const filterSchool = document.getElementById("filterSchool");
+      const filterSubject = document.getElementById("filterSubject");
+      const resetBtn = document.getElementById("resetFiltersBtn");
+
+      const applyFilters = () => {
+        filteredRequests = allRequests.filter(req => {
+          const schoolMatch = !filterSchool.value || req.school === filterSchool.value;
+          const subjectMatch = !filterSubject.value || req.interests.includes(filterSubject.value);
+          return schoolMatch && subjectMatch;
+        });
+        renderRequests();
+      };
+
+      if (filterSchool) filterSchool.addEventListener("change", applyFilters);
+      if (filterSubject) filterSubject.addEventListener("change", applyFilters);
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+          if (filterSchool) filterSchool.value = "";
+          if (filterSubject) filterSubject.value = "";
+          filteredRequests = [...allRequests];
+          renderRequests();
+        });
+      }
+
+      renderRequests();
+    } catch (error) {
+      console.error("Error loading study requests:", error);
+      requestsGrid.innerHTML = '<div class="empty-state"><p>Error loading study requests. Please try again later.</p></div>';
+    }
+  };
+
+  // Handle Request to Join functionality
+  const handleRequestToJoin = (requestId, allRequests) => {
+    const request = allRequests.find(r => r.id === requestId);
+    if (!request) return;
+
+    // Save request status to localStorage
+    const sessionRequests = JSON.parse(localStorage.getItem("studyconnect_session_requests") || "{}");
+    sessionRequests[requestId] = 'requested';
+    localStorage.setItem("studyconnect_session_requests", JSON.stringify(sessionRequests));
+
+    showToast(`Request sent to join "${request.title}"!`);
+
+    // Simulate acceptance after 2 seconds
+    setTimeout(() => {
+      sessionRequests[requestId] = 'joined';
+      localStorage.setItem("studyconnect_session_requests", JSON.stringify(sessionRequests));
+      
+      // Add to connections if not already there
+      const connections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
+      if (!connections.find(c => c.id === requestId)) {
+        connections.push({
+          id: requestId,
+          name: request.author,
+          type: "session",
+          date: new Date().toISOString()
+        });
+        localStorage.setItem("studyconnect_connections", JSON.stringify(connections));
+      }
+
+      showToast(`You've joined "${request.title}"! Check Messages to coordinate.`);
+      
+      // Reload the page to show updated status
+      window.location.reload();
+    }, 2000);
+  };
+
 })();
