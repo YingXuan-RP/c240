@@ -856,7 +856,7 @@ a:focus-visible {
 
 /* Dashboard */
 .dashboard-header {
-  background: linear-gradient(135deg, var(--ink), #0a2d47 40%, #0f1f36 100%);
+  background: linear-gradient(135deg, #1a5c3f, #26a65b 40%, #2ecc71 100%);
   color: #f9fbff;
   padding: 16px 5vw;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
