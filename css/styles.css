@@ -1368,7 +1368,7 @@ a:focus-visible {
   font-size: 16px;
   box-shadow: 0 4px 12px rgba(38, 166, 91, 0.3);
   cursor: pointer;
-  z-index: 29;
+  z-index: 50;
   transition: all 0.3s ease;
 }
 
@@ -1394,7 +1394,7 @@ a:focus-visible {
   display: none;
   flex-direction: column;
   overflow: hidden;
-  z-index: 29;
+  z-index: 50;
 }
 
 .chat-widget.open {

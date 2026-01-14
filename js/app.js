@@ -491,6 +491,15 @@
     const input = document.getElementById("chatInput");
     const sendBtn = document.getElementById("chatSend");
 
+    console.log("[chatbot] init", {
+      toggle: !!toggle,
+      widget: !!widget,
+      closeBtn: !!closeBtn,
+      messages: !!messages,
+      input: !!input,
+      sendBtn: !!sendBtn,
+    });
+
     if (!toggle || !widget || !messages || !input || !sendBtn) return;
 
     const sendMessage = async () => {
@@ -530,18 +539,26 @@
     };
 
     toggle.addEventListener("click", () => {
+      console.log("[chatbot] toggle click");
       widget.classList.toggle("open");
       toggle.classList.toggle("open");
       if (widget.classList.contains("open")) {
+        console.log("[chatbot] widget opened");
         input.focus();
         if (!messages.dataset.welcome) {
           appendChatMessage(messages, "bot", "Hi! I'm your Study Connect assistant. How can I help you today?");
           messages.dataset.welcome = "true";
         }
+      } else {
+        console.log("[chatbot] widget closed");
       }
     });
 
-    closeBtn?.addEventListener("click", () => widget.classList.remove("open"));
+    closeBtn?.addEventListener("click", () => {
+      console.log("[chatbot] close click");
+      widget.classList.remove("open");
+      toggle.classList.remove("open");
+    });
 
     sendBtn.addEventListener("click", sendMessage);
     input.addEventListener("keydown", (e) => {
