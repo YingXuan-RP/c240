@@ -39,7 +39,7 @@ a:focus-visible {
 
 .site-header {
   padding: 24px 5vw 48px;
-  background: linear-gradient(135deg, var(--ink), #0a2d47 40%, #0f1f36 100%);
+  background: linear-gradient(135deg, #1a5c3f, #26a65b 40%, #2ecc71 100%);
   color: #f9fbff;
   position: relative;
   overflow: hidden;
@@ -51,7 +51,7 @@ a:focus-visible {
   inset: 10% 5% auto auto;
   width: 280px;
   height: 280px;
-  background: radial-gradient(circle at center, rgba(53, 179, 255, 0.35), transparent 65%);
+  background: radial-gradient(circle at center, rgba(61, 214, 116, 0.35), transparent 65%);
   filter: blur(12px);
   z-index: 0;
 }
@@ -272,9 +272,9 @@ a:focus-visible {
 }
 
 .tag {
-  background: rgba(53, 179, 255, 0.12);
-  border: 1px solid rgba(53, 179, 255, 0.4);
-  color: #d6eaff;
+  background: rgba(61, 214, 116, 0.12);
+  border: 1px solid rgba(38, 166, 91, 0.4);
+  color: #d6ffea;
   border-radius: 12px;
   padding: 6px 10px;
   font-size: 14px;
@@ -422,7 +422,7 @@ a:focus-visible {
 }
 
 .cta {
-  background: linear-gradient(120deg, var(--deep-teal), #0b4360 60%, var(--ink));
+  background: linear-gradient(120deg, var(--deep-teal), #1e8449 60%, #1a5c3f);
   color: #f9fbff;
   display: flex;
   flex-wrap: wrap;
@@ -913,7 +913,7 @@ a:focus-visible {
 }
 
 .welcome-content {
-  background: linear-gradient(135deg, var(--deep-teal), #0b4360);
+  background: linear-gradient(135deg, var(--deep-teal), #1e8449);
   color: #f9fbff;
   padding: 32px;
   border-radius: 18px;
