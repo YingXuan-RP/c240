@@ -802,13 +802,32 @@ query({"question": "Hey, how are you?"}).then((response) => {
     // Sample messages data
     const messagesData = {
       partner1: [
-        { sender: "Alice Zhang", text: "Hey! Ready for the ML study session tomorrow?", time: "10:30 AM" },
-        { sender: "You", text: "Yes! I've prepared notes on supervised learning", time: "10:35 AM" },
-        { sender: "Alice Zhang", text: "Perfect! See you at the library.", time: "10:36 AM" }
+        { sender: "Mia Chen", text: "Slides on payment rails are ready.", time: "9:10 AM" },
+        { sender: "You", text: "Nice. Do we cover interchange fees?", time: "9:12 AM" },
+        { sender: "Mia Chen", text: "Yep, slide 4. Also instant transfers vs card rails.", time: "9:13 AM" },
+        { sender: "You", text: "Great—I'll rehearse that part tonight.", time: "9:15 AM" }
       ],
       partner2: [
-        { sender: "Ben Tan", text: "Can you help me with React hooks?", time: "Yesterday" },
-        { sender: "You", text: "Sure! Let's meet at the lab tomorrow", time: "Yesterday" }
+        { sender: "Rajiv Nair", text: "Ran the backtest; sharpe improved.", time: "Yesterday" },
+        { sender: "You", text: "What tweak helped?", time: "Yesterday" },
+        { sender: "Rajiv Nair", text: "Capped drawdown at 5% and filtered low-liquidity tickers.", time: "Yesterday" },
+        { sender: "You", text: "Nice. Let's add a quick risk slide.", time: "Yesterday" }
+      ],
+      partner3: [
+        { sender: "Aisha Rahman", text: "Skimmed the MAS eKYC guidelines.", time: "2:05 PM" },
+        { sender: "You", text: "Any must-have points?", time: "2:06 PM" },
+        { sender: "Aisha Rahman", text: "Consent + record retention. Also transaction monitoring.", time: "2:08 PM" }
+      ],
+      partner4: [
+        { sender: "Leo Tan", text: "Cleaned the regression dataset.", time: "10:01 AM" },
+        { sender: "You", text: "Any outliers left?", time: "10:02 AM" },
+        { sender: "Leo Tan", text: "Dropped two extremes; R² is 0.78 now.", time: "10:04 AM" }
+      ],
+      partner5: [
+        { sender: "Sara Lim", text: "Prototype has the budget tracker flow.", time: "11:30 AM" },
+        { sender: "You", text: "Saw it—nice category chips.", time: "11:32 AM" },
+        { sender: "Sara Lim", text: "Thanks! Need microcopy for savings goals.", time: "11:34 AM" },
+        { sender: "You", text: "I'll draft concise, friendly text tonight.", time: "11:36 AM" }
       ]
     };
 
@@ -822,8 +841,11 @@ query({"question": "Hey, how are you?"}).then((response) => {
           unread: idx === 0 ? 1 : 0
         }))
       : [
-          { id: "partner1", name: "Alice Zhang", lastMessage: "Perfect! See you at the library.", time: "10:36 AM", unread: 0 },
-          { id: "partner2", name: "Ben Tan", lastMessage: "Sure! Let's meet at the lab tomorrow", time: "Yesterday", unread: 1 }
+          { id: "partner1", name: "Mia Chen (Diploma in Financial Technology)", lastMessage: "Slides on payment rails are ready.", time: "9:13 AM", unread: 0 },
+          { id: "partner2", name: "Rajiv Nair (Diploma in Financial Technology)", lastMessage: "Ran the backtest; sharpe improved.", time: "Yesterday", unread: 1 },
+          { id: "partner3", name: "Aisha Rahman (Diploma in Digital Banking)", lastMessage: "Consent + record retention. Also transaction monitoring.", time: "2:08 PM", unread: 0 },
+          { id: "partner4", name: "Leo Tan (Diploma in Data Science)", lastMessage: "Dropped two extremes; R² is 0.78 now.", time: "10:04 AM", unread: 0 },
+          { id: "partner5", name: "Sara Lim (Diploma in UX for Finance)", lastMessage: "Need microcopy for savings goals.", time: "11:34 AM", unread: 0 }
         ];
 
     // Render conversations list
