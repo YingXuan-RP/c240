@@ -560,155 +560,7 @@
     }
   };
 
-  // Initialize student connection section
-  window.initStudentConnections = function() {
-    const filterSchool = document.getElementById("filterSchool");
-    const filterInterest = document.getElementById("filterInterest");
-    const resetBtn = document.getElementById("resetFiltersBtn");
-    const studentsGrid = document.getElementById("studentsGrid");
-    const paginationControls = document.getElementById("paginationControls");
-    const paginationPages = document.getElementById("paginationPages");
-    const prevPageBtn = document.getElementById("prevPageBtn");
-    const nextPageBtn = document.getElementById("nextPageBtn");
-    const session = localStorage.getItem("campusconnect_session");
-
-    if (!filterSchool || !studentsGrid || !session) return;
-
-    const user = JSON.parse(session);
-    const STUDENTS_PER_PAGE = 6;
-    let currentPage = 1;
-    let allFilteredStudents = [];
-
-    const renderPagination = (totalStudents) => {
-      const totalPages = Math.ceil(totalStudents / STUDENTS_PER_PAGE);
-      
-      if (totalPages <= 1) {
-        paginationControls.style.display = "none";
-        return;
-      }
-
-      paginationControls.style.display = "flex";
-      
-      // Update prev/next buttons
-      prevPageBtn.disabled = currentPage === 1;
-      nextPageBtn.disabled = currentPage === totalPages;
-
-      // Generate page numbers
-      paginationPages.innerHTML = "";
-      for (let i = 1; i <= totalPages; i++) {
-        const pageBtn = document.createElement("button");
-        pageBtn.className = `pagination-page ${i === currentPage ? "active" : ""}`;
-        pageBtn.textContent = i;
-        pageBtn.addEventListener("click", () => {
-          currentPage = i;
-          renderStudents();
-        });
-        paginationPages.appendChild(pageBtn);
-      }
-    };
-
-    const renderStudents = () => {
-      const schoolFilter = filterSchool.value;
-      const interestFilter = filterInterest.value;
-
-      allFilteredStudents = findStudyPartners({ schoolFilter, interestFilter, user });
-
-      if (allFilteredStudents.length === 0) {
-        studentsGrid.innerHTML = '<div class="no-students"><p>No students match your filters. Try adjusting your search.</p></div>';
-        paginationControls.style.display = "none";
-        return;
-      }
-
-      // Calculate pagination
-      const totalPages = Math.ceil(allFilteredStudents.length / STUDENTS_PER_PAGE);
-      if (currentPage > totalPages) {
-        currentPage = 1;
-      }
-
-      const startIndex = (currentPage - 1) * STUDENTS_PER_PAGE;
-      const endIndex = startIndex + STUDENTS_PER_PAGE;
-      const studentsToDisplay = allFilteredStudents.slice(startIndex, endIndex);
-
-      const connections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
-
-      studentsGrid.innerHTML = studentsToDisplay
-        .map((student) => {
-          const isRequested = connections.includes(student.id);
-          return `
-            <div class="student-card" data-student-id="${student.id}">
-              <div class="student-header">
-                <div class="student-id">${student.username}</div>
-                <div class="student-badge">${student.id}</div>
-              </div>
-              <div class="student-info">
-                <div class="student-info-item"><span class="student-info-label">School:</span> ${student.schoolName}</div>
-                <div class="student-info-item"><span class="student-info-label">Course:</span> ${student.diploma}</div>
-              </div>
-              <div class="student-interests">
-                ${student.interests.map((interest) => `<span class="interest-tag">${interest}</span>`).join("")}
-              </div>
-              <div class="student-action">
-                <button class="connect-btn ${isRequested ? "requested" : ""}" data-student-id="${student.id}" ${isRequested ? "disabled" : ""}>
-                  ${isRequested ? "✓ Requested" : "Connect"}
-                </button>
-              </div>
-            </div>
-          `;
-        })
-        .join("");
-
-      document.querySelectorAll(".connect-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const studentId = btn.dataset.studentId;
-          const connectionsLatest = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
-          if (!connectionsLatest.includes(studentId)) {
-            connectionsLatest.push(studentId);
-            localStorage.setItem("studyconnect_connections", JSON.stringify(connectionsLatest));
-            btn.classList.add("requested");
-            btn.disabled = true;
-            btn.textContent = "✓ Requested";
-            showToast("Connection request sent!");
-            renderStudents();
-          }
-        });
-      });
-
-      renderPagination(allFilteredStudents.length);
-      runAgentRecommendations(user);
-    };
-
-    renderStudents();
-
-    filterSchool.addEventListener("change", () => {
-      currentPage = 1;
-      renderStudents();
-    });
-    filterInterest.addEventListener("change", () => {
-      currentPage = 1;
-      renderStudents();
-    });
-    resetBtn.addEventListener("click", () => {
-      filterSchool.value = "";
-      filterInterest.value = "";
-      currentPage = 1;
-      renderStudents();
-    });
-
-    prevPageBtn.addEventListener("click", () => {
-      if (currentPage > 1) {
-        currentPage--;
-        renderStudents();
-      }
-    });
-
-    nextPageBtn.addEventListener("click", () => {
-      const totalPages = Math.ceil(allFilteredStudents.length / STUDENTS_PER_PAGE);
-      if (currentPage < totalPages) {
-        currentPage++;
-        renderStudents();
-      }
-    });
-  };
+  // Removed initStudentConnections - using initDashboardWithPartners only to prevent design flashing
 
   // Flowise API integration
  async function query(data) {
@@ -1403,7 +1255,7 @@ query({"question": "Hey, how are you?"}).then((response) => {
     }
   };
 
-  // Enhanced dashboard initialization with partners data
+  // Enhanced dashboard initialization with partners data - SINGLE SOURCE OF TRUTH
   window.initDashboardWithPartners = async function() {
     // Call original dashboard init
     window.initDashboard();
@@ -1412,58 +1264,100 @@ query({"question": "Hey, how are you?"}).then((response) => {
     initChatbotUI();
 
     const studentsGrid = document.getElementById("studentsGrid");
+    const paginationControls = document.getElementById("paginationControls");
+    const paginationPages = document.getElementById("paginationPages");
+    const prevPageBtn = document.getElementById("prevPageBtn");
+    const nextPageBtn = document.getElementById("nextPageBtn");
+
     if (!studentsGrid) return;
+
+    const ITEMS_PER_PAGE = 6;
+    let currentPage = 1;
+    let allPartners = [];
+    let filteredPartners = [];
 
     try {
       const response = await fetch("data/study-partners.json");
-      const partners = await response.json();
+      allPartners = await response.json();
 
-      const profile = JSON.parse(localStorage.getItem("studyconnect_profile") || "{}");
-      const connections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
-      const favourites = JSON.parse(localStorage.getItem("studyconnect_favourites") || "[]");
+      const renderPagination = (totalItems) => {
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+        
+        if (totalPages <= 1) {
+          paginationControls.style.display = "none";
+          return;
+        }
 
-      let filteredPartners = [...partners];
+        paginationControls.style.display = "flex";
+        prevPageBtn.disabled = currentPage === 1;
+        nextPageBtn.disabled = currentPage === totalPages;
+
+        paginationPages.innerHTML = "";
+        for (let i = 1; i <= totalPages; i++) {
+          const pageBtn = document.createElement("button");
+          pageBtn.className = `pagination-page ${i === currentPage ? "active" : ""}`;
+          pageBtn.textContent = i;
+          pageBtn.addEventListener("click", () => {
+            currentPage = i;
+            renderPartners();
+          });
+          paginationPages.appendChild(pageBtn);
+        }
+      };
 
       const renderPartners = () => {
         if (filteredPartners.length === 0) {
           studentsGrid.innerHTML = '<div class="empty-state"><p>No study partners found matching your filters.</p></div>';
+          paginationControls.style.display = "none";
           return;
         }
 
-        studentsGrid.innerHTML = filteredPartners.map(partner => {
-          const isConnected = connections.some(c => c.id === partner.id);
-          const isFavourite = favourites.includes(partner.id);
+        const totalPages = Math.ceil(filteredPartners.length / ITEMS_PER_PAGE);
+        if (currentPage > totalPages) currentPage = 1;
 
-          return `
-            <article class="student-card">
-              <h3>${partner.name}</h3>
-              <p class="student-school">${partner.diploma}</p>
-              <div class="pill-row">
-                ${partner.interests.slice(0, 3).map(interest => `<span class="pill">${interest}</span>`).join("")}
-              </div>
-              <p class="student-bio">${partner.bio}</p>
-              <div class="student-actions">
-                ${isConnected 
-                  ? '<button class="btn primary message-btn" data-partner-id="' + partner.id + '">Message</button>'
-                  : '<button class="btn primary connect-partner-btn" data-partner-id="' + partner.id + '">Connect</button>'
-                }
-                <button class="btn ghost favourite-btn ${isFavourite ? 'active' : ''}" data-partner-id="${partner.id}">
-                  ${isFavourite ? '★' : '☆'}
-                </button>
-              </div>
-            </article>
-          `;
-        }).join("");
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        const partnersToDisplay = filteredPartners.slice(startIndex, endIndex);
 
-        // Add event listeners
-        document.querySelectorAll(".connect-partner-btn").forEach(btn => {
-          btn.addEventListener("click", (e) => {
-            const partnerId = e.target.getAttribute("data-partner-id");
-            const partner = partners.find(p => p.id === partnerId);
-            
-            // Add to connections
+        const connections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
+        const favourites = JSON.parse(localStorage.getItem("studyconnect_favourites") || "[]");
+
+        studentsGrid.innerHTML = partnersToDisplay
+          .map(partner => {
+            const isConnected = connections.some(c => c.id === partner.id);
+            const isFavourite = favourites.includes(partner.id);
+
+            return `
+              <div class="student-card" data-partner-id="${partner.id}">
+                <div class="student-header">
+                  <div class="student-id" style="color: #26a65b; font-weight: 600;">${partner.name}</div>
+                  <div class="student-badge">${partner.id}</div>
+                </div>
+                <div class="student-info">
+                  <div class="student-info-item"><span class="student-info-label">School:</span> ${partner.school}</div>
+                  <div class="student-info-item"><span class="student-info-label">Course:</span> ${partner.diploma}</div>
+                </div>
+                <div class="student-interests">
+                  ${partner.interests.map(interest => `<span class="interest-tag">${interest}</span>`).join("")}
+                </div>
+                <div class="student-action">
+                  <button class="connect-btn ${isConnected ? "requested" : ""}" data-partner-id="${partner.id}" ${isConnected ? "disabled" : ""}>
+                    ${isConnected ? "✓ Requested" : "Connect"}
+                  </button>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+
+        // Wire up button events
+        document.querySelectorAll(".connect-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const partnerId = btn.getAttribute("data-partner-id");
             const updatedConnections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
+            
             if (!updatedConnections.find(c => c.id === partnerId)) {
+              const partner = allPartners.find(p => p.id === partnerId);
               updatedConnections.push({
                 id: partnerId,
                 name: partner.name,
@@ -1472,68 +1366,36 @@ query({"question": "Hey, how are you?"}).then((response) => {
               });
               localStorage.setItem("studyconnect_connections", JSON.stringify(updatedConnections));
               
+              btn.classList.add("requested");
+              btn.disabled = true;
+              btn.textContent = "✓ Requested";
               showToast(`Connected with ${partner.name}!`);
-              
-              // Update button
-              e.target.textContent = "Message";
-              e.target.classList.remove("connect-partner-btn");
-              e.target.classList.add("message-btn");
-              
-              // Reload to update state
-              setTimeout(() => renderPartners(), 800);
+              renderPartners();
             }
           });
         });
 
-        document.querySelectorAll(".message-btn").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const partnerId = btn.getAttribute("data-partner-id");
-            const partner = partners.find(p => p.id === partnerId);
-            
-            // Store the selected partner for messages page
-            localStorage.setItem("studyconnect_active_chat", JSON.stringify({
-              id: partnerId,
-              name: partner.name,
-              diploma: partner.diploma
-            }));
-            
-            window.location.href = "messages.html";
-          });
-        });
-
-        document.querySelectorAll(".favourite-btn").forEach(btn => {
-          btn.addEventListener("click", (e) => {
-            const partnerId = e.target.getAttribute("data-partner-id");
-            const currentFavourites = JSON.parse(localStorage.getItem("studyconnect_favourites") || "[]");
-            
-            if (currentFavourites.includes(partnerId)) {
-              const updated = currentFavourites.filter(id => id !== partnerId);
-              localStorage.setItem("studyconnect_favourites", JSON.stringify(updated));
-              showToast("Removed from favourites");
-            } else {
-              currentFavourites.push(partnerId);
-              localStorage.setItem("studyconnect_favourites", JSON.stringify(currentFavourites));
-              showToast("Added to favourites");
-            }
-            
-            setTimeout(() => renderPartners(), 600);
-          });
-        });
+        renderPagination(filteredPartners.length);
       };
 
-      // Filter functionality
+      const applyFilters = () => {
+        const schoolValue = document.getElementById("filterSchool")?.value || "";
+        const interestValue = document.getElementById("filterInterest")?.value || "";
+
+        filteredPartners = allPartners.filter(partner => {
+          const schoolMatch = !schoolValue || partner.school === schoolValue;
+          const interestMatch = !interestValue || partner.interests.includes(interestValue);
+          return schoolMatch && interestMatch;
+        });
+
+        currentPage = 1;
+        renderPartners();
+      };
+
+      // Wire filters
       const filterSchool = document.getElementById("filterSchool");
       const filterInterest = document.getElementById("filterInterest");
       const resetBtn = document.getElementById("resetFiltersBtn");
-
-      const applyFilters = () => {
-        filteredPartners = partners.filter(partner => {
-          const schoolMatch = !filterSchool.value || partner.school === filterSchool.value;
-          const interestMatch = !filterInterest.value || partner.interests.includes(filterInterest.value);
-          return schoolMatch && interestMatch;
-        });
-        renderPartners();
-      };
 
       if (filterSchool) filterSchool.addEventListener("change", applyFilters);
       if (filterInterest) filterInterest.addEventListener("change", applyFilters);
@@ -1541,11 +1403,32 @@ query({"question": "Hey, how are you?"}).then((response) => {
         resetBtn.addEventListener("click", () => {
           if (filterSchool) filterSchool.value = "";
           if (filterInterest) filterInterest.value = "";
-          filteredPartners = [...partners];
-          renderPartners();
+          applyFilters();
         });
       }
 
+      // Wire pagination buttons
+      if (prevPageBtn) {
+        prevPageBtn.addEventListener("click", () => {
+          if (currentPage > 1) {
+            currentPage--;
+            renderPartners();
+          }
+        });
+      }
+
+      if (nextPageBtn) {
+        nextPageBtn.addEventListener("click", () => {
+          const totalPages = Math.ceil(filteredPartners.length / ITEMS_PER_PAGE);
+          if (currentPage < totalPages) {
+            currentPage++;
+            renderPartners();
+          }
+        });
+      }
+
+      // Initial render
+      filteredPartners = [...allPartners];
       renderPartners();
 
     } catch (error) {
