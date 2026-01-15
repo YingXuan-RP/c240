@@ -10,9 +10,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="auth-page">
-  <header class="auth-header">
-    <a href="index.html" class="brand">Study Connect</a>
+<body>
+  <header class="dashboard-header">
+    <div class="dashboard-nav">
+      <a href="index.html" class="brand">Study Connect</a>
+      <nav class="dashboard-nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="preferences.html">Preferences</a>
+      </nav>
+    </div>
   </header>
 
   <main class="auth-shell">
@@ -62,44 +68,9 @@
 
         <div class="form-group full-span">
           <label>Study Interests</label>
-          <p class="helper-text">Select all that apply (at least one required)</p>
-          <div class="checkbox-grid">
-            <label class="checkbox-label">
-              <input type="checkbox" name="interests" value="Programming">
-              <span>Programming</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="interests" value="Exam Prep">
-              <span>Exam Prep</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="interests" value="Group Projects">
-              <span>Group Projects</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="interests" value="Design">
-              <span>Design</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="interests" value="Research">
-              <span>Research</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="interests" value="Machine Learning">
-              <span>Machine Learning</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="interests" value="Web Development">
-              <span>Web Development</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="interests" value="Data Analysis">
-              <span>Data Analysis</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="interests" value="Business Strategy">
-              <span>Business Strategy</span>
-            </label>
+          <p class="helper-text">Select topics relevant to your field of study (at least one required). These help us match you with partners who have similar academic focus.</p>
+          <div id="interestsContainer" class="checkbox-grid">
+            <!-- Dynamically generated based on school selection -->
           </div>
           <span class="error-msg" id="interestsError"></span>
         </div>

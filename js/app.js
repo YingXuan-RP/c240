@@ -42,6 +42,62 @@
     ]
   };
 
+  // School to study interests mapping
+  const interestsMap = {
+    infocomm: [
+      { value: "Programming", label: "💻 Programming", desc: "Software development and coding" },
+      { value: "Web Development", label: "🌐 Web Development", desc: "Frontend and backend web technologies" },
+      { value: "Data Analysis", label: "📊 Data Analysis", desc: "Data analysis and visualization" },
+      { value: "Machine Learning", label: "🤖 Machine Learning", desc: "AI and machine learning projects" },
+      { value: "Cybersecurity", label: "🔐 Cybersecurity", desc: "Security and digital forensics" },
+      { value: "Exam Prep", label: "📝 Exam Prep", desc: "Studying or revising for tests and finals" },
+      { value: "Group Projects", label: "👥 Group Projects", desc: "Working on module or course projects" },
+      { value: "FYP / Capstone", label: "🎯 FYP / Capstone", desc: "Final Year Project or capstone work" },
+      { value: "General Study", label: "📚 General Study", desc: "Regular studying and revision sessions" }
+    ],
+    business: [
+      { value: "Finance", label: "💰 Finance", desc: "Financial analysis and accounting" },
+      { value: "Marketing", label: "📢 Marketing", desc: "Marketing strategy and campaigns" },
+      { value: "Business Strategy", label: "📈 Business Strategy", desc: "Strategic planning and case studies" },
+      { value: "Entrepreneurship", label: "🚀 Entrepreneurship", desc: "Business planning and startup ideas" },
+      { value: "Supply Chain", label: "📦 Supply Chain", desc: "Supply chain and operations" },
+      { value: "Exam Prep", label: "📝 Exam Prep", desc: "Studying or revising for tests and finals" },
+      { value: "Group Projects", label: "👥 Group Projects", desc: "Working on module or course projects" },
+      { value: "FYP / Capstone", label: "🎯 FYP / Capstone", desc: "Final Year Project or capstone work" },
+      { value: "General Study", label: "📚 General Study", desc: "Regular studying and revision sessions" }
+    ],
+    appliedscience: [
+      { value: "Biology", label: "🧬 Biology", desc: "Biological sciences and research" },
+      { value: "Chemistry", label: "⚗️ Chemistry", desc: "Chemistry concepts and experiments" },
+      { value: "Research", label: "🔬 Research", desc: "Academic and scientific research" },
+      { value: "Lab Work", label: "🧪 Lab Work", desc: "Laboratory experiments and analysis" },
+      { value: "Exam Prep", label: "📝 Exam Prep", desc: "Studying or revising for tests and finals" },
+      { value: "Group Projects", label: "👥 Group Projects", desc: "Working on module or course projects" },
+      { value: "FYP / Capstone", label: "🎯 FYP / Capstone", desc: "Final Year Project or capstone work" },
+      { value: "General Study", label: "📚 General Study", desc: "Regular studying and revision sessions" }
+    ],
+    engineering: [
+      { value: "Programming", label: "💻 Programming", desc: "Software and embedded systems" },
+      { value: "CAD Design", label: "🖥️ CAD Design", desc: "Computer-aided design and modeling" },
+      { value: "Problem Solving", label: "⚙️ Problem Solving", desc: "Engineering problem-solving" },
+      { value: "Research", label: "🔬 Research", desc: "Engineering research and development" },
+      { value: "Exam Prep", label: "📝 Exam Prep", desc: "Studying or revising for tests and finals" },
+      { value: "Group Projects", label: "👥 Group Projects", desc: "Working on module or course projects" },
+      { value: "FYP / Capstone", label: "🎯 FYP / Capstone", desc: "Final Year Project or capstone work" },
+      { value: "General Study", label: "📚 General Study", desc: "Regular studying and revision sessions" }
+    ],
+    "tech-arts": [
+      { value: "Design", label: "🎨 Design", desc: "User experience and visual design" },
+      { value: "Media Production", label: "🎬 Media Production", desc: "Video, audio, and multimedia projects" },
+      { value: "Creative Projects", label: "✨ Creative Projects", desc: "Collaborative creative work" },
+      { value: "Art & Culture", label: "🎭 Art & Culture", desc: "Arts, theatre, and cultural studies" },
+      { value: "Exam Prep", label: "📝 Exam Prep", desc: "Studying or revising for tests and finals" },
+      { value: "Group Projects", label: "👥 Group Projects", desc: "Working on module or course projects" },
+      { value: "FYP / Capstone", label: "🎯 FYP / Capstone", desc: "Final Year Project or capstone work" },
+      { value: "General Study", label: "📚 General Study", desc: "Regular studying and revision sessions" }
+    ]
+  };
+
   // Sample student database
   const studentsDatabase = [
     {
@@ -230,6 +286,34 @@
       option.value = diploma;
       option.textContent = diploma;
       diplomaSelect.appendChild(option);
+    });
+
+    // Also populate study interests when school changes
+    window.populateStudyInterests(school);
+  };
+
+  // Populate study interests based on school selection
+  window.populateStudyInterests = function(school) {
+    const interestsContainer = document.getElementById("interestsContainer");
+    if (!interestsContainer) {
+      console.log("Interests container not found (not on profile page)");
+      return;
+    }
+
+    interestsContainer.innerHTML = '';
+
+    const interests = interestsMap[school] || [];
+    console.log("Selected school:", school, "Study interests:", interests);
+    
+    interests.forEach((interest) => {
+      const label = document.createElement("label");
+      label.className = "checkbox-label";
+      label.title = interest.desc; // Tooltip on hover
+      label.innerHTML = `
+        <input type="checkbox" name="interests" value="${interest.value}">
+        <span>${interest.label}</span>
+      `;
+      interestsContainer.appendChild(label);
     });
   };
 
