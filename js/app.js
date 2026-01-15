@@ -1616,33 +1616,43 @@
           return;
         }
 
-        requestsGrid.innerHTML = filteredRequests.map(req => {
+        // Only display up to 6 requests at a time
+        const displayRequests = filteredRequests.slice(0, 6);
+
+        requestsGrid.innerHTML = displayRequests.map(req => {
           const requestStatus = sessionRequests[req.id];
           let buttonHTML = '';
           
           if (req.isUserCreated && req.author === profile.name) {
-            buttonHTML = '<button class="btn inline" disabled style="opacity: 0.6;">Your Session</button>';
+            buttonHTML = '<button class="connect-btn requested" disabled>Your Session</button>';
           } else if (requestStatus === 'requested') {
-            buttonHTML = '<button class="btn inline" disabled style="background: #fbbf24; border-color: #fbbf24;">Requested</button>';
+            buttonHTML = '<button class="connect-btn requested" disabled>Requested</button>';
           } else if (requestStatus === 'joined') {
-            buttonHTML = '<button class="btn primary" disabled>Joined ✓</button>';
+            buttonHTML = '<button class="connect-btn requested" disabled>Joined ✓</button>';
           } else {
-            buttonHTML = `<button class="btn inline connect-btn" data-request-id="${req.id}">Request to Join</button>`;
+            buttonHTML = `<button class="connect-btn" data-request-id="${req.id}">Connect</button>`;
           }
 
           return `
-            <article class="event-card">
-              <div class="event-meta">${req.date} · ${req.time}</div>
-              <h3>${req.title}</h3>
-              <p><strong>By:</strong> ${req.author} · <strong>School:</strong> ${req.diploma}</p>
-              <p>${req.description}</p>
-              <p><strong>Location:</strong> ${req.location}</p>
-              <p><strong>Participants:</strong> ${req.participants}</p>
-              <div class="pill-row">
-                ${req.interests.map(interest => `<span class="pill ghost">${interest}</span>`).join("")}
+            <div class="student-card" data-request-id="${req.id}">
+              <div class="student-header">
+                <div class="student-id" style="color: #26a65b; font-weight: 600;">${req.title}</div>
+                <div class="student-badge">${req.date}</div>
               </div>
-              ${buttonHTML}
-            </article>
+              <div class="student-info">
+                <div class="student-info-item"><span class="student-info-label">By:</span> ${req.author}</div>
+                <div class="student-info-item"><span class="student-info-label">Course:</span> ${req.diploma}</div>
+                <div class="student-info-item"><span class="student-info-label">When:</span> ${req.date} · ${req.time}</div>
+                <div class="student-info-item"><span class="student-info-label">Location:</span> ${req.location}</div>
+                <div class="student-info-item"><span class="student-info-label">Participants:</span> ${req.participants}</div>
+              </div>
+              <div class="student-interests">
+                ${req.interests.map(interest => `<span class="interest-tag">${interest}</span>`).join("")}
+              </div>
+              <div class="student-action">
+                ${buttonHTML}
+              </div>
+            </div>
           `;
         }).join("");
 
@@ -1651,7 +1661,10 @@
           btn.addEventListener("click", (e) => {
             const requestId = e.target.getAttribute("data-request-id");
             handleRequestToJoin(requestId, allRequests);
-          });
+            // Immediate visual feedback
+            e.target.classList.add('requested');
+            e.target.textContent = 'Requested';
+            e.target.disabled = true;
         });
       };
 
