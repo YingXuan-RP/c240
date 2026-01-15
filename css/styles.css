@@ -822,6 +822,16 @@ a:focus-visible {
 
 .auth-header {
   margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.auth-card .auth-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 32px;
 }
 
 .auth-header h1 {
