@@ -1665,6 +1665,7 @@
             e.target.classList.add('requested');
             e.target.textContent = 'Requested';
             e.target.disabled = true;
+          });
         });
       };
 
