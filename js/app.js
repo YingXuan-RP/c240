@@ -575,7 +575,7 @@
   // Flowise API integration
   async function query(data) {
     const response = await fetch(
-        "https://cloud.flowiseai.com/api/v1/prediction/4919fadf-112c-4393-93be-0eb7b16b1c40",
+        "https://cloud.flowiseai.com/api/v1/prediction/e3ceb5b5-45ca-4013-add3-5d10e29c4090",
         {
             method: "POST",
             headers: {
@@ -587,6 +587,10 @@
     const result = await response.json();
     return result;
   }
+
+  query({"question": "Hey, how are you?"}).then((response) => {
+    console.log(response);
+  });
 
   // Chatbot intents and responses
   const chatbotIntents = [
