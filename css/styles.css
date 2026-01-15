@@ -89,6 +89,17 @@ a:focus-visible {
   color: #0b1220;
 }
 
+.nav-links .btn {
+  padding: 10px 20px;
+  font-size: 15px;
+  margin-left: 8px;
+}
+
+.nav-links .btn:hover,
+.nav-links .btn:focus-visible {
+  color: white;
+}
+
 .nav-toggle {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -184,6 +195,19 @@ a:focus-visible {
   background: linear-gradient(120deg, var(--sky), #51d1ff);
   color: #0b1220;
   box-shadow: 0 10px 30px rgba(53, 179, 255, 0.35);
+}
+
+.btn.secondary {
+  background: var(--green);
+  color: white;
+  box-shadow: 0 6px 20px rgba(38, 166, 91, 0.3);
+}
+
+.btn.secondary:hover,
+.btn.secondary:focus-visible {
+  background: var(--green-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(38, 166, 91, 0.4);
 }
 
 .btn.ghost {
