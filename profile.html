@@ -11,14 +11,15 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <header class="dashboard-header">
-    <div class="dashboard-nav">
-      <a href="index.html" class="brand">Study Connect</a>
-      <nav class="dashboard-nav-links">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="preferences.html">Preferences</a>
-      </nav>
-    </div>
+  <header class="site-header">
+    <nav class="nav">
+      <div class="brand">Study Connect</div>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+      <div id="nav-menu" class="nav-links" data-collapsible>
+        <a href="#communities">Communities</a>
+        <a href="#resources">Resources</a>
+      </div>
+    </nav>
   </header>
 
   <main class="auth-shell">
