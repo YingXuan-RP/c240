@@ -582,16 +582,16 @@ query({"question": "Hey, how are you?"}).then((response) => {
       response: "To find a study partner, use the 'Find a Study Partner' section, filter by school/interest, and click Connect."
     },
     {
-      keywords: ["events", "course", "relevant"],
-      response: "Check the Events section—agent highlights are tailored to your school. RSVP to save them."
+      keywords: ["calendar", "schedule", "events"],
+      response: "Check the Calendar section to view upcoming study sessions and schedule your activities."
     },
     {
       keywords: ["what", "campusconnect", "do"],
-      response: "CampusConnect centralises events, communities, and study partner matching with a proactive agent to guide you."
+      response: "CampusConnect centralises calendar, communities, and study partner matching with a proactive agent to guide you."
     },
     {
       keywords: ["help", "navigation", "where"],
-      response: "Use the top navigation to jump to Events, Communities, Resources, or Connect for study partners."
+      response: "Use the top navigation to jump to Calendar, Communities, Resources, or Connect for study partners."
     }
   ];
 
@@ -600,7 +600,7 @@ query({"question": "Hey, how are you?"}).then((response) => {
     const match = chatbotIntents.find((intent) => intent.keywords.some((k) => msg.includes(k)));
     return match
       ? match.response
-      : "I'm here to help! Ask about study partners, events, or how to navigate CampusConnect.";
+      : "I'm here to help! Ask about study partners, calendar, or how to navigate CampusConnect.";
   };
 
   const appendChatMessage = (container, role, text) => {
