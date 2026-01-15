@@ -886,6 +886,26 @@ a:focus-visible {
   color: #64748b;
 }
 
+.profile-edit-card {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  grid-column: 1 / -1;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.form-actions .btn {
+  flex: 1;
+  max-width: 200px;
+  grid-column: auto;
+  margin: 0;
+}
+
 .auth-form .btn {
   grid-column: 1 / -1;
 }

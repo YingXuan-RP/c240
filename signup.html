@@ -3,54 +3,110 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Sign in to Study Connect to view your study hub.">
-  <title>Login - Study Connect</title>
+  <meta name="description" content="Sign up and create your study profile to find compatible study partners.">
+  <title>Sign Up - Study Connect</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="auth-page">
-  <header class="dashboard-header">
-    <div class="dashboard-nav">
-      <a href="index.html" class="brand">Study Connect</a>
-      <nav class="dashboard-nav-links">
-      </nav>
-    </div>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <div class="brand">Study Connect</div>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+      <div id="nav-menu" class="nav-links" data-collapsible>
+        <a href="#communities">Communities</a>
+        <a href="#resources">Resources</a>
+        <a href="login.html">Login</a>
+        <a href="signup.html">Sign Up</a>
+      </div>
+    </nav>
   </header>
 
   <main class="auth-shell">
     <div class="auth-container">
       <div class="auth-card">
-        <a href="index.html" class="auth-logo">Study Connect</a>
-        <div class="auth-header">
-          <h1>Welcome back</h1>
-          <p>Sign in to view your study hub</p>
+      <div class="auth-header-content">
+        <h1>Create Your Study Profile</h1>
+        <p>Share a few details to help us match you with suitable study partners.</p>
+      </div>
+
+      <form id="profileForm" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="studentName">Your Name</label>
+          <input type="text" id="studentName" name="studentName" placeholder="Enter your name" required>
+          <span class="error-msg" id="nameError"></span>
         </div>
 
-        <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label for="schoolEmail">School Email</label>
+          <input type="email" id="schoolEmail" name="schoolEmail" placeholder="name@school.edu" required>
+          <span class="helper-text">Use your school email so peers know how to reach you</span>
+          <span class="error-msg" id="emailError"></span>
+        </div>
+
+        <div class="form-row">
           <div class="form-group">
-            <label for="email">School email</label>
-            <input type="email" id="email" name="email" placeholder="you@school.edu" required>
-            <span class="error-msg" id="emailError"></span>
+            <label for="school">School</label>
+            <select id="school" name="school" required>
+              <option value="">Select your school</option>
+              <option value="infocomm">School of Infocomm</option>
+              <option value="business">School of Business</option>
+              <option value="appliedscience">School of Applied Science</option>
+              <option value="engineering">School of Engineering</option>
+              <option value="tech-arts">School of Technology for the Arts</option>
+            </select>
+            <span class="error-msg" id="schoolError"></span>
           </div>
 
           <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="••••••••" required>
-            <span class="error-msg" id="passwordError"></span>
+            <label for="diploma">Diploma / Course</label>
+            <select id="diploma" name="diploma" required>
+              <option value="">Select your course</option>
+            </select>
+            <span class="error-msg" id="diplomaError"></span>
           </div>
-
-          <button type="submit" class="btn primary full-width">Sign in</button>
-          <span class="error-msg" id="loginError"></span>
-        </form>
-
-        <div class="auth-footer">
-          <p>Don't have a profile? <a href="signup.html">Create one</a></p>
         </div>
+
+        <div class="form-group full-span">
+          <label>Study Interests</label>
+          <p class="helper-text">Select topics relevant to your field of study (at least one required). These help us match you with partners who have similar academic focus.</p>
+          <div id="interestsContainer" class="checkbox-grid">
+            <!-- Dynamically generated based on school selection -->
+          </div>
+          <span class="error-msg" id="interestsError"></span>
+        </div>
+
+        <button type="submit" class="btn primary full">Create Account & Continue</button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Already have an account? <a href="login.html">Go to Login</a></p>
       </div>
     </div>
   </main>
+
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/app.js?v=3"></script>
+  <script>
+    console.log("Sign up page loaded. Checking window.populateDiplomaDropdown:", typeof window.populateDiplomaDropdown);
+    console.log("Checking window.handleProfileSetup:", typeof window.handleProfileSetup);
+    
+    document.getElementById('profileForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      window.handleProfileSetup();
+    });
+
+    const schoolDropdown = document.getElementById('school');
+    console.log("School dropdown found:", schoolDropdown);
+    
+    schoolDropdown.addEventListener('change', (e) => {
+      console.log("School changed! Value:", e.target.value);
+      window.populateDiplomaDropdown(e.target.value);
+    });
+  </script>
 
   <footer class="footer">
     <div class="footer-top">
@@ -79,7 +135,7 @@
           </a>
           <a href="#" aria-label="X (Twitter)" class="social-icon">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-              <path d="M23.953 4.57a10 10 0 002.856-3.215 9.954 9.954 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+              <path d="M23.953 4.57a10 10 0 002.856-3.215 9.954 9.954 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417a9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
             </svg>
           </a>
           <a href="#" aria-label="YouTube" class="social-icon">
@@ -109,22 +165,5 @@
       </div>
     </div>
   </footer>
-
-  <script src="js/app.js?v=3" defer></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // Populate email field with last used email if available
-      window.populateLoginForm();
-
-      // Handle login form submission
-      const loginForm = document.getElementById("loginForm");
-      if (loginForm) {
-        loginForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          window.handleLogin();
-        });
-      }
-    });
-  </script>
 </body>
 </html>
