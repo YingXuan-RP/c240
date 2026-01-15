@@ -502,7 +502,7 @@ a:focus-visible {
 }
 
 .footer-top {
-  padding: 48px 5vw 40px;
+  padding: 24px 5vw 20px;
   max-width: 100%;
 }
 
@@ -515,14 +515,14 @@ a:focus-visible {
   font-family: "Space Grotesk", sans-serif;
   font-size: 18px;
   font-weight: 700;
-  margin: 0 0 20px 0;
+  margin: 0 0 10px 0;
   color: #f9fbff;
   letter-spacing: 0.4px;
 }
 
 .social-icons {
   display: flex;
-  gap: 16px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -530,8 +530,8 @@ a:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   color: #d0d0d0;
   transition: color 200ms ease, transform 200ms ease;
   border-radius: 4px;
@@ -549,13 +549,13 @@ a:focus-visible {
 }
 
 .footer-bottom {
-  padding: 40px 5vw;
+  padding: 20px 5vw;
   max-width: 100%;
 }
 
 .footer-links {
   max-width: 1200px;
-  margin: 0 auto 28px;
+  margin: 0 auto 14px;
   display: flex;
   flex-wrap: wrap;
   gap: 0;
@@ -590,7 +590,7 @@ a:focus-visible {
 }
 
 .footer-location {
-  margin: 0 0 12px 0;
+  margin: 0 0 6px 0;
   font-size: 13px;
   color: #a8a8a8;
   font-weight: 500;
@@ -721,12 +721,12 @@ a:focus-visible {
   }
 
   .footer-top {
-    padding: 36px 5vw 28px;
+    padding: 18px 5vw 14px;
   }
 
   .footer-heading h3 {
     font-size: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
   }
 
   .social-icons {
@@ -739,11 +739,11 @@ a:focus-visible {
   }
 
   .footer-bottom {
-    padding: 28px 5vw;
+    padding: 14px 5vw;
   }
 
   .footer-links {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     gap: 8px;
   }
 
@@ -753,7 +753,7 @@ a:focus-visible {
   }
 
   .footer-location {
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     font-size: 12px;
   }
 
