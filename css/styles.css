@@ -365,11 +365,11 @@ a:focus-visible {
 }
 
 .tile {
-  background: #0f1f36;
-  color: #f9fbff;
+  background: #ffffff;
+  color: #0f1f36;
   padding: 22px;
   border-radius: var(--radius);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(15, 31, 54, 0.1);
   box-shadow: var(--shadow);
 }
 
