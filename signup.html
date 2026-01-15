@@ -11,13 +11,24 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="auth-page">
-  <div class="auth-container">
-    <div class="auth-card wide">
-      <a href="index.html" class="auth-logo">CampusConnect</a>
-      <div class="auth-header">
-        <h1>Join CampusConnect</h1>
-        <p>Create your account to start discovering campus events and communities</p>
+  <header class="site-header">
+    <nav class="nav">
+      <div class="brand">Study Connect</div>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+      <div id="nav-menu" class="nav-links" data-collapsible>
+        <a href="#communities">Communities</a>
+        <a href="#resources">Resources</a>
       </div>
+    </nav>
+  </header>
+
+  <main class="auth-shell">
+    <div class="auth-container">
+      <div class="auth-card wide">
+        <div class="auth-header">
+          <h1>Join Study Connect</h1>
+          <p>Create your account to start discovering study partners and communities</p>
+        </div>
 
       <form id="signupForm" class="auth-form">
         <div class="form-group">
@@ -74,6 +85,7 @@
       </div>
     </div>
   </div>
+  </main>
 
   <script src="js/app.js"></script>
   <script>
