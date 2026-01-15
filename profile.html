@@ -79,10 +79,6 @@
 
           <button type="submit" class="btn primary full">Save Changes</button>
         </form>
-
-        <div class="auth-footer">
-          <p><a href="dashboard.html">← Back to Dashboard</a></p>
-        </div>
       </div>
     </div>
   </main>
@@ -166,7 +162,7 @@
         localStorage.setItem("studyconnect_profile", JSON.stringify(updatedProfile));
         
         // Show success message
-        window.showToast("Profile updated successfully!", "success");
+        window.showToast("Changes have been saved!", "success");
         
         // Optional: Stay on page for 1.5 seconds then redirect to dashboard
         setTimeout(() => {
