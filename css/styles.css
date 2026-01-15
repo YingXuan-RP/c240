@@ -685,6 +685,160 @@ a:focus-visible {
   max-width: 100%;
 }
 
+/* Preferences Form Styling */
+.preferences-form {
+  display: grid;
+  gap: 32px;
+  grid-column: 1 / -1;
+}
+
+.preferences-section {
+  display: grid;
+  gap: 18px;
+  padding: 28px;
+  background: #f9fbff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  transition: all 200ms ease;
+}
+
+.preferences-section:hover {
+  box-shadow: 0 4px 16px rgba(38, 166, 91, 0.08);
+  border-color: #3dd674;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0b2237;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-row.full-span {
+  grid-column: 1 / -1;
+}
+
+.form-col {
+  display: grid;
+  gap: 8px;
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0b2237;
+  letter-spacing: 0.3px;
+}
+
+.form-select {
+  padding: 12px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  color: #0b1220;
+  background: #ffffff;
+  transition: all 200ms ease;
+  cursor: pointer;
+}
+
+.form-select:hover {
+  border-color: #3dd674;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #26a65b;
+  box-shadow: 0 0 0 3px rgba(38, 166, 91, 0.1);
+}
+
+.availability-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.availability-chip,
+.interest-chip {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0b1220;
+  cursor: pointer;
+  transition: all 200ms ease;
+  align-items: center;
+}
+
+.availability-chip input,
+.interest-chip input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #26a65b;
+}
+
+.availability-chip:hover,
+.interest-chip:hover {
+  border-color: #3dd674;
+  background: #f0fdf4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(38, 166, 91, 0.1);
+}
+
+.availability-chip input:checked + span,
+.interest-chip input:checked + span {
+  color: #26a65b;
+  font-weight: 700;
+}
+
+.availability-chip input:checked,
+.interest-chip input:checked {
+  accent-color: #26a65b;
+}
+
+.interests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.action-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-top: 8px;
+}
+
+.action-section .btn {
+  padding: 14px 24px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
 .form-group {
   display: grid;
   gap: 8px;

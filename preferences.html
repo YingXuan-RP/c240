@@ -23,117 +23,129 @@
           <p>Set your preferences for better partner matching</p>
         </div>
 
-        <form id="preferencesForm" class="auth-form">
-          <div class="full-span">
-            <label for="studyStyle">Preferred Study Style</label>
-            <select id="studyStyle" name="studyStyle" required>
-              <option value="">Select your preferred study style</option>
-              <option value="solo-focus">Solo Focus (work independently, ask when stuck)</option>
-              <option value="collaborative">Collaborative (discuss concepts together)</option>
-              <option value="teaching">Teaching & Explaining (learn by teaching others)</option>
-              <option value="problem-solving">Problem Solving (work through exercises together)</option>
-              <option value="review-sessions">Review Sessions (recap before exams)</option>
-            </select>
+        <form id="preferencesForm" class="preferences-form">
+          <!-- Session Preferences Section -->
+          <div class="preferences-section">
+            <h2 class="section-title">📚 Session Preferences</h2>
+            
+            <div class="form-row">
+              <div class="form-col">
+                <label for="studyStyle" class="form-label">Study Style</label>
+                <select id="studyStyle" name="studyStyle" class="form-select" required>
+                  <option value="">Choose your style</option>
+                  <option value="solo-focus">Solo Focus (work independently)</option>
+                  <option value="collaborative">Collaborative (discuss together)</option>
+                  <option value="teaching">Teaching & Explaining</option>
+                  <option value="problem-solving">Problem Solving</option>
+                  <option value="review-sessions">Review Sessions</option>
+                </select>
+              </div>
+              
+              <div class="form-col">
+                <label for="sessionLength" class="form-label">Session Length</label>
+                <select id="sessionLength" name="sessionLength" class="form-select" required>
+                  <option value="">Choose duration</option>
+                  <option value="30min">30 minutes</option>
+                  <option value="1hour">1 hour</option>
+                  <option value="2hours">2 hours</option>
+                  <option value="3hours">3+ hours</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row full-span">
+              <label for="studyLocation" class="form-label">Study Location</label>
+              <select id="studyLocation" name="studyLocation" class="form-select" required>
+                <option value="">Choose location</option>
+                <option value="library">📖 Library</option>
+                <option value="cafe">☕ Café</option>
+                <option value="campus">🏫 Campus Study Rooms</option>
+                <option value="online">💻 Online/Virtual</option>
+                <option value="flexible">🤝 Flexible</option>
+              </select>
+            </div>
           </div>
 
-          <div class="full-span">
-            <label for="sessionLength">Preferred Session Length</label>
-            <select id="sessionLength" name="sessionLength" required>
-              <option value="">Select session length</option>
-              <option value="30min">30 minutes</option>
-              <option value="1hour">1 hour</option>
-              <option value="2hours">2 hours</option>
-              <option value="3hours">3+ hours</option>
-            </select>
-          </div>
-
-          <div class="full-span">
-            <label for="studyLocation">Preferred Study Location</label>
-            <select id="studyLocation" name="studyLocation" required>
-              <option value="">Select preferred location</option>
-              <option value="library">Library</option>
-              <option value="cafe">Café</option>
-              <option value="campus">Campus Study Rooms</option>
-              <option value="online">Online/Virtual</option>
-              <option value="flexible">Flexible</option>
-            </select>
-          </div>
-
-          <div class="full-span">
-            <label for="availability">General Availability</label>
-            <div class="checkbox-grid">
-              <label class="checkbox-label">
+          <!-- Availability Section -->
+          <div class="preferences-section">
+            <h2 class="section-title">⏰ Your Availability</h2>
+            <p class="section-desc">When are you typically free to study?</p>
+            <div class="availability-grid">
+              <label class="availability-chip">
                 <input type="checkbox" name="availability" value="Weekday Mornings">
-                <span>Weekday Mornings</span>
+                <span>🌅 Weekday Mornings</span>
               </label>
-              <label class="checkbox-label">
+              <label class="availability-chip">
                 <input type="checkbox" name="availability" value="Weekday Afternoons">
-                <span>Weekday Afternoons</span>
+                <span>☀️ Weekday Afternoons</span>
               </label>
-              <label class="checkbox-label">
+              <label class="availability-chip">
                 <input type="checkbox" name="availability" value="Weekday Evenings">
-                <span>Weekday Evenings</span>
+                <span>🌙 Weekday Evenings</span>
               </label>
-              <label class="checkbox-label">
+              <label class="availability-chip">
                 <input type="checkbox" name="availability" value="Weekend Mornings">
-                <span>Weekend Mornings</span>
+                <span>🌅 Weekend Mornings</span>
               </label>
-              <label class="checkbox-label">
+              <label class="availability-chip">
                 <input type="checkbox" name="availability" value="Weekend Afternoons">
-                <span>Weekend Afternoons</span>
+                <span>☀️ Weekend Afternoons</span>
               </label>
-              <label class="checkbox-label">
+              <label class="availability-chip">
                 <input type="checkbox" name="availability" value="Weekend Evenings">
-                <span>Weekend Evenings</span>
+                <span>🌙 Weekend Evenings</span>
               </label>
             </div>
           </div>
 
-          <div class="full-span">
-            <label>Study Interests (optional - override profile)</label>
-            <div class="checkbox-grid">
-              <label class="checkbox-label">
+          <!-- Study Interests Section -->
+          <div class="preferences-section">
+            <h2 class="section-title">🎯 Study Interests</h2>
+            <p class="section-desc">Select topics you'd like to study (optional - overrides profile)</p>
+            <div class="interests-grid">
+              <label class="interest-chip">
                 <input type="checkbox" name="interests" value="Programming">
-                <span>Programming</span>
+                <span>💻 Programming</span>
               </label>
-              <label class="checkbox-label">
+              <label class="interest-chip">
                 <input type="checkbox" name="interests" value="Exam Prep">
-                <span>Exam Prep</span>
+                <span>📝 Exam Prep</span>
               </label>
-              <label class="checkbox-label">
+              <label class="interest-chip">
                 <input type="checkbox" name="interests" value="Group Projects">
-                <span>Group Projects</span>
+                <span>👥 Group Projects</span>
               </label>
-              <label class="checkbox-label">
+              <label class="interest-chip">
                 <input type="checkbox" name="interests" value="Machine Learning">
-                <span>Machine Learning</span>
+                <span>🤖 Machine Learning</span>
               </label>
-              <label class="checkbox-label">
+              <label class="interest-chip">
                 <input type="checkbox" name="interests" value="Web Development">
-                <span>Web Development</span>
+                <span>🌐 Web Development</span>
               </label>
-              <label class="checkbox-label">
+              <label class="interest-chip">
                 <input type="checkbox" name="interests" value="Data Analysis">
-                <span>Data Analysis</span>
+                <span>📊 Data Analysis</span>
               </label>
-              <label class="checkbox-label">
+              <label class="interest-chip">
                 <input type="checkbox" name="interests" value="Business Strategy">
-                <span>Business Strategy</span>
+                <span>📈 Business Strategy</span>
               </label>
-              <label class="checkbox-label">
+              <label class="interest-chip">
                 <input type="checkbox" name="interests" value="Research">
-                <span>Research</span>
+                <span>🔬 Research</span>
               </label>
-              <label class="checkbox-label">
+              <label class="interest-chip">
                 <input type="checkbox" name="interests" value="Design">
-                <span>Design</span>
+                <span>🎨 Design</span>
               </label>
             </div>
           </div>
 
-          <div class="full-span button-row">
-            <button type="submit" class="btn primary">Save Preferences</button>
-            <a href="dashboard.html" class="btn ghost">Cancel</a>
+          <!-- Action Buttons -->
+          <div class="preferences-section action-section">
+            <button type="submit" class="btn primary">✓ Save Preferences</button>
+            <a href="dashboard.html" class="btn ghost">← Back to Dashboard</a>
           </div>
         </form>
       </div>
