@@ -659,7 +659,10 @@ query({"question": "Hey, how are you?"}).then((response) => {
       sendBtn: !!sendBtn,
     });
 
-    if (!toggle || !widget || !messages || !input || !sendBtn) return;
+    if (!toggle || !widget || !messages || !input || !sendBtn) {
+      console.error("[chatbot] Missing required elements");
+      return;
+    }
 
     const sendMessage = async () => {
       const text = input.value.trim();
@@ -1270,9 +1273,6 @@ query({"question": "Hey, how are you?"}).then((response) => {
     // Call original dashboard init
     window.initDashboard();
 
-    // Initialize chatbot
-    initChatbotUI();
-
     const studentsGrid = document.getElementById("studentsGrid");
     const paginationControls = document.getElementById("paginationControls");
     const paginationPages = document.getElementById("paginationPages");
@@ -1445,6 +1445,9 @@ query({"question": "Hey, how are you?"}).then((response) => {
       console.error("Error loading partners:", error);
       studentsGrid.innerHTML = '<div class="empty-state"><p>Error loading study partners. Please try again later.</p></div>';
     }
+
+    // Initialize chatbot after all DOM elements are ready
+    initChatbotUI();
   };
 
   // ==================== CREATE STUDY SESSION FUNCTIONALITY ====================
