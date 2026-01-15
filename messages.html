@@ -124,6 +124,19 @@
     </div>
   </footer>
 
+  <button id="chatToggle" class="chat-toggle" aria-label="Open Study Connect assistant">SC</button>
+  <div id="chatWidget" class="chat-widget" aria-live="polite">
+    <div class="chat-header">
+      <span>Study Connect Assistant</span>
+      <button id="chatClose" aria-label="Close chat">Close</button>
+    </div>
+    <div id="chatMessages" class="chat-messages"></div>
+    <div class="chat-input">
+      <input id="chatInput" type="text" placeholder="Ask about study partners or calendar" aria-label="Chat input">
+      <button id="chatSend" aria-label="Send message">Send</button>
+    </div>
+  </div>
+
   <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script src="js/app.js?v=3"></script>
