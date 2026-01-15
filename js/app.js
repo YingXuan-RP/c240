@@ -802,42 +802,50 @@ query({"question": "Hey, how are you?"}).then((response) => {
     // Sample messages data
     const messagesData = {
       partner1: [
-        { sender: "Mia Chen", text: "Slides on payment rails are ready.", time: "9:10 AM" },
-        { sender: "You", text: "Nice. Do we cover interchange fees?", time: "9:12 AM" },
-        { sender: "Mia Chen", text: "Yep, slide 4. Also instant transfers vs card rails.", time: "9:13 AM" },
-        { sender: "You", text: "Great—I'll rehearse that part tonight.", time: "9:15 AM" }
+        { sender: "Mia Chen", text: "Hey! Got the payment rails slides done", time: "9:10 AM" },
+        { sender: "You", text: "nice! did u cover interchange fees?", time: "9:12 AM" },
+        { sender: "Mia Chen", text: "yup slide 4, and i added instant vs card rails too", time: "9:13 AM" },
+        { sender: "You", text: "Perfect, i'll go through it tonight", time: "9:14 AM" },
+        { sender: "Mia Chen", text: "sounds good 👍", time: "9:15 AM" }
       ],
       partner2: [
-        { sender: "Rajiv Nair", text: "Ran the backtest; sharpe improved.", time: "Yesterday" },
-        { sender: "You", text: "What tweak helped?", time: "Yesterday" },
-        { sender: "Rajiv Nair", text: "Capped drawdown at 5% and filtered low-liquidity tickers.", time: "Yesterday" },
-        { sender: "You", text: "Nice. Let's add a quick risk slide.", time: "Yesterday" }
+        { sender: "Rajiv Nair", text: "dude the backtest is looking way better now", time: "Yesterday" },
+        { sender: "You", text: "oh fr? what did you change", time: "Yesterday" },
+        { sender: "Rajiv Nair", text: "capped drawdown at 5% and removed those low-liquidity stocks", time: "Yesterday" },
+        { sender: "You", text: "smart move. sharpe ratio improved?", time: "Yesterday" },
+        { sender: "Rajiv Nair", text: "yeah significantly. should we add a risk slide?", time: "Yesterday" },
+        { sender: "You", text: "definitely, let's do it tmr", time: "Yesterday" }
       ],
       partner3: [
-        { sender: "Aisha Rahman", text: "Skimmed the MAS eKYC guidelines.", time: "2:05 PM" },
-        { sender: "You", text: "Any must-have points?", time: "2:06 PM" },
-        { sender: "Aisha Rahman", text: "Consent + record retention. Also transaction monitoring.", time: "2:08 PM" }
+        { sender: "Aisha Rahman", text: "just finished reading the MAS eKYC stuff", time: "2:05 PM" },
+        { sender: "You", text: "anything we need to include?", time: "2:06 PM" },
+        { sender: "Aisha Rahman", text: "consent + record retention for sure", time: "2:07 PM" },
+        { sender: "Aisha Rahman", text: "also transaction monitoring is pretty important", time: "2:08 PM" },
+        { sender: "You", text: "cool i'll add those points to our slides", time: "2:10 PM" }
       ],
       partner4: [
-        { sender: "Leo Tan", text: "Cleaned the regression dataset.", time: "10:01 AM" },
-        { sender: "You", text: "Any outliers left?", time: "10:02 AM" },
-        { sender: "Leo Tan", text: "Dropped two extremes; R² is 0.78 now.", time: "10:04 AM" }
+        { sender: "Leo Tan", text: "finally cleaned up the dataset lol", time: "10:01 AM" },
+        { sender: "You", text: "any crazy outliers?", time: "10:02 AM" },
+        { sender: "Leo Tan", text: "removed 2 extreme ones", time: "10:03 AM" },
+        { sender: "Leo Tan", text: "R squared jumped to 0.78", time: "10:04 AM" },
+        { sender: "You", text: "that's solid, let's check VIF next", time: "10:05 AM" }
       ],
       partner5: [
-        { sender: "Sara Lim", text: "Prototype has the budget tracker flow.", time: "11:30 AM" },
-        { sender: "You", text: "Saw it—nice category chips.", time: "11:32 AM" },
-        { sender: "Sara Lim", text: "Thanks! Need microcopy for savings goals.", time: "11:34 AM" },
-        { sender: "You", text: "I'll draft concise, friendly text tonight.", time: "11:36 AM" }
+        { sender: "Sara Lim", text: "uploaded the budget tracker prototype to figma", time: "11:30 AM" },
+        { sender: "You", text: "just saw it, the category chips look clean", time: "11:32 AM" },
+        { sender: "Sara Lim", text: "thanks! btw can u help with the savings goals copy?", time: "11:34 AM" },
+        { sender: "You", text: "yeah sure, i'll write something short and friendly", time: "11:35 AM" },
+        { sender: "Sara Lim", text: "appreciate it 🙏", time: "11:36 AM" }
       ]
     };
 
     // Always use sample conversations (default messaging for all users)
     let conversations = [
-      { id: "partner1", name: "Mia Chen (Diploma in Financial Technology)", lastMessage: "Slides on payment rails are ready.", time: "9:13 AM", unread: 0 },
-      { id: "partner2", name: "Rajiv Nair (Diploma in Financial Technology)", lastMessage: "Ran the backtest; sharpe improved.", time: "Yesterday", unread: 1 },
-      { id: "partner3", name: "Aisha Rahman (Diploma in Digital Banking)", lastMessage: "Consent + record retention. Also transaction monitoring.", time: "2:08 PM", unread: 0 },
-      { id: "partner4", name: "Leo Tan (Diploma in Data Science)", lastMessage: "Dropped two extremes; R² is 0.78 now.", time: "10:04 AM", unread: 0 },
-      { id: "partner5", name: "Sara Lim (Diploma in UX for Finance)", lastMessage: "Need microcopy for savings goals.", time: "11:34 AM", unread: 0 }
+      { id: "partner1", name: "Mia Chen (Diploma in Financial Technology)", lastMessage: "sounds good 👍", time: "9:15 AM", unread: 0 },
+      { id: "partner2", name: "Rajiv Nair (Diploma in Financial Technology)", lastMessage: "definitely, let's do it tmr", time: "Yesterday", unread: 1 },
+      { id: "partner3", name: "Aisha Rahman (Diploma in Digital Banking)", lastMessage: "cool i'll add those points to our slides", time: "2:10 PM", unread: 0 },
+      { id: "partner4", name: "Leo Tan (Diploma in Data Science)", lastMessage: "that's solid, let's check VIF next", time: "10:05 AM", unread: 0 },
+      { id: "partner5", name: "Sara Lim (Diploma in UX for Finance)", lastMessage: "appreciate it 🙏", time: "11:36 AM", unread: 0 }
     ];
 
     // Check if there's an active chat from dashboard and add if not exists
@@ -977,19 +985,26 @@ query({"question": "Hey, how are you?"}).then((response) => {
 
           // Random casual student replies
           const replies = [
-            "Sounds good! What time works for you?",
-            "Sure, I'm free after 3pm.",
-            "Got it. Let me check my notes.",
-            "Yeah, that part was tricky for me too.",
-            "Let's meet at the library?",
-            "Perfect! See you then.",
-            "I'll bring my laptop.",
-            "Can you share the slides?",
-            "Thanks! I'll review it tonight.",
-            "Cool, let me know if you need help.",
-            "Awesome, let's do it.",
-            "I'm working on that section now.",
-            "Great! I've got some questions too."
+            "yeah sure what time?",
+            "im free after 3pm",
+            "let me check my notes first",
+            "dude that part was confusing for me too",
+            "library?",
+            "sounds good 👍",
+            "i'll bring my laptop",
+            "can u send the slides?",
+            "thanks! gonna review it tonight",
+            "cool lmk if u need help",
+            "bet let's do it",
+            "working on that rn",
+            "same i got some questions too",
+            "for sure",
+            "alright see u then",
+            "yup that works",
+            "wait actually can we do 4pm instead?",
+            "oh fr? nice",
+            "damn okay",
+            "lowkey same lol"
           ];
 
           const randomReply = replies[Math.floor(Math.random() * replies.length)];
