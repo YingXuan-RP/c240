@@ -1348,7 +1348,7 @@
                 </div>
                 <div class="student-action">
                   <button class="connect-btn" data-partner-id="${partner.id}" data-partner-name="${partner.name}">
-                    Message
+                    Connect
                   </button>
                 </div>
               </div>
