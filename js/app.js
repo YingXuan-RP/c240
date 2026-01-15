@@ -163,6 +163,86 @@
       schoolName: "School of Business",
       diploma: "Supply Chain Management",
       interests: ["Business Strategy", "Data Analysis", "Exam Prep"]
+    },
+    {
+      id: "STU009",
+      username: "Riley Johnson",
+      school: "infocomm",
+      schoolName: "School of Infocomm",
+      diploma: "Cybersecurity & Digital Forensics",
+      interests: ["Programming", "Research", "Exam Prep"]
+    },
+    {
+      id: "STU010",
+      username: "Avery Taylor",
+      school: "engineering",
+      schoolName: "School of Engineering",
+      diploma: "Aerospace Engineering",
+      interests: ["Research", "CAD Design", "Problem Solving"]
+    },
+    {
+      id: "STU011",
+      username: "Quinn Anderson",
+      school: "appliedscience",
+      schoolName: "School of Applied Science",
+      diploma: "Pharmaceutical Science",
+      interests: ["Research", "Lab Work", "Exam Prep"]
+    },
+    {
+      id: "STU012",
+      username: "Drew Martinez",
+      school: "business",
+      schoolName: "School of Business",
+      diploma: "Entrepreneurship",
+      interests: ["Business Strategy", "Entrepreneurship", "Group Projects"]
+    },
+    {
+      id: "STU013",
+      username: "Cameron White",
+      school: "infocomm",
+      schoolName: "School of Infocomm",
+      diploma: "Business Information Systems",
+      interests: ["Data Analysis", "Business Strategy", "Programming"]
+    },
+    {
+      id: "STU014",
+      username: "Skylar Thompson",
+      school: "tech-arts",
+      schoolName: "School of Technology for the Arts",
+      diploma: "Media Production & Design",
+      interests: ["Creative Projects", "Media Production", "Group Projects"]
+    },
+    {
+      id: "STU015",
+      username: "Dakota Garcia",
+      school: "engineering",
+      schoolName: "School of Engineering",
+      diploma: "Electrical & Electronic Engineering",
+      interests: ["Programming", "Problem Solving", "Research"]
+    },
+    {
+      id: "STU016",
+      username: "Sage Rodriguez",
+      school: "appliedscience",
+      schoolName: "School of Applied Science",
+      diploma: "Environmental & Marine Science",
+      interests: ["Research", "Lab Work", "Group Projects"]
+    },
+    {
+      id: "STU017",
+      username: "Reese Martinez",
+      school: "business",
+      schoolName: "School of Business",
+      diploma: "Human Resource Management with Psychology",
+      interests: ["Research", "Business Strategy", "Exam Prep"]
+    },
+    {
+      id: "STU018",
+      username: "Phoenix Lee",
+      school: "tech-arts",
+      schoolName: "School of Technology for the Arts",
+      diploma: "Sonic Arts",
+      interests: ["Creative Projects", "Media Production", "Research"]
     }
   ];
 

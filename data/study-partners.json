@@ -130,5 +130,71 @@
     "studyStyle": "teaching",
     "availability": ["Weekday Afternoons", "Weekday Evenings"],
     "bio": "AI enthusiast working on neural networks and deep learning projects. Love teaching others!"
+  },
+  {
+    "id": "partner13",
+    "name": "Maria Santos",
+    "school": "appliedscience",
+    "diploma": "Diploma in Biomedical Science",
+    "email": "maria.santos@edu.sg",
+    "interests": ["Research", "Lab Work", "Exam Prep"],
+    "studyStyle": "review-sessions",
+    "availability": ["Weekday Mornings", "Weekend Mornings"],
+    "bio": "Biomedical science student passionate about molecular biology and genetics research."
+  },
+  {
+    "id": "partner14",
+    "name": "Nathan Yeo",
+    "school": "engineering",
+    "diploma": "Diploma in Mechanical Engineering",
+    "email": "nathan.yeo@edu.sg",
+    "interests": ["CAD Design", "Problem Solving", "Group Projects"],
+    "studyStyle": "collaborative",
+    "availability": ["Weekday Evenings", "Weekend Afternoons"],
+    "bio": "Mechanical engineering student interested in robotics and automation design."
+  },
+  {
+    "id": "partner15",
+    "name": "Olivia Tan",
+    "school": "business",
+    "diploma": "Diploma in Entrepreneurship",
+    "email": "olivia.tan@edu.sg",
+    "interests": ["Entrepreneurship", "Business Strategy", "Group Projects"],
+    "studyStyle": "problem-solving",
+    "availability": ["Weekday Afternoons", "Weekend Mornings"],
+    "bio": "Aspiring entrepreneur working on a startup idea. Love brainstorming with like-minded students!"
+  },
+  {
+    "id": "partner16",
+    "name": "Peter Goh",
+    "school": "tech-arts",
+    "diploma": "Diploma in Sonic Arts",
+    "email": "peter.goh@edu.sg",
+    "interests": ["Creative Projects", "Media Production", "Group Projects"],
+    "studyStyle": "collaborative",
+    "availability": ["Weekend Mornings", "Weekend Afternoons"],
+    "bio": "Sound designer and audio engineer exploring music production and interactive audio."
+  },
+  {
+    "id": "partner17",
+    "name": "Rachel Ng",
+    "school": "infocomm",
+    "diploma": "Diploma in Financial Technology",
+    "email": "rachel.ng@edu.sg",
+    "interests": ["Programming", "Data Analysis", "Finance"],
+    "studyStyle": "problem-solving",
+    "availability": ["Weekday Mornings", "Weekday Afternoons"],
+    "bio": "Fintech student interested in blockchain technology and algorithmic trading."
+  },
+  {
+    "id": "partner18",
+    "name": "Samuel Teo",
+    "school": "engineering",
+    "diploma": "Diploma in Aerospace Engineering",
+    "email": "samuel.teo@edu.sg",
+    "interests": ["Research", "Problem Solving", "CAD Design"],
+    "studyStyle": "solo-focus",
+    "availability": ["Weekday Evenings", "Weekend Evenings"],
+    "bio": "Aerospace engineering student working on aerodynamics and flight simulation projects."
   }
 ]
