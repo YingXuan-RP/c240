@@ -890,7 +890,7 @@ query({"question": "Hey, how are you?"}).then((response) => {
 
     // Handle send message
     if (sendBtn) {
-      sendBtn.addEventListener("click", async () => {
+      sendBtn.addEventListener("click", () => {
         const text = messageInput.value.trim();
         if (!text) return;
 
@@ -918,53 +918,42 @@ query({"question": "Hey, how are you?"}).then((response) => {
         chatContent.insertAdjacentHTML("beforeend", typingHTML);
         chatContent.scrollTop = chatContent.scrollHeight;
 
-        // Get reply using Flowise API
-        try {
-          const response = await query({ question: text });
-          
+        // Simulate typing delay then reply
+        setTimeout(() => {
           // Remove typing indicator
-          const typingMsg = chatContent.querySelector(".typing-indicator").closest(".message");
+          const typingMsg = chatContent.querySelector(".typing-indicator")?.closest(".message");
           if (typingMsg) typingMsg.remove();
 
-          // Extract response
-          let botReply = "Thanks for the message!";
-          if (response.text) {
-            botReply = response.text;
-          } else if (response.answer) {
-            botReply = response.answer;
-          } else if (response.response) {
-            botReply = response.response;
-          }
+          // Random casual student replies
+          const replies = [
+            "Sounds good! What time works for you?",
+            "Sure, I'm free after 3pm.",
+            "Got it. Let me check my notes.",
+            "Yeah, that part was tricky for me too.",
+            "Let's meet at the library?",
+            "Perfect! See you then.",
+            "I'll bring my laptop.",
+            "Can you share the slides?",
+            "Thanks! I'll review it tonight.",
+            "Cool, let me know if you need help.",
+            "Awesome, let's do it.",
+            "I'm working on that section now.",
+            "Great! I've got some questions too."
+          ];
 
-          // Add bot reply
+          const randomReply = replies[Math.floor(Math.random() * replies.length)];
+
           const replyHTML = `
             <div class="message received">
               <div class="message-bubble">
-                <div class="message-text">${botReply}</div>
+                <div class="message-text">${randomReply}</div>
                 <div class="message-time">Just now</div>
               </div>
             </div>
           `;
           chatContent.insertAdjacentHTML("beforeend", replyHTML);
           chatContent.scrollTop = chatContent.scrollHeight;
-        } catch (error) {
-          console.error("Error getting reply:", error);
-          // Remove typing indicator
-          const typingMsg = chatContent.querySelector(".typing-indicator").closest(".message");
-          if (typingMsg) typingMsg.remove();
-
-          // Add fallback reply
-          const replyHTML = `
-            <div class="message received">
-              <div class="message-bubble">
-                <div class="message-text">Great point! Let me think about that and get back to you.</div>
-                <div class="message-time">Just now</div>
-              </div>
-            </div>
-          `;
-          chatContent.insertAdjacentHTML("beforeend", replyHTML);
-          chatContent.scrollTop = chatContent.scrollHeight;
-        }
+        }, 1000 + Math.random() * 1500);
       });
 
       messageInput.addEventListener("keypress", (e) => {
