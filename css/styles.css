@@ -474,25 +474,47 @@ a:focus-visible {
 }
 
 .footer {
-  padding: 24px 5vw 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  background: #0b1220;
-  color: #d6e4ff;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #1a5c3f 0%, #1f6c4a 50%, #1a5c3f 100%);
+  color: #f9fbff;
+  padding: 56px 5vw 32px;
+  margin-top: 72px;
+}
+
+.footer-top {
+  max-width: 1200px;
+  margin: 0 auto 40px;
 }
 
 .brand-mark {
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
-  margin: 0 0 4px;
+  font-size: 18px;
+  letter-spacing: 0.4px;
+  margin: 0 0 8px;
+  color: #f9fbff;
 }
 
 .footer-text {
   margin: 0;
-  color: #9eb2d8;
+  font-size: 14px;
+  color: #d0e5d8;
+  line-height: 1.5;
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.footer-copyright {
+  margin: 0;
+  font-size: 13px;
+  color: #a8c8b5;
+  font-weight: 400;
 }
 
 .footer-links {
@@ -612,6 +634,31 @@ a:focus-visible {
 
   .chat-mockup {
     max-width: 100%;
+  }
+
+  .footer {
+    padding: 40px 5vw 24px;
+    margin-top: 48px;
+  }
+
+  .footer-top {
+    margin-bottom: 28px;
+  }
+
+  .brand-mark {
+    font-size: 16px;
+  }
+
+  .footer-text {
+    font-size: 13px;
+  }
+
+  .footer-bottom {
+    padding-top: 24px;
+  }
+
+  .footer-copyright {
+    font-size: 12px;
   }
 }
 
