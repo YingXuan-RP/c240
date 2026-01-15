@@ -647,6 +647,10 @@
   };
 
   const initChatbotUI = () => {
+    if (window.__chatbotInitialized) {
+      console.log("[chatbot] already initialized");
+      return;
+    }
     const toggle = document.getElementById("chatToggle");
     const widget = document.getElementById("chatWidget");
     const closeBtn = document.getElementById("chatClose");
@@ -733,7 +737,12 @@
         sendMessage();
       }
     });
+    // Mark as initialized to avoid duplicate bindings
+    window.__chatbotInitialized = true;
   };
+
+  // Expose for optional explicit calls from pages
+  window.initChatbotUI = initChatbotUI;
 
   // Agent recommendations (proactive)
   const runAgentRecommendations = (user) => {
@@ -774,6 +783,15 @@
     animate();
     wireRsvpButtons();
     initChatbotUI();
+  });
+
+  // Fallback: ensure chatbot initializes after full page load
+  window.addEventListener("load", () => {
+    try {
+      initChatbotUI();
+    } catch (e) {
+      console.error("[chatbot] load init error", e);
+    }
   });
 
   // ==================== NEW FUNCTIONALITY FOR STUDY CONNECT ====================
