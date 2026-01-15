@@ -832,13 +832,50 @@ query({"question": "Hey, how are you?"}).then((response) => {
     };
 
     // Always use sample conversations (default messaging for all users)
-    const conversations = [
+    let conversations = [
       { id: "partner1", name: "Mia Chen (Diploma in Financial Technology)", lastMessage: "Slides on payment rails are ready.", time: "9:13 AM", unread: 0 },
       { id: "partner2", name: "Rajiv Nair (Diploma in Financial Technology)", lastMessage: "Ran the backtest; sharpe improved.", time: "Yesterday", unread: 1 },
       { id: "partner3", name: "Aisha Rahman (Diploma in Digital Banking)", lastMessage: "Consent + record retention. Also transaction monitoring.", time: "2:08 PM", unread: 0 },
       { id: "partner4", name: "Leo Tan (Diploma in Data Science)", lastMessage: "Dropped two extremes; R² is 0.78 now.", time: "10:04 AM", unread: 0 },
       { id: "partner5", name: "Sara Lim (Diploma in UX for Finance)", lastMessage: "Need microcopy for savings goals.", time: "11:34 AM", unread: 0 }
     ];
+
+    // Check if there's an active chat from dashboard and add if not exists
+    const activeChat = localStorage.getItem("studyconnect_active_chat");
+    let activeChatId = null;
+    
+    if (activeChat) {
+      try {
+        const chatData = JSON.parse(activeChat);
+        const displayName = `${chatData.name} (${chatData.diploma})`;
+        
+        // Check if conversation already exists
+        let matchingConv = conversations.find(c => c.name.includes(chatData.name));
+        
+        if (!matchingConv) {
+          // Add new conversation for this person
+          const newId = `partner${conversations.length + 1}`;
+          matchingConv = {
+            id: newId,
+            name: displayName,
+            lastMessage: "Just connected!",
+            time: "Just now",
+            unread: 0
+          };
+          conversations.unshift(matchingConv); // Add to top
+          
+          // Add initial message
+          messagesData[newId] = [
+            { sender: chatData.name.split(" ")[0], text: "Hi! Looking forward to studying together!", time: "Just now" }
+          ];
+        }
+        
+        activeChatId = matchingConv.id;
+        localStorage.removeItem("studyconnect_active_chat");
+      } catch (e) {
+        console.error("Error loading active chat:", e);
+      }
+    }
 
     // Render conversations list
     conversationsList.innerHTML = conversations.map(conv => `
@@ -897,21 +934,9 @@ query({"question": "Hey, how are you?"}).then((response) => {
       });
     });
 
-    // Check if there's an active chat from dashboard
-    const activeChat = localStorage.getItem("studyconnect_active_chat");
-    if (activeChat) {
-      try {
-        const chatData = JSON.parse(activeChat);
-        // Try to find matching conversation by name
-        const matchingConv = conversations.find(c => c.name.includes(chatData.name));
-        if (matchingConv) {
-          openConversation(matchingConv.id);
-        }
-        // Clear the active chat after opening
-        localStorage.removeItem("studyconnect_active_chat");
-      } catch (e) {
-        console.error("Error loading active chat:", e);
-      }
+    // Auto-open the active chat if coming from dashboard
+    if (activeChatId) {
+      openConversation(activeChatId);
     }
 
     // Handle send message
