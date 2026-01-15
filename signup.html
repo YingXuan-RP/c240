@@ -3,39 +3,44 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Join CampusConnect and connect with your campus community.">
-  <title>Sign Up - CampusConnect</title>
+  <meta name="description" content="Set up your study profile to find compatible study partners.">
+  <title>Profile Setup - Study Connect</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="auth-page">
-  <header class="site-header">
-    <nav class="nav">
-      <div class="brand">Study Connect</div>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
-      <div id="nav-menu" class="nav-links" data-collapsible>
-        <a href="#communities">Communities</a>
-        <a href="#resources">Resources</a>
-      </div>
-    </nav>
+<body>
+  <header class="dashboard-header">
+    <div class="dashboard-nav">
+      <a href="index.html" class="brand">Study Connect</a>
+      <nav class="dashboard-nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="preferences.html">Preferences</a>
+      </nav>
+    </div>
   </header>
 
   <main class="auth-shell">
     <div class="auth-container">
-      <div class="auth-card wide">
-        <div class="auth-header">
-          <h1>Join Study Connect</h1>
-          <p>Create your account to start discovering study partners and communities</p>
+      <div class="auth-card">
+      <div class="auth-header-content">
+        <h1>Set Up Your Study Profile</h1>
+        <p>Share a few details to help us match you with suitable study partners.</p>
+      </div>
+
+      <form id="profileForm" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="studentName">Your Name</label>
+          <input type="text" id="studentName" name="studentName" placeholder="Enter your name" required>
+          <span class="error-msg" id="nameError"></span>
         </div>
 
-      <form id="signupForm" class="auth-form">
         <div class="form-group">
-          <label for="schoolEmail">School email</label>
-          <input type="email" id="schoolEmail" name="schoolEmail" placeholder="you@school.edu" required>
+          <label for="schoolEmail">School Email</label>
+          <input type="email" id="schoolEmail" name="schoolEmail" placeholder="name@school.edu" required>
+          <span class="helper-text">Use your school email so peers know how to reach you</span>
           <span class="error-msg" id="emailError"></span>
-          <span class="helper-text">Use your official school email address</span>
         </div>
 
         <div class="form-row">
@@ -61,39 +66,34 @@
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="••••••••" required>
-            <span class="error-msg" id="passwordError"></span>
-            <span class="helper-text">At least 8 characters, mix of letters and numbers</span>
+        <div class="form-group full-span">
+          <label>Study Interests</label>
+          <p class="helper-text">Select topics relevant to your field of study (at least one required). These help us match you with partners who have similar academic focus.</p>
+          <div id="interestsContainer" class="checkbox-grid">
+            <!-- Dynamically generated based on school selection -->
           </div>
-
-          <div class="form-group">
-            <label for="confirmPassword">Confirm password</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••" required>
-            <span class="error-msg" id="confirmError"></span>
-          </div>
+          <span class="error-msg" id="interestsError"></span>
         </div>
 
-        <button type="submit" class="btn primary full-width">Create account</button>
-        <span class="error-msg" id="signupError"></span>
+        <button type="submit" class="btn primary full">Continue to Dashboard</button>
       </form>
 
       <div class="auth-footer">
-        <p>Already have an account? <a href="login.html">Go to Login</a></p>
+        <p>Already have a profile? <a href="dashboard.html">Go to Dashboard</a></p>
       </div>
     </div>
-  </div>
   </main>
+
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script src="js/app.js"></script>
   <script>
-    console.log("Inline script loaded. Checking window.populateDiplomaDropdown:", typeof window.populateDiplomaDropdown);
+    console.log("Profile page loaded. Checking window.populateDiplomaDropdown:", typeof window.populateDiplomaDropdown);
+    console.log("Checking window.handleProfileSetup:", typeof window.handleProfileSetup);
     
-    document.getElementById('signupForm').addEventListener('submit', (e) => {
+    document.getElementById('profileForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      window.handleSignup();
+      window.handleProfileSetup();
     });
 
     const schoolDropdown = document.getElementById('school');
