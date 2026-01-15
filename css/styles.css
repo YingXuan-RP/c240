@@ -89,17 +89,6 @@ a:focus-visible {
   color: #0b1220;
 }
 
-.nav-links .btn {
-  padding: 10px 20px;
-  font-size: 15px;
-  margin-left: 8px;
-}
-
-.nav-links .btn:hover,
-.nav-links .btn:focus-visible {
-  color: white;
-}
-
 .nav-toggle {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.2);
