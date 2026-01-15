@@ -774,8 +774,8 @@ a:focus-visible {
   min-height: calc(100vh - 80px);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 8px 24px 64px;
+  align-items: center;
+  padding: 60px 24px 64px;
 }
 
 .profile-highlights {
@@ -1889,6 +1889,10 @@ a:focus-visible {
 @media (max-width: 768px) {
   .auth-card {
     padding: 36px 24px;
+  }
+
+  .auth-shell {
+    padding: 40px 24px 48px;
   }
 
   .auth-card.wide {
