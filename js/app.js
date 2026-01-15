@@ -831,22 +831,14 @@ query({"question": "Hey, how are you?"}).then((response) => {
       ]
     };
 
-    // Create sample conversations from connections
-    const conversations = connections.length > 0 
-      ? connections.map((conn, idx) => ({
-          id: `partner${idx + 1}`,
-          name: conn.name,
-          lastMessage: "Let's schedule our next study session",
-          time: "2 hours ago",
-          unread: idx === 0 ? 1 : 0
-        }))
-      : [
-          { id: "partner1", name: "Mia Chen (Diploma in Financial Technology)", lastMessage: "Slides on payment rails are ready.", time: "9:13 AM", unread: 0 },
-          { id: "partner2", name: "Rajiv Nair (Diploma in Financial Technology)", lastMessage: "Ran the backtest; sharpe improved.", time: "Yesterday", unread: 1 },
-          { id: "partner3", name: "Aisha Rahman (Diploma in Digital Banking)", lastMessage: "Consent + record retention. Also transaction monitoring.", time: "2:08 PM", unread: 0 },
-          { id: "partner4", name: "Leo Tan (Diploma in Data Science)", lastMessage: "Dropped two extremes; R² is 0.78 now.", time: "10:04 AM", unread: 0 },
-          { id: "partner5", name: "Sara Lim (Diploma in UX for Finance)", lastMessage: "Need microcopy for savings goals.", time: "11:34 AM", unread: 0 }
-        ];
+    // Always use sample conversations (default messaging for all users)
+    const conversations = [
+      { id: "partner1", name: "Mia Chen (Diploma in Financial Technology)", lastMessage: "Slides on payment rails are ready.", time: "9:13 AM", unread: 0 },
+      { id: "partner2", name: "Rajiv Nair (Diploma in Financial Technology)", lastMessage: "Ran the backtest; sharpe improved.", time: "Yesterday", unread: 1 },
+      { id: "partner3", name: "Aisha Rahman (Diploma in Digital Banking)", lastMessage: "Consent + record retention. Also transaction monitoring.", time: "2:08 PM", unread: 0 },
+      { id: "partner4", name: "Leo Tan (Diploma in Data Science)", lastMessage: "Dropped two extremes; R² is 0.78 now.", time: "10:04 AM", unread: 0 },
+      { id: "partner5", name: "Sara Lim (Diploma in UX for Finance)", lastMessage: "Need microcopy for savings goals.", time: "11:34 AM", unread: 0 }
+    ];
 
     // Render conversations list
     conversationsList.innerHTML = conversations.map(conv => `
