@@ -983,36 +983,55 @@ query({"question": "Hey, how are you?"}).then((response) => {
           const typingMsg = chatContent.querySelector(".typing-indicator")?.closest(".message");
           if (typingMsg) typingMsg.remove();
 
-          // Random casual student replies
-          const replies = [
-            "yeah sure what time?",
-            "im free after 3pm",
-            "let me check my notes first",
-            "dude that part was confusing for me too",
-            "library?",
-            "sounds good 👍",
-            "i'll bring my laptop",
-            "can u send the slides?",
-            "thanks! gonna review it tonight",
-            "cool lmk if u need help",
-            "bet let's do it",
-            "working on that rn",
-            "same i got some questions too",
-            "for sure",
-            "alright see u then",
-            "yup that works",
-            "wait actually can we do 4pm instead?",
-            "oh fr? nice",
-            "damn okay",
-            "lowkey same lol"
-          ];
+          // Context-aware replies based on user message
+          const msgLower = text.toLowerCase();
+          let reply;
 
-          const randomReply = replies[Math.floor(Math.random() * replies.length)];
+          // Greetings
+          if (msgLower.match(/^(hi|hey|hello|yo|sup|whats up|wassup)/)) {
+            const greetings = ["hey!", "hi! what's up", "yo what's good", "hey how's it going?", "sup! u free to study?"];
+            reply = greetings[Math.floor(Math.random() * greetings.length)];
+          }
+          // Questions about time/when
+          else if (msgLower.includes("when") || msgLower.includes("what time") || msgLower.includes("meet")) {
+            const timeReplies = ["im free after 3pm", "maybe around 4?", "anytime after class works", "how about tomorrow 2pm?", "when r u free?"];
+            reply = timeReplies[Math.floor(Math.random() * timeReplies.length)];
+          }
+          // Questions about where/location
+          else if (msgLower.includes("where") || msgLower.includes("library") || msgLower.includes("place")) {
+            const placeReplies = ["library?", "let's do level 5 study room", "canteen?", "wherever works for u", "the usual spot?"];
+            reply = placeReplies[Math.floor(Math.random() * placeReplies.length)];
+          }
+          // Help/questions
+          else if (msgLower.includes("help") || msgLower.includes("?")) {
+            const helpReplies = ["yeah sure what do u need?", "i got u, what's up?", "lemme check and get back to u", "for sure, send me the details", "yup i can help"];
+            reply = helpReplies[Math.floor(Math.random() * helpReplies.length)];
+          }
+          // Thanks
+          else if (msgLower.includes("thank") || msgLower.includes("thx") || msgLower.includes("tysm")) {
+            const thanksReplies = ["np!", "no worries", "anytime bro", "gotchu", "np np 👍"];
+            reply = thanksReplies[Math.floor(Math.random() * thanksReplies.length)];
+          }
+          // Study/homework/assignment mentions
+          else if (msgLower.match(/study|homework|assignment|exam|test|quiz|notes/)) {
+            const studyReplies = ["yeah i'm working on that too", "dude same i need to review that", "wanna study together?", "let me know if u need the notes", "we should go through it tgt"];
+            reply = studyReplies[Math.floor(Math.random() * studyReplies.length)];
+          }
+          // Agreement/confirmation
+          else if (msgLower.match(/^(ok|okay|sure|yeah|yep|cool|alright|sounds good)/)) {
+            const confirmReplies = ["bet", "aight cool", "sounds good 👍", "perfect", "alright see u"];
+            reply = confirmReplies[Math.floor(Math.random() * confirmReplies.length)];
+          }
+          // Default fallback
+          else {
+            const defaults = ["for sure", "yeah definitely", "oh fr?", "same tbh", "gotcha", "alright cool", "bet let's do it", "sounds good"];
+            reply = defaults[Math.floor(Math.random() * defaults.length)];
+          }
 
           const replyHTML = `
             <div class="message received">
               <div class="message-bubble">
-                <div class="message-text">${randomReply}</div>
+                <div class="message-text">${reply}</div>
                 <div class="message-time">Just now</div>
               </div>
             </div>
