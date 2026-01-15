@@ -80,6 +80,13 @@ a:focus-visible {
 .nav-links a {
   padding: 8px 10px;
   font-weight: 500;
+  color: #f9fbff;
+  transition: color 160ms ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible {
+  color: #0b1220;
 }
 
 .nav-toggle {
