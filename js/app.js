@@ -549,15 +549,8 @@
     if (schoolEl) schoolEl.textContent = user.schoolName || user.school;
     if (diplomaEl) diplomaEl.textContent = user.diploma;
 
-    if (document.getElementById("studentsGrid")) {
-      window.initStudentConnections();
-      runAgentRecommendations(user);
-    }
-
-    // Initialize chatbot if widget exists
-    if (document.getElementById("chatToggle")) {
-      initChatbotUI();
-    }
+    // Note: Partner rendering is handled by initDashboardWithPartners to prevent design flashing
+    // Do not call initStudentConnections here as it causes rendering conflicts
   };
 
   // Removed initStudentConnections - using initDashboardWithPartners only to prevent design flashing
