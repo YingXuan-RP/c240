@@ -1376,8 +1376,6 @@
             window.location.href = "messages.html";
           });
         });
-          });
-        });
 
         renderPagination(filteredPartners.length);
       };
