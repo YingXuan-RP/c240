@@ -111,5 +111,20 @@
   </footer>
 
   <script src="js/app.js" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Populate email field with last used email if available
+      window.populateLoginForm();
+
+      // Handle login form submission
+      const loginForm = document.getElementById("loginForm");
+      if (loginForm) {
+        loginForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          window.handleLogin();
+        });
+      }
+    });
+  </script>
 </body>
 </html>

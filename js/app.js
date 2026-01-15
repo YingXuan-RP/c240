@@ -391,6 +391,63 @@
     }, 1200);
   };
 
+  // Login form handling
+  window.handleLogin = function() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    // Clear errors
+    clearError("emailError");
+    clearError("passwordError");
+    clearError("loginError");
+
+    let isValid = true;
+
+    if (!email) {
+      showError("emailError", "Please enter your email");
+      isValid = false;
+    } else if (!validateSchoolEmail(email)) {
+      showError("emailError", "Use a valid school email (e.g., name@school.edu)");
+      isValid = false;
+    }
+
+    if (!password) {
+      showError("passwordError", "Please enter your password");
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    // Store the email in localStorage for future logins
+    localStorage.setItem("studyconnect_last_email", email);
+
+    // Simulate login - in a real app, this would validate against a server
+    // For now, we'll create a session entry
+    const session = {
+      email,
+      loginTime: new Date().toISOString()
+    };
+    localStorage.setItem("campusconnect_session", JSON.stringify(session));
+
+    showToast("Login successful! Redirecting...");
+
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 1200);
+  };
+
+  // Populate login form with last used email if available
+  window.populateLoginForm = function() {
+    const emailInput = document.getElementById("email");
+    if (emailInput) {
+      const lastEmail = localStorage.getItem("studyconnect_last_email");
+      if (lastEmail) {
+        emailInput.value = lastEmail;
+        console.log("Populated email from localStorage:", lastEmail);
+      }
+    }
+  };
+
   // Dashboard initialization
   window.initDashboard = function() {
     const profile = localStorage.getItem("studyconnect_profile");
