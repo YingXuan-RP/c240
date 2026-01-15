@@ -549,6 +549,23 @@
     if (schoolEl) schoolEl.textContent = user.schoolName || user.school;
     if (diplomaEl) diplomaEl.textContent = user.diploma;
 
+    // Setup logout functionality
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (confirm("Are you sure you want to logout?")) {
+          localStorage.removeItem("studyconnect_profile");
+          localStorage.removeItem("studyconnect_connections");
+          localStorage.removeItem("studyconnect_favourites");
+          showToast("Logged out successfully");
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 500);
+        }
+      });
+    }
+
     // Note: Partner rendering is handled by initDashboardWithPartners to prevent design flashing
     // Do not call initStudentConnections here as it causes rendering conflicts
   };
