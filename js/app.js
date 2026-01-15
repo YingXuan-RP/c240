@@ -1347,8 +1347,8 @@
                   ${partner.interests.map(interest => `<span class="interest-tag">${interest}</span>`).join("")}
                 </div>
                 <div class="student-action">
-                  <button class="connect-btn ${isConnected ? "requested" : ""}" data-partner-id="${partner.id}" ${isConnected ? "disabled" : ""}>
-                    ${isConnected ? "✓ Requested" : "Connect"}
+                  <button class="connect-btn" data-partner-id="${partner.id}" data-partner-name="${partner.name}">
+                    Message
                   </button>
                 </div>
               </div>
@@ -1360,24 +1360,22 @@
         document.querySelectorAll(".connect-btn").forEach(btn => {
           btn.addEventListener("click", () => {
             const partnerId = btn.getAttribute("data-partner-id");
-            const updatedConnections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
+            const partnerName = btn.getAttribute("data-partner-name");
+            const partner = allPartners.find(p => p.id === partnerId);
             
-            if (!updatedConnections.find(c => c.id === partnerId)) {
-              const partner = allPartners.find(p => p.id === partnerId);
-              updatedConnections.push({
-                id: partnerId,
-                name: partner.name,
-                type: "partner",
-                date: new Date().toISOString()
-              });
-              localStorage.setItem("studyconnect_connections", JSON.stringify(updatedConnections));
-              
-              btn.classList.add("requested");
-              btn.disabled = true;
-              btn.textContent = "✓ Requested";
-              showToast(`Connected with ${partner.name}!`);
-              renderPartners();
-            }
+            // Store selected partner in localStorage for messages page
+            localStorage.setItem("selectedPartner", JSON.stringify({
+              id: partnerId,
+              name: partnerName,
+              school: partner.school,
+              diploma: partner.diploma,
+              interests: partner.interests
+            }));
+            
+            // Redirect to messages page
+            window.location.href = "messages.html";
+          });
+        });
           });
         });
 
@@ -1735,6 +1733,108 @@
       // Reload the page to show updated status
       window.location.reload();
     }, 2000);
+  };
+
+  // Initialize Messaging Page
+  window.initMessages = () => {
+    const selectedPartnerData = localStorage.getItem("selectedPartner");
+    
+    if (!selectedPartnerData) {
+      // No partner selected, redirect back to dashboard
+      window.location.href = "dashboard.html";
+      return;
+    }
+
+    const partner = JSON.parse(selectedPartnerData);
+    const partnerNameEl = document.getElementById("partnerName");
+    const partnerSchoolEl = document.getElementById("partnerSchool");
+    const chatContentEl = document.getElementById("chatContent");
+    const messageInputEl = document.getElementById("messageInput");
+    const sendButtonEl = document.getElementById("sendMessageBtn");
+
+    // Display partner information
+    if (partnerNameEl) partnerNameEl.textContent = partner.name;
+    if (partnerSchoolEl) partnerSchoolEl.textContent = `${partner.school} • ${partner.diploma}`;
+
+    // Load and display previous messages
+    const messagesKey = `studyconnect_messages_${partner.id}`;
+    const messages = JSON.parse(localStorage.getItem(messagesKey) || "[]");
+
+    const displayMessages = () => {
+      chatContentEl.innerHTML = messages.map(msg => `
+        <div class="chat-message ${msg.sender === 'user' ? 'user' : 'partner'}">
+          <div class="message-content">
+            <p>${msg.text}</p>
+            <span class="message-time">${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+        </div>
+      `).join("");
+      
+      // Scroll to bottom
+      chatContentEl.scrollTop = chatContentEl.scrollHeight;
+    };
+
+    // Display initial messages
+    displayMessages();
+
+    // Send message functionality
+    const sendMessage = () => {
+      const text = messageInputEl.value.trim();
+      if (!text) return;
+
+      // Add user message
+      const newMessage = {
+        sender: 'user',
+        text: text,
+        timestamp: new Date().toISOString()
+      };
+
+      messages.push(newMessage);
+      localStorage.setItem(messagesKey, JSON.stringify(messages));
+      messageInputEl.value = "";
+      displayMessages();
+
+      // Simulate partner response after 1 second
+      setTimeout(() => {
+        const partnerResponses = [
+          "That sounds great! Let's meet up to study together.",
+          "I agree! When are you free?",
+          "Sounds good to me. What subject do you want to focus on?",
+          "Perfect! I've been looking for a study partner too.",
+          "Great idea! I'm really interested in that topic.",
+          "Yes, let's do it! Looking forward to studying with you."
+        ];
+
+        const randomResponse = partnerResponses[Math.floor(Math.random() * partnerResponses.length)];
+        const partnerMessage = {
+          sender: 'partner',
+          text: randomResponse,
+          timestamp: new Date().toISOString()
+        };
+
+        messages.push(partnerMessage);
+        localStorage.setItem(messagesKey, JSON.stringify(messages));
+        displayMessages();
+      }, 1000);
+    };
+
+    sendButtonEl.addEventListener("click", sendMessage);
+    messageInputEl.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Logout functionality
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.clear();
+        window.location.href = "login.html";
+      });
+    }
   };
 
 })();

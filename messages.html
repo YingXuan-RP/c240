@@ -33,23 +33,26 @@
 
     <section class="dashboard-section">
       <div class="messages-container">
-        <div class="conversations-sidebar">
-          <h3>Conversations</h3>
-          <div id="conversationsList" class="conversations-list">
-            <!-- Conversation items will be populated here by JavaScript -->
-          </div>
-        </div>
-        
         <div class="chat-view">
           <div id="chatHeader" class="chat-view-header">
-            <p>Select a conversation to start chatting</p>
+            <div class="chat-header-content">
+              <div class="chat-partner-info">
+                <h2 id="partnerName">Loading...</h2>
+                <p id="partnerSchool" class="partner-school"></p>
+              </div>
+              <a href="dashboard.html" class="btn ghost small">Find Another Partner</a>
+            </div>
           </div>
+          
           <div id="chatContent" class="chat-messages-view">
             <!-- Chat messages will be displayed here -->
           </div>
-          <div id="chatInput" class="chat-input-area" style="display: none;">
-            <input type="text" id="messageInput" placeholder="Type your message..." aria-label="Message input">
-            <button id="sendMessageBtn" class="btn primary">Send</button>
+          
+          <div class="chat-input-area">
+            <div class="message-input-wrapper">
+              <input type="text" id="messageInput" placeholder="Type your message..." aria-label="Message input">
+              <button id="sendMessageBtn" class="btn primary">Send</button>
+            </div>
           </div>
         </div>
       </div>
