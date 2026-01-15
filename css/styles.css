@@ -371,11 +371,6 @@ a:focus-visible {
 
 .cards {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-auto-rows: 1fr;
-}
-
-.cards > * {
-  aspect-ratio: 1;
 }
 
 .event-card {
@@ -1608,8 +1603,6 @@ a:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow: hidden;
-  overflow-y: auto;
 }
 
 .student-card:hover {
