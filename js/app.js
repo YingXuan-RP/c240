@@ -1977,4 +1977,422 @@
     }
   };
 
+  // Initialize Calendar Page
+  window.initCalendar = () => {
+    const createSessionBtn = document.getElementById("createSessionBtn");
+    const sessionModal = document.getElementById("sessionModal");
+    const sessionDetailsModal = document.getElementById("sessionDetailsModal");
+    const sessionForm = document.getElementById("sessionForm");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const closeModal = document.getElementById("closeModal");
+    const closeDetailsModal = document.getElementById("closeDetailsModal");
+    const closeDetailsBtn = document.getElementById("closeDetailsBtn");
+    const listViewBtn = document.getElementById("listViewBtn");
+    const calendarViewBtn = document.getElementById("calendarViewBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    let currentEditingSessionId = null;
+    let currentDate = new Date();
+
+    // Get all study sessions from localStorage
+    const getSessions = () => {
+      return JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
+    };
+
+    // Save sessions to localStorage
+    const saveSessions = (sessions) => {
+      localStorage.setItem("studyconnect_sessions", JSON.stringify(sessions));
+    };
+
+    // Get all connected partners
+    const getPartners = () => {
+      return JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
+    };
+
+    // Populate partner dropdown
+    const populatePartnerDropdown = () => {
+      const partners = getPartners();
+      const partnerSelect = document.getElementById("sessionPartner");
+      const currentValue = partnerSelect.value;
+      
+      partnerSelect.innerHTML = '<option value="">Select a partner...</option>';
+      partners.forEach(partner => {
+        const option = document.createElement("option");
+        option.value = partner.id;
+        option.textContent = partner.name;
+        partnerSelect.appendChild(option);
+      });
+      
+      partnerSelect.value = currentValue;
+    };
+
+    // Format date for display
+    const formatDate = (dateString) => {
+      return new Date(dateString + "T00:00").toLocaleDateString('en-US', { 
+        weekday: 'short', 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    };
+
+    // Check if date is today
+    const isToday = (dateString) => {
+      const today = new Date().toISOString().split('T')[0];
+      return dateString === today;
+    };
+
+    // Check if date is in the past
+    const isPast = (dateString, timeString) => {
+      const now = new Date();
+      const sessionDateTime = new Date(dateString + "T" + timeString);
+      return sessionDateTime < now;
+    };
+
+    // Render sessions list view
+    const renderListView = () => {
+      const sessions = getSessions();
+      const sessionsList = document.getElementById("sessionsList");
+      
+      if (sessions.length === 0) {
+        sessionsList.innerHTML = '<div class="empty-state"><p>No study sessions scheduled yet. Create one to get started!</p></div>';
+        return;
+      }
+
+      // Sort by date
+      sessions.sort((a, b) => new Date(a.date + "T" + a.startTime) - new Date(b.date + "T" + b.startTime));
+
+      sessionsList.innerHTML = sessions.map(session => `
+        <div class="session-card ${isPast(session.date, session.endTime) ? 'past' : ''}" data-session-id="${session.id}">
+          <div class="session-time">${formatDate(session.date)} • ${session.startTime} - ${session.endTime}</div>
+          <div class="session-title">${session.title}</div>
+          <div class="session-meta">
+            ${session.location ? `<div class="session-meta-item"><strong>📍</strong> ${session.location}</div>` : ''}
+            ${session.partner ? `<div class="session-meta-item"><strong>👤</strong> ${session.partner}</div>` : ''}
+          </div>
+          ${session.notes ? `<div class="session-notes">"${session.notes}"</div>` : ''}
+        </div>
+      `).join("");
+
+      // Add click listeners
+      document.querySelectorAll(".session-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const sessionId = card.getAttribute("data-session-id");
+          showSessionDetails(sessionId);
+        });
+      });
+    };
+
+    // Render calendar view
+    const renderCalendarView = () => {
+      const sessions = getSessions();
+      const calendarGrid = document.getElementById("calendarGrid");
+      const currentMonth = document.getElementById("currentMonth");
+
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      
+      currentMonth.textContent = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+      // Create day labels
+      const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      calendarGrid.innerHTML = dayLabels.map(day => `<div class="calendar-day-label">${day}</div>`).join("");
+
+      // Get first day of month and number of days
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+      // Add previous month's days
+      for (let i = firstDay - 1; i >= 0; i--) {
+        const day = daysInPrevMonth - i;
+        calendarGrid.innerHTML += `<div class="calendar-day other-month">${day}</div>`;
+      }
+
+      // Add current month's days
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const today = new Date().toISOString().split('T')[0];
+        const hasSessions = sessions.some(s => s.date === dateStr);
+        const isCurrentDay = dateStr === today;
+
+        calendarGrid.innerHTML += `
+          <div class="calendar-day ${isCurrentDay ? 'today' : ''} ${hasSessions ? 'has-sessions' : ''}" data-date="${dateStr}">
+            <div class="day-number">${day}</div>
+          </div>
+        `;
+      }
+
+      // Add next month's days
+      const totalCells = calendarGrid.children.length;
+      const remainingCells = 42 - totalCells; // 6 rows * 7 days
+      for (let day = 1; day <= remainingCells; day++) {
+        calendarGrid.innerHTML += `<div class="calendar-day other-month">${day}</div>`;
+      }
+
+      // Add click listeners to calendar days
+      document.querySelectorAll(".calendar-day:not(.other-month)").forEach(dayEl => {
+        dayEl.addEventListener("click", () => {
+          const dateStr = dayEl.getAttribute("data-date");
+          const daySessions = sessions.filter(s => s.date === dateStr);
+          
+          if (daySessions.length > 0) {
+            showSessionDetails(daySessions[0].id);
+          } else {
+            openCreateSessionModal(dateStr);
+          }
+        });
+      });
+    };
+
+    // Open create session modal
+    const openCreateSessionModal = (prefillDate = null) => {
+      currentEditingSessionId = null;
+      document.getElementById("modalTitle").textContent = "Create Study Session";
+      document.getElementById("submitBtn").textContent = "Create Session";
+      sessionForm.reset();
+
+      if (prefillDate) {
+        document.getElementById("sessionDate").value = prefillDate;
+      } else {
+        document.getElementById("sessionDate").value = new Date().toISOString().split('T')[0];
+      }
+
+      sessionModal.classList.add("active");
+      populatePartnerDropdown();
+    };
+
+    // Show session details
+    const showSessionDetails = (sessionId) => {
+      const sessions = getSessions();
+      const session = sessions.find(s => s.id === sessionId);
+      
+      if (!session) return;
+
+      const detailsTitle = document.getElementById("detailsTitle");
+      const sessionDetails = document.getElementById("sessionDetails");
+
+      detailsTitle.textContent = session.title;
+      sessionDetails.innerHTML = `
+        <div class="detail-item">
+          <span class="detail-label">Date</span>
+          <span class="detail-value">${formatDate(session.date)}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Time</span>
+          <span class="detail-value">${session.startTime} - ${session.endTime}</span>
+        </div>
+        ${session.location ? `
+          <div class="detail-item">
+            <span class="detail-label">Location</span>
+            <span class="detail-value">${session.location}</span>
+          </div>
+        ` : ''}
+        ${session.partner ? `
+          <div class="detail-item">
+            <span class="detail-label">Partner</span>
+            <span class="detail-value">${session.partner}</span>
+          </div>
+        ` : ''}
+        ${session.notes ? `
+          <div class="detail-item">
+            <span class="detail-label">Notes</span>
+            <span class="detail-value">${session.notes}</span>
+          </div>
+        ` : ''}
+      `;
+
+      // Set up edit and delete buttons
+      document.getElementById("editSessionBtn").onclick = () => {
+        editSession(sessionId);
+      };
+
+      document.getElementById("deleteSessionBtn").onclick = () => {
+        if (confirm("Are you sure you want to delete this session?")) {
+          deleteSession(sessionId);
+        }
+      };
+
+      sessionDetailsModal.classList.add("active");
+    };
+
+    // Edit session
+    const editSession = (sessionId) => {
+      const sessions = getSessions();
+      const session = sessions.find(s => s.id === sessionId);
+      
+      if (!session) return;
+
+      currentEditingSessionId = sessionId;
+      document.getElementById("modalTitle").textContent = "Edit Study Session";
+      document.getElementById("submitBtn").textContent = "Save Changes";
+
+      document.getElementById("sessionTitle").value = session.title;
+      document.getElementById("sessionDate").value = session.date;
+      document.getElementById("sessionStartTime").value = session.startTime;
+      document.getElementById("sessionEndTime").value = session.endTime;
+      document.getElementById("sessionLocation").value = session.location || "";
+      document.getElementById("sessionPartner").value = session.partnerId || "";
+      document.getElementById("sessionNotes").value = session.notes || "";
+
+      sessionDetailsModal.classList.remove("active");
+      sessionModal.classList.add("active");
+      populatePartnerDropdown();
+    };
+
+    // Delete session
+    const deleteSession = (sessionId) => {
+      const sessions = getSessions();
+      const updatedSessions = sessions.filter(s => s.id !== sessionId);
+      saveSessions(updatedSessions);
+      showToast("Session deleted");
+      sessionDetailsModal.classList.remove("active");
+      renderListView();
+      renderCalendarView();
+    };
+
+    // Handle form submission
+    sessionForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById("sessionTitle").value;
+      const date = document.getElementById("sessionDate").value;
+      const startTime = document.getElementById("sessionStartTime").value;
+      const endTime = document.getElementById("sessionEndTime").value;
+      const location = document.getElementById("sessionLocation").value;
+      const partnerId = document.getElementById("sessionPartner").value;
+      const notes = document.getElementById("sessionNotes").value;
+
+      if (!title || !date || !startTime || !endTime) {
+        showToast("Please fill in all required fields");
+        return;
+      }
+
+      if (startTime >= endTime) {
+        showToast("End time must be after start time");
+        return;
+      }
+
+      let sessions = getSessions();
+      const partnerName = partnerId ? document.querySelector(`#sessionPartner option[value="${partnerId}"]`).textContent : "";
+
+      if (currentEditingSessionId) {
+        // Update existing session
+        const index = sessions.findIndex(s => s.id === currentEditingSessionId);
+        if (index > -1) {
+          sessions[index] = {
+            ...sessions[index],
+            title,
+            date,
+            startTime,
+            endTime,
+            location,
+            partnerId,
+            partner: partnerName,
+            notes
+          };
+          showToast("Session updated");
+        }
+      } else {
+        // Create new session
+        const newSession = {
+          id: Date.now().toString(),
+          title,
+          date,
+          startTime,
+          endTime,
+          location,
+          partnerId,
+          partner: partnerName,
+          notes,
+          createdAt: new Date().toISOString()
+        };
+        sessions.push(newSession);
+        showToast("Session created successfully!");
+      }
+
+      saveSessions(sessions);
+      sessionModal.classList.remove("active");
+      renderListView();
+      renderCalendarView();
+    });
+
+    // Event listeners
+    createSessionBtn.addEventListener("click", () => openCreateSessionModal());
+    cancelBtn.addEventListener("click", () => sessionModal.classList.remove("active"));
+    closeModal.addEventListener("click", () => sessionModal.classList.remove("active"));
+    closeDetailsModal.addEventListener("click", () => sessionDetailsModal.classList.remove("active"));
+    closeDetailsBtn.addEventListener("click", () => sessionDetailsModal.classList.remove("active"));
+
+    listViewBtn.addEventListener("click", () => {
+      document.getElementById("listView").classList.add("active");
+      document.getElementById("calendarView").classList.remove("active");
+      listViewBtn.classList.add("active");
+      calendarViewBtn.classList.remove("active");
+      renderListView();
+    });
+
+    calendarViewBtn.addEventListener("click", () => {
+      document.getElementById("calendarView").classList.add("active");
+      document.getElementById("listView").classList.remove("active");
+      calendarViewBtn.classList.add("active");
+      listViewBtn.classList.remove("active");
+      renderCalendarView();
+    });
+
+    document.getElementById("prevMonth").addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderCalendarView();
+    });
+
+    document.getElementById("nextMonth").addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderCalendarView();
+    });
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.clear();
+        window.location.href = "login.html";
+      });
+    }
+
+    // Close modals when clicking outside
+    window.addEventListener("click", (e) => {
+      if (e.target === sessionModal) {
+        sessionModal.classList.remove("active");
+      }
+      if (e.target === sessionDetailsModal) {
+        sessionDetailsModal.classList.remove("active");
+      }
+    });
+
+    // Initial render
+    renderListView();
+  };
+
+  // Chatbot integration for calendar session creation
+  window.createSessionFromChatbot = (sessionData) => {
+    let sessions = JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
+    
+    const newSession = {
+      id: Date.now().toString(),
+      title: sessionData.title,
+      date: sessionData.date,
+      startTime: sessionData.startTime,
+      endTime: sessionData.endTime,
+      location: sessionData.location || "",
+      partnerId: sessionData.partnerId || "",
+      partner: sessionData.partner || "",
+      notes: sessionData.notes || "",
+      createdAt: new Date().toISOString()
+    };
+
+    sessions.push(newSession);
+    localStorage.setItem("studyconnect_sessions", JSON.stringify(sessions));
+    
+    return newSession;
+  };
+
 })();
