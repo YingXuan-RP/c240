@@ -32,72 +32,78 @@
         </div>
       </div>
       <div class="hero-mockup">
-        <svg viewBox="0 0 320 520" xmlns="http://www.w3.org/2000/svg" class="chat-mockup">
+        <svg viewBox="0 0 320 560" xmlns="http://www.w3.org/2000/svg" class="chat-mockup">
           <defs>
             <filter id="bubble-shadow" x="-50%" y="-50%" width="200%" height="200%">
-              <feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity="0.15" flood-color="#0a1b3c"/>
+              <feDropShadow dx="0" dy="12" stdDeviation="16" flood-opacity="0.18" flood-color="#0a1b3c"/>
             </filter>
           </defs>
           
-          <!-- Phone frame - bubble container -->
-          <rect x="0" y="0" width="320" height="520" rx="48" ry="48" fill="#ffffff" stroke="none" filter="url(#bubble-shadow)"/>
-          
-          <!-- Status bar background -->
-          <rect x="0" y="0" width="320" height="28" rx="32" fill="#f9fbff" stroke="none"/>
+          <!-- Main container - bubble shape -->
+          <rect x="8" y="8" width="304" height="544" rx="56" ry="56" fill="#ffffff" stroke="none" filter="url(#bubble-shadow)"/>
           
           <!-- Chat header -->
-          <rect x="0" y="28" width="320" height="56" fill="#f9fbff" stroke="#f0f4f8" stroke-width="1"/>
-          <circle cx="24" cy="56" r="12" fill="#26a65b" opacity="0.2"/>
-          <text x="44" y="59" font-family="'DM Sans', sans-serif" font-size="14" font-weight="600" fill="#0b1220">Study Group</text>
-          <text x="44" y="72" font-family="'DM Sans', sans-serif" font-size="11" fill="#4b5563">2 members online</text>
+          <rect x="8" y="8" width="304" height="56" rx="56" ry="56" fill="#f9fbff" stroke="none"/>
+          <circle cx="28" cy="36" r="10" fill="#26a65b" opacity="0.25"/>
+          <text x="48" y="38" font-family="'DM Sans', sans-serif" font-size="13" font-weight="600" fill="#0b1220">Study Group</text>
+          <text x="48" y="50" font-family="'DM Sans', sans-serif" font-size="10" fill="#7a8694">2 members</text>
           
-          <!-- Chat messages area background -->
-          <rect x="0" y="84" width="320" height="340" fill="#ffffff"/>
-          
-          <!-- Message 1: Student A (left-aligned) -->
+          <!-- Chat messages area -->
+          <!-- Message 1: Student A (left) -->
           <g>
+            <!-- Avatar -->
+            <circle cx="24" cy="90" r="14" fill="#e8f5e9"/>
+            <circle cx="24" cy="90" r="12" fill="#c8e6c9"/>
+            
             <!-- Message bubble -->
-            <path d="M 16 110 Q 16 104 22 104 L 240 104 Q 246 104 246 110 L 246 138 Q 246 144 240 144 L 22 144 Q 16 144 16 138 Z" fill="#e8f5e9" stroke="none"/>
+            <path d="M 48 78 Q 48 72 54 72 L 218 72 Q 224 72 224 78 L 224 106 Q 224 112 218 112 L 54 112 Q 48 112 48 106 Z" fill="#e8f5e9" stroke="none"/>
+            
             <!-- Text -->
-            <text x="24" y="122" font-family="'DM Sans', sans-serif" font-size="13" fill="#0b1220" font-weight="500">Hi! I'm revising for the Web</text>
-            <text x="24" y="138" font-family="'DM Sans', sans-serif" font-size="13" fill="#0b1220" font-weight="500">Development exam. Want to</text>
-            <text x="24" y="154" font-family="'DM Sans', sans-serif" font-size="13" fill="#0b1220" font-weight="500">study together?</text>
+            <text x="56" y="87" font-family="'DM Sans', sans-serif" font-size="12" fill="#0b1220" font-weight="500">Hi, want to study</text>
+            <text x="56" y="102" font-family="'DM Sans', sans-serif" font-size="12" fill="#0b1220" font-weight="500">together? I'm also from SOI.</text>
           </g>
           
-          <!-- Message 2: Student B (right-aligned) -->
+          <!-- Message 2: Student B (right) -->
           <g>
+            <!-- Avatar -->
+            <circle cx="296" cy="146" r="14" fill="#e3f2fd"/>
+            <circle cx="296" cy="146" r="12" fill="#bbdefb"/>
+            
             <!-- Message bubble -->
-            <path d="M 74 174 Q 74 168 80 168 L 304 168 Q 310 168 310 174 L 310 202 Q 310 208 304 208 L 80 208 Q 74 208 74 202 Z" fill="#26a65b" stroke="none"/>
+            <path d="M 98 134 Q 98 128 104 128 L 268 128 Q 274 128 274 134 L 274 162 Q 274 168 268 168 L 104 168 Q 98 168 98 162 Z" fill="#26a65b" stroke="none"/>
+            
             <!-- Text -->
-            <text x="286" y="184" font-family="'DM Sans', sans-serif" font-size="13" fill="#ffffff" font-weight="500" text-anchor="end">Yes! I'm in Infocomm too.</text>
-            <text x="286" y="200" font-family="'DM Sans', sans-serif" font-size="13" fill="#ffffff" font-weight="500" text-anchor="end">Shall we book a session?</text>
+            <text x="266" y="149" font-family="'DM Sans', sans-serif" font-size="12" fill="#ffffff" font-weight="500" text-anchor="end">Sure! When do you want</text>
+            <text x="266" y="164" font-family="'DM Sans', sans-serif" font-size="12" fill="#ffffff" font-weight="500" text-anchor="end">to meet?</text>
           </g>
           
-          <!-- Message 3: System message -->
+          <!-- Message 3: Student A (left) -->
           <g>
-            <!-- Container -->
-            <rect x="40" y="230" width="240" height="54" rx="12" fill="#f0f4f8" stroke="#e5e7eb" stroke-width="1"/>
-            <!-- Icon circle -->
-            <circle cx="60" cy="257" r="12" fill="#3dd674" opacity="0.2"/>
-            <!-- Checkmark -->
-            <text x="60" y="260" font-family="'Space Grotesk', sans-serif" font-size="16" fill="#26a65b" text-anchor="middle" font-weight="700">✓</text>
+            <!-- Avatar -->
+            <circle cx="24" cy="218" r="14" fill="#e8f5e9"/>
+            <circle cx="24" cy="218" r="12" fill="#c8e6c9"/>
+            
+            <!-- Message bubble -->
+            <path d="M 48 206 Q 48 200 54 200 L 246 200 Q 252 200 252 206 L 252 250 Q 252 256 246 256 L 54 256 Q 48 256 48 250 Z" fill="#e8f5e9" stroke="none"/>
+            
             <!-- Text -->
-            <text x="76" y="248" font-family="'DM Sans', sans-serif" font-size="12" fill="#0b1220" font-weight="600">Study session booked</text>
-            <text x="76" y="264" font-family="'DM Sans', sans-serif" font-size="11" fill="#4b5563">added to calendar</text>
+            <text x="56" y="216" font-family="'DM Sans', sans-serif" font-size="12" fill="#0b1220" font-weight="500">Maybe this week Tuesday</text>
+            <text x="56" y="231" font-family="'DM Sans', sans-serif" font-size="12" fill="#0b1220" font-weight="500">at 3pm — where works</text>
+            <text x="56" y="246" font-family="'DM Sans', sans-serif" font-size="12" fill="#0b1220" font-weight="500">for you?</text>
           </g>
           
-          <!-- Input area -->
-          <g>
-            <!-- Input background -->
-            <rect x="0" y="424" width="320" height="96" fill="#f9fbff" stroke="#f0f4f8" stroke-width="1"/>
-            <!-- Input field -->
-            <rect x="12" y="436" width="296" height="40" rx="20" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
-            <!-- Placeholder text -->
-            <text x="24" y="463" font-family="'DM Sans', sans-serif" font-size="13" fill="#bcc6d8">Type a message...</text>
-            <!-- Send button -->
-            <circle cx="294" cy="456" r="14" fill="#26a65b"/>
-            <text x="294" y="461" font-family="'Space Grotesk', sans-serif" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">→</text>
-          </g>
+          <!-- Input area background -->
+          <rect x="8" y="480" width="304" height="72" rx="56" ry="56" fill="#f9fbff" stroke="none"/>
+          
+          <!-- Input field -->
+          <rect x="20" y="494" width="280" height="40" rx="20" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+          
+          <!-- Placeholder text -->
+          <text x="32" y="519" font-family="'DM Sans', sans-serif" font-size="12" fill="#a8b5c7">Type a message...</text>
+          
+          <!-- Send button -->
+          <circle cx="294" cy="514" r="13" fill="#26a65b"/>
+          <text x="294" y="520" font-family="'Space Grotesk', sans-serif" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">→</text>
         </svg>
       </div>
     </div>
