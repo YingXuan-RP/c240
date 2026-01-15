@@ -999,7 +999,6 @@ query({"question": "Hey, how are you?"}).then((response) => {
 
           return `
             <article class="student-card">
-              <div class="student-avatar">${partner.name.charAt(0)}</div>
               <h3>${partner.name}</h3>
               <p class="student-school">${partner.diploma}</p>
               <div class="pill-row">
