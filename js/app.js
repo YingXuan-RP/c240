@@ -486,26 +486,72 @@
     const filterInterest = document.getElementById("filterInterest");
     const resetBtn = document.getElementById("resetFiltersBtn");
     const studentsGrid = document.getElementById("studentsGrid");
+    const paginationControls = document.getElementById("paginationControls");
+    const paginationPages = document.getElementById("paginationPages");
+    const prevPageBtn = document.getElementById("prevPageBtn");
+    const nextPageBtn = document.getElementById("nextPageBtn");
     const session = localStorage.getItem("campusconnect_session");
 
     if (!filterSchool || !studentsGrid || !session) return;
 
     const user = JSON.parse(session);
+    const STUDENTS_PER_PAGE = 6;
+    let currentPage = 1;
+    let allFilteredStudents = [];
+
+    const renderPagination = (totalStudents) => {
+      const totalPages = Math.ceil(totalStudents / STUDENTS_PER_PAGE);
+      
+      if (totalPages <= 1) {
+        paginationControls.style.display = "none";
+        return;
+      }
+
+      paginationControls.style.display = "flex";
+      
+      // Update prev/next buttons
+      prevPageBtn.disabled = currentPage === 1;
+      nextPageBtn.disabled = currentPage === totalPages;
+
+      // Generate page numbers
+      paginationPages.innerHTML = "";
+      for (let i = 1; i <= totalPages; i++) {
+        const pageBtn = document.createElement("button");
+        pageBtn.className = `pagination-page ${i === currentPage ? "active" : ""}`;
+        pageBtn.textContent = i;
+        pageBtn.addEventListener("click", () => {
+          currentPage = i;
+          renderStudents();
+        });
+        paginationPages.appendChild(pageBtn);
+      }
+    };
 
     const renderStudents = () => {
       const schoolFilter = filterSchool.value;
       const interestFilter = filterInterest.value;
 
-      const filtered = findStudyPartners({ schoolFilter, interestFilter, user });
+      allFilteredStudents = findStudyPartners({ schoolFilter, interestFilter, user });
 
-      if (filtered.length === 0) {
+      if (allFilteredStudents.length === 0) {
         studentsGrid.innerHTML = '<div class="no-students"><p>No students match your filters. Try adjusting your search.</p></div>';
+        paginationControls.style.display = "none";
         return;
       }
 
+      // Calculate pagination
+      const totalPages = Math.ceil(allFilteredStudents.length / STUDENTS_PER_PAGE);
+      if (currentPage > totalPages) {
+        currentPage = 1;
+      }
+
+      const startIndex = (currentPage - 1) * STUDENTS_PER_PAGE;
+      const endIndex = startIndex + STUDENTS_PER_PAGE;
+      const studentsToDisplay = allFilteredStudents.slice(startIndex, endIndex);
+
       const connections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
 
-      studentsGrid.innerHTML = filtered
+      studentsGrid.innerHTML = studentsToDisplay
         .map((student) => {
           const isRequested = connections.includes(student.id);
           return `
@@ -547,17 +593,40 @@
         });
       });
 
+      renderPagination(allFilteredStudents.length);
       runAgentRecommendations(user);
     };
 
     renderStudents();
 
-    filterSchool.addEventListener("change", renderStudents);
-    filterInterest.addEventListener("change", renderStudents);
+    filterSchool.addEventListener("change", () => {
+      currentPage = 1;
+      renderStudents();
+    });
+    filterInterest.addEventListener("change", () => {
+      currentPage = 1;
+      renderStudents();
+    });
     resetBtn.addEventListener("click", () => {
       filterSchool.value = "";
       filterInterest.value = "";
+      currentPage = 1;
       renderStudents();
+    });
+
+    prevPageBtn.addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderStudents();
+      }
+    });
+
+    nextPageBtn.addEventListener("click", () => {
+      const totalPages = Math.ceil(allFilteredStudents.length / STUDENTS_PER_PAGE);
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderStudents();
+      }
     });
   };
 
