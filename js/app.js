@@ -1750,30 +1750,74 @@
 
   // Initialize Messaging Page
   window.initMessages = () => {
-    const selectedPartnerData = localStorage.getItem("selectedPartner");
-    
-    if (!selectedPartnerData) {
-      // No partner selected, redirect back to dashboard
-      window.location.href = "dashboard.html";
-      return;
-    }
-
-    const partner = JSON.parse(selectedPartnerData);
     const partnerNameEl = document.getElementById("partnerName");
     const partnerSchoolEl = document.getElementById("partnerSchool");
     const chatContentEl = document.getElementById("chatContent");
     const messageInputEl = document.getElementById("messageInput");
     const sendButtonEl = document.getElementById("sendMessageBtn");
+    const conversationsListEl = document.getElementById("conversationsList");
 
-    // Display partner information
-    if (partnerNameEl) partnerNameEl.textContent = partner.name;
-    if (partnerSchoolEl) partnerSchoolEl.textContent = `${partner.school} • ${partner.diploma}`;
+    let currentPartnerId = null;
+    let currentPartner = null;
 
-    // Load and display previous messages
-    const messagesKey = `studyconnect_messages_${partner.id}`;
-    const messages = JSON.parse(localStorage.getItem(messagesKey) || "[]");
+    // Load all conversations from connections
+    const loadConversations = () => {
+      const connections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
+      
+      if (connections.length === 0) {
+        conversationsListEl.innerHTML = '<p style="padding: 16px; text-align: center; color: #9ca3af;">No conversations yet</p>';
+        return;
+      }
 
-    const displayMessages = () => {
+      conversationsListEl.innerHTML = connections.map(conn => `
+        <div class="conversation-item ${currentPartnerId === conn.id ? 'active' : ''}" data-partner-id="${conn.id}" data-partner-name="${conn.name}">
+          <p class="conversation-name">${conn.name}</p>
+          <p class="conversation-preview">Click to chat...</p>
+        </div>
+      `).join("");
+
+      // Wire conversation clicks
+      document.querySelectorAll(".conversation-item").forEach(item => {
+        item.addEventListener("click", () => {
+          currentPartnerId = item.getAttribute("data-partner-id");
+          const partnerName = item.getAttribute("data-partner-name");
+          
+          // Find full partner data
+          currentPartner = connections.find(c => c.id === currentPartnerId);
+          
+          // Update active state
+          document.querySelectorAll(".conversation-item").forEach(i => i.classList.remove("active"));
+          item.classList.add("active");
+          
+          // Load conversation
+          loadConversation(currentPartnerId, partnerName);
+        });
+      });
+
+      // Load first conversation by default
+      if (connections.length > 0) {
+        const firstConn = connections[0];
+        currentPartnerId = firstConn.id;
+        currentPartner = firstConn;
+        loadConversation(firstConn.id, firstConn.name);
+        document.querySelector(".conversation-item").classList.add("active");
+      }
+    };
+
+    // Load conversation with a specific partner
+    const loadConversation = (partnerId, partnerName) => {
+      const messagesKey = `studyconnect_messages_${partnerId}`;
+      const messages = JSON.parse(localStorage.getItem(messagesKey) || "[]");
+      
+      if (partnerNameEl) partnerNameEl.textContent = partnerName;
+      if (partnerSchoolEl && currentPartner) {
+        partnerSchoolEl.textContent = `${currentPartner.school || ''} • ${currentPartner.diploma || 'Study Partner'}`;
+      }
+      
+      displayMessages(messages);
+    };
+
+    const displayMessages = (messages) => {
       chatContentEl.innerHTML = messages.map(msg => `
         <div class="chat-message ${msg.sender === 'user' ? 'user' : 'partner'}">
           <div class="message-content">
@@ -1787,13 +1831,83 @@
       chatContentEl.scrollTop = chatContentEl.scrollHeight;
     };
 
-    // Display initial messages
-    displayMessages();
+    // Generate intelligent response based on user message
+    const generateResponse = (userMessage) => {
+      const msg = userMessage.toLowerCase().trim();
+      
+      // Greeting responses
+      if (msg.match(/^(hi|hello|hey|hii|hiii|yo|sup)[\s!]*$/)) {
+        return "Hi there! How are you doing? 😊";
+      }
+      
+      if (msg.match(/how are you|how r you|how r u|how've you been|hows it going|whats up/)) {
+        return "I'm doing great, thanks for asking! Ready to study together?";
+      }
+
+      // Time/Schedule questions
+      if (msg.match(/when|what time|are you free|available|schedule|can we meet/)) {
+        return "I'm pretty flexible with timing! What works best for you? Morning, afternoon, or evening?";
+      }
+
+      // Location/Meeting place
+      if (msg.match(/where|meet|location|place|online|video call|zoom/)) {
+        return "We could meet at the library or do an online session via Zoom - whatever is more convenient for you!";
+      }
+
+      // Study subject/topic
+      if (msg.match(/subject|topic|course|study|focus on|what.*learn|exam|test/)) {
+        return "I'm keen on learning more! What subject or topic would you like to focus on?";
+      }
+
+      // Thanks/Gratitude
+      if (msg.match(/thanks|thank you|thx|appreciate|cheers/)) {
+        return "You're very welcome! Happy to help! 😊";
+      }
+
+      // Agreement/Positive responses
+      if (msg.match(/^(ok|okay|sure|sounds good|great|awesome|perfect|yes|yep|yup|cool|nice)[\s!]*$/)) {
+        return "Awesome! Looking forward to studying with you! 📚";
+      }
+
+      // Farewell
+      if (msg.match(/bye|goodbye|see you|catch you|talk later|gotta go|ttyl/)) {
+        return "See you later! Good luck with your studies! 👋";
+      }
+
+      // Questions (ending with ?)
+      if (msg.includes("?")) {
+        const questionResponses = [
+          "That's a great question! I'd love to discuss that with you.",
+          "Hmm, let me think about that... Good point!",
+          "That's something we should definitely cover when we study together!",
+          "I've been wondering about that too! Let's work through it together."
+        ];
+        return questionResponses[Math.floor(Math.random() * questionResponses.length)];
+      }
+
+      // Default contextual responses
+      const defaultResponses = [
+        "I totally agree! When do you want to start?",
+        "Sounds good to me! What's your next step?",
+        "Yeah, I'm interested in that too!",
+        "Let's make that happen! I'm ready when you are.",
+        "Absolutely! That would be really helpful."
+      ];
+      return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+    };
 
     // Send message functionality
     const sendMessage = () => {
+      if (!currentPartnerId) {
+        showToast("Please select a conversation first");
+        return;
+      }
+
       const text = messageInputEl.value.trim();
       if (!text) return;
+
+      const messagesKey = `studyconnect_messages_${currentPartnerId}`;
+      const messages = JSON.parse(localStorage.getItem(messagesKey) || "[]");
 
       // Add user message
       const newMessage = {
@@ -1805,52 +1919,11 @@
       messages.push(newMessage);
       localStorage.setItem(messagesKey, JSON.stringify(messages));
       messageInputEl.value = "";
-      displayMessages();
+      displayMessages(messages);
 
       // Simulate partner response after 1 second
       setTimeout(() => {
-        let partnerResponse;
-        const userText = text.toLowerCase().trim();
-        
-        // Context-aware responses
-        if (userText.match(/^(hi|hello|hey|hii|hiii)$/)) {
-          partnerResponse = "Hi! How are you doing?";
-        } else if (userText.match(/how are you|how r you|how r u/)) {
-          partnerResponse = "I'm doing well, thanks for asking! Ready to study together?";
-        } else if (userText.match(/when|what time|schedule/)) {
-          partnerResponse = "I'm free most evenings and weekends. What works best for you?";
-        } else if (userText.match(/where|meet|location/)) {
-          partnerResponse = "How about we meet at the library? Or we could do an online session if that's easier.";
-        } else if (userText.match(/subject|topic|course/)) {
-          partnerResponse = "I'm good with any of my interests! What subject do you need help with?";
-        } else if (userText.match(/thanks|thank you|thx/)) {
-          partnerResponse = "You're welcome! Happy to help!";
-        } else if (userText.match(/ok|okay|sure|sounds good|great/)) {
-          partnerResponse = "Awesome! Looking forward to it!";
-        } else if (userText.match(/bye|goodbye|see you|talk later/)) {
-          partnerResponse = "See you later! Good luck with your studies!";
-        } else if (userText.includes("?")) {
-          // If it's a question, give a thoughtful response
-          const questionResponses = [
-            "That's a great question! Let me think about that.",
-            "Hmm, I'd say we should discuss that when we meet up.",
-            "Good point! I've been wondering about that too.",
-            "Let's work on that together during our study session!"
-          ];
-          partnerResponse = questionResponses[Math.floor(Math.random() * questionResponses.length)];
-        } else {
-          // Default contextual responses
-          const defaultResponses = [
-            "That sounds great! Let's meet up to study together.",
-            "I agree! When are you free?",
-            "Sounds good to me. What subject do you want to focus on?",
-            "Perfect! I've been looking for a study partner too.",
-            "Great idea! I'm really interested in that topic.",
-            "Yes, let's do it! Looking forward to studying with you."
-          ];
-          partnerResponse = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
-        }
-
+        const partnerResponse = generateResponse(text);
         const partnerMessage = {
           sender: 'partner',
           text: partnerResponse,
@@ -1859,8 +1932,8 @@
 
         messages.push(partnerMessage);
         localStorage.setItem(messagesKey, JSON.stringify(messages));
-        displayMessages();
-      }, 1000);
+        displayMessages(messages);
+      }, 800);
     };
 
     sendButtonEl.addEventListener("click", sendMessage);
@@ -1879,6 +1952,28 @@
         localStorage.clear();
         window.location.href = "login.html";
       });
+    }
+
+    // Load conversations on page load
+    loadConversations();
+
+    // Check for selectedPartner from dashboard click
+    const selectedPartnerData = localStorage.getItem("selectedPartner");
+    if (selectedPartnerData) {
+      const partner = JSON.parse(selectedPartnerData);
+      currentPartnerId = partner.id;
+      currentPartner = partner;
+      loadConversation(partner.id, partner.name);
+      
+      // Update active state in list
+      const item = document.querySelector(`[data-partner-id="${partner.id}"]`);
+      if (item) {
+        document.querySelectorAll(".conversation-item").forEach(i => i.classList.remove("active"));
+        item.classList.add("active");
+      }
+      
+      // Clear selectedPartner from localStorage
+      localStorage.removeItem("selectedPartner");
     }
   };
 
