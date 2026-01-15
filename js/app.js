@@ -890,7 +890,7 @@ query({"question": "Hey, how are you?"}).then((response) => {
 
     // Handle send message
     if (sendBtn) {
-      sendBtn.addEventListener("click", () => {
+      sendBtn.addEventListener("click", async () => {
         const text = messageInput.value.trim();
         if (!text) return;
 
@@ -906,6 +906,65 @@ query({"question": "Hey, how are you?"}).then((response) => {
         chatContent.insertAdjacentHTML("beforeend", messageHTML);
         messageInput.value = "";
         chatContent.scrollTop = chatContent.scrollHeight;
+
+        // Show typing indicator
+        const typingHTML = `
+          <div class="message received">
+            <div class="message-bubble typing-indicator">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        `;
+        chatContent.insertAdjacentHTML("beforeend", typingHTML);
+        chatContent.scrollTop = chatContent.scrollHeight;
+
+        // Get reply using Flowise API
+        try {
+          const response = await query({ question: text });
+          
+          // Remove typing indicator
+          const typingMsg = chatContent.querySelector(".typing-indicator").closest(".message");
+          if (typingMsg) typingMsg.remove();
+
+          // Extract response
+          let botReply = "Thanks for the message!";
+          if (response.text) {
+            botReply = response.text;
+          } else if (response.answer) {
+            botReply = response.answer;
+          } else if (response.response) {
+            botReply = response.response;
+          }
+
+          // Add bot reply
+          const replyHTML = `
+            <div class="message received">
+              <div class="message-bubble">
+                <div class="message-text">${botReply}</div>
+                <div class="message-time">Just now</div>
+              </div>
+            </div>
+          `;
+          chatContent.insertAdjacentHTML("beforeend", replyHTML);
+          chatContent.scrollTop = chatContent.scrollHeight;
+        } catch (error) {
+          console.error("Error getting reply:", error);
+          // Remove typing indicator
+          const typingMsg = chatContent.querySelector(".typing-indicator").closest(".message");
+          if (typingMsg) typingMsg.remove();
+
+          // Add fallback reply
+          const replyHTML = `
+            <div class="message received">
+              <div class="message-bubble">
+                <div class="message-text">Great point! Let me think about that and get back to you.</div>
+                <div class="message-time">Just now</div>
+              </div>
+            </div>
+          `;
+          chatContent.insertAdjacentHTML("beforeend", replyHTML);
+          chatContent.scrollTop = chatContent.scrollHeight;
+        }
       });
 
       messageInput.addEventListener("keypress", (e) => {
