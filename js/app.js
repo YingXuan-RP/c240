@@ -1809,19 +1809,51 @@
 
       // Simulate partner response after 1 second
       setTimeout(() => {
-        const partnerResponses = [
-          "That sounds great! Let's meet up to study together.",
-          "I agree! When are you free?",
-          "Sounds good to me. What subject do you want to focus on?",
-          "Perfect! I've been looking for a study partner too.",
-          "Great idea! I'm really interested in that topic.",
-          "Yes, let's do it! Looking forward to studying with you."
-        ];
+        let partnerResponse;
+        const userText = text.toLowerCase().trim();
+        
+        // Context-aware responses
+        if (userText.match(/^(hi|hello|hey|hii|hiii)$/)) {
+          partnerResponse = "Hi! How are you doing?";
+        } else if (userText.match(/how are you|how r you|how r u/)) {
+          partnerResponse = "I'm doing well, thanks for asking! Ready to study together?";
+        } else if (userText.match(/when|what time|schedule/)) {
+          partnerResponse = "I'm free most evenings and weekends. What works best for you?";
+        } else if (userText.match(/where|meet|location/)) {
+          partnerResponse = "How about we meet at the library? Or we could do an online session if that's easier.";
+        } else if (userText.match(/subject|topic|course/)) {
+          partnerResponse = "I'm good with any of my interests! What subject do you need help with?";
+        } else if (userText.match(/thanks|thank you|thx/)) {
+          partnerResponse = "You're welcome! Happy to help!";
+        } else if (userText.match(/ok|okay|sure|sounds good|great/)) {
+          partnerResponse = "Awesome! Looking forward to it!";
+        } else if (userText.match(/bye|goodbye|see you|talk later/)) {
+          partnerResponse = "See you later! Good luck with your studies!";
+        } else if (userText.includes("?")) {
+          // If it's a question, give a thoughtful response
+          const questionResponses = [
+            "That's a great question! Let me think about that.",
+            "Hmm, I'd say we should discuss that when we meet up.",
+            "Good point! I've been wondering about that too.",
+            "Let's work on that together during our study session!"
+          ];
+          partnerResponse = questionResponses[Math.floor(Math.random() * questionResponses.length)];
+        } else {
+          // Default contextual responses
+          const defaultResponses = [
+            "That sounds great! Let's meet up to study together.",
+            "I agree! When are you free?",
+            "Sounds good to me. What subject do you want to focus on?",
+            "Perfect! I've been looking for a study partner too.",
+            "Great idea! I'm really interested in that topic.",
+            "Yes, let's do it! Looking forward to studying with you."
+          ];
+          partnerResponse = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+        }
 
-        const randomResponse = partnerResponses[Math.floor(Math.random() * partnerResponses.length)];
         const partnerMessage = {
           sender: 'partner',
-          text: randomResponse,
+          text: partnerResponse,
           timestamp: new Date().toISOString()
         };
 
