@@ -1347,8 +1347,8 @@
                   ${partner.interests.map(interest => `<span class="interest-tag">${interest}</span>`).join("")}
                 </div>
                 <div class="student-action">
-                  <button class="connect-btn" data-partner-id="${partner.id}" data-partner-name="${partner.name}">
-                    Connect
+                  <button class="connect-btn ${isConnected ? 'connected' : ''}" data-partner-id="${partner.id}" data-partner-name="${partner.name}">
+                    ${isConnected ? 'Message' : 'Connect'}
                   </button>
                 </div>
               </div>
@@ -1362,18 +1362,33 @@
             const partnerId = btn.getAttribute("data-partner-id");
             const partnerName = btn.getAttribute("data-partner-name");
             const partner = allPartners.find(p => p.id === partnerId);
+            const connections = JSON.parse(localStorage.getItem("studyconnect_connections") || "[]");
+            const isConnected = connections.some(c => c.id === partnerId);
             
-            // Store selected partner in localStorage for messages page
-            localStorage.setItem("selectedPartner", JSON.stringify({
-              id: partnerId,
-              name: partnerName,
-              school: partner.school,
-              diploma: partner.diploma,
-              interests: partner.interests
-            }));
-            
-            // Redirect to messages page
-            window.location.href = "messages.html";
+            if (isConnected) {
+              // Already connected, go to messages
+              localStorage.setItem("selectedPartner", JSON.stringify({
+                id: partnerId,
+                name: partnerName,
+                school: partner.school,
+                diploma: partner.diploma,
+                interests: partner.interests
+              }));
+              window.location.href = "messages.html";
+            } else {
+              // First click - connect
+              connections.push({
+                id: partnerId,
+                name: partnerName,
+                date: new Date().toISOString()
+              });
+              localStorage.setItem("studyconnect_connections", JSON.stringify(connections));
+              
+              // Change button text to Message
+              btn.textContent = "Message";
+              btn.classList.add("connected");
+              showToast(`Connected with ${partnerName}! Click Message to start chatting.`);
+            }
           });
         });
 
