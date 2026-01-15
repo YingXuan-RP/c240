@@ -855,38 +855,64 @@ query({"question": "Hey, how are you?"}).then((response) => {
       </div>
     `).join("");
 
+    // Function to open a conversation
+    const openConversation = (convId) => {
+      const conv = conversations.find(c => c.id === convId);
+      if (!conv) return;
+
+      // Update active state
+      document.querySelectorAll(".conversation-item").forEach(i => i.classList.remove("active"));
+      const activeItem = document.querySelector(`[data-conversation-id="${convId}"]`);
+      if (activeItem) {
+        activeItem.classList.add("active");
+        activeItem.classList.remove("unread");
+      }
+
+      // Show chat header
+      chatHeader.innerHTML = `<h3>${conv.name}</h3>`;
+      
+      // Show messages
+      const messages = messagesData[convId] || [
+        { sender: conv.name.split(" ")[0], text: "Hi! Looking forward to studying together!", time: "Just now" }
+      ];
+
+      chatContent.innerHTML = messages.map(msg => `
+        <div class="message ${msg.sender === 'You' ? 'sent' : 'received'}">
+          <div class="message-bubble">
+            <div class="message-text">${msg.text}</div>
+            <div class="message-time">${msg.time}</div>
+          </div>
+        </div>
+      `).join("");
+
+      // Show input area
+      chatInput.style.display = "flex";
+    };
+
     // Handle conversation click
     document.querySelectorAll(".conversation-item").forEach(item => {
       item.addEventListener("click", () => {
         const convId = item.getAttribute("data-conversation-id");
-        const conv = conversations.find(c => c.id === convId);
-        
-        // Update active state
-        document.querySelectorAll(".conversation-item").forEach(i => i.classList.remove("active"));
-        item.classList.add("active");
-        item.classList.remove("unread");
-
-        // Show chat header
-        chatHeader.innerHTML = `<h3>${conv.name}</h3>`;
-        
-        // Show messages
-        const messages = messagesData[convId] || [
-          { sender: conv.name, text: "Hi! Looking forward to studying together!", time: "Just now" }
-        ];
-
-        chatContent.innerHTML = messages.map(msg => `
-          <div class="message ${msg.sender === 'You' ? 'sent' : 'received'}">
-            <div class="message-bubble">
-              <div class="message-text">${msg.text}</div>
-              <div class="message-time">${msg.time}</div>
-            </div>
-          </div>
-        `).join("");
-
-        // Show input area
-        chatInput.style.display = "flex";
+        openConversation(convId);
       });
     });
+
+    // Check if there's an active chat from dashboard
+    const activeChat = localStorage.getItem("studyconnect_active_chat");
+    if (activeChat) {
+      try {
+        const chatData = JSON.parse(activeChat);
+        // Try to find matching conversation by name
+        const matchingConv = conversations.find(c => c.name.includes(chatData.name));
+        if (matchingConv) {
+          openConversation(matchingConv.id);
+        }
+        // Clear the active chat after opening
+        localStorage.removeItem("studyconnect_active_chat");
+      } catch (e) {
+        console.error("Error loading active chat:", e);
+      }
+    }
 
     // Handle send message
     if (sendBtn) {
@@ -1112,6 +1138,16 @@ query({"question": "Hey, how are you?"}).then((response) => {
 
         document.querySelectorAll(".message-btn").forEach(btn => {
           btn.addEventListener("click", () => {
+            const partnerId = btn.getAttribute("data-partner-id");
+            const partner = partners.find(p => p.id === partnerId);
+            
+            // Store the selected partner for messages page
+            localStorage.setItem("studyconnect_active_chat", JSON.stringify({
+              id: partnerId,
+              name: partner.name,
+              diploma: partner.diploma
+            }));
+            
             window.location.href = "messages.html";
           });
         });
