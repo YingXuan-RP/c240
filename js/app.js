@@ -589,10 +589,6 @@ async function query(data) {
     return result;
 }
 
-query({"question": "Hey, how are you?"}).then((response) => {
-    console.log(response);
-});
-
 
 
   // Old hardcoded chatbot intents - DISABLED (now using Flowise only)
@@ -755,38 +751,52 @@ query({"question": "Hey, how are you?"}).then((response) => {
       return;
     }
 
-    // Build conversation history for context awareness
-    const buildConversationHistory = () => {
-      const bubbles = messages.querySelectorAll(".chat-bubble");
-      const history = [];
-      bubbles.forEach((bubble) => {
-        const role = bubble.classList.contains("user") ? "user" : "assistant";
-        const text = bubble.textContent || "";
-        if (text && text !== "..." && !bubble.classList.contains("typing-indicator")) {
-          history.push({ role, content: text });
-        }
+    // Load chat history from localStorage
+    const loadChatHistory = () => {
+      const stored = localStorage.getItem("studyconnect_chat_history");
+      return stored ? JSON.parse(stored) : [];
+    };
+
+    // Save chat history to localStorage
+    const saveChatHistory = (history) => {
+      localStorage.setItem("studyconnect_chat_history", JSON.stringify(history));
+    };
+
+    // Restore persisted chat history to DOM on init
+    const restorePersistedChat = () => {
+      const history = loadChatHistory();
+      history.forEach((msg) => {
+        appendChatMessage(messages, msg.role, msg.content);
       });
-      return history;
+    };
+
+    // Get current chat history from localStorage
+    const getChatHistory = () => {
+      return loadChatHistory();
     };
 
     const sendMessage = async () => {
       const text = input.value.trim();
       if (!text) return;
       
+      // Get current history from localStorage
+      const history = getChatHistory();
+      
+      // Append user message to history and DOM
       appendChatMessage(messages, "user", text);
+      history.push({ role: "user", content: text });
+      saveChatHistory(history);
+      
       input.value = "";
       
       // Show typing indicator
       showTypingIndicator(messages);
       
       try {
-        // Build chat history for context
-        const conversationHistory = buildConversationHistory();
-        
-        // Call Flowise API with conversation context
+        // Call Flowise API with both question and history
         const response = await query({ 
           question: text,
-          chatHistory: conversationHistory
+          history: history
         });
         removeTypingIndicator(messages);
         
@@ -803,7 +813,10 @@ query({"question": "Hey, how are you?"}).then((response) => {
           botReply = response;
         }
         
+        // Append bot message to history and DOM
         appendChatMessage(messages, "bot", botReply);
+        history.push({ role: "assistant", content: botReply });
+        saveChatHistory(history);
         
         // Save when Flowise confirmation contains both 'Confirmed' and 'saved your study session'
         const shouldSave = typeof botReply === "string"
@@ -829,10 +842,10 @@ query({"question": "Hey, how are you?"}).then((response) => {
       if (widget.classList.contains("open")) {
         console.log("[chatbot] widget opened");
         input.focus();
-        // Use sessionStorage to persist welcome flag across toggles
-        if (!sessionStorage.getItem("chatbot_welcome_shown")) {
+        // Show welcome message only once (persisted in localStorage)
+        if (!localStorage.getItem("chatbot_welcome_shown")) {
           appendChatMessage(messages, "bot", "Hi! I'm your Study Connect assistant. How can I help you today?");
-          sessionStorage.setItem("chatbot_welcome_shown", "true");
+          localStorage.setItem("chatbot_welcome_shown", "true");
         }
       } else {
         console.log("[chatbot] widget closed");
@@ -852,6 +865,10 @@ query({"question": "Hey, how are you?"}).then((response) => {
         sendMessage();
       }
     });
+
+    // Restore persisted chat history from localStorage on init
+    restorePersistedChat();
+
     // Mark as initialized to avoid duplicate bindings
     window.__chatbotInitialized = true;
   };
