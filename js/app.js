@@ -575,23 +575,33 @@
 
 // Flowise API integration
 async function query(data) {
-    const response = await fetch(
-        "https://cloud.flowiseai.com/api/v1/prediction/7d1211ab-2aaa-47aa-bf76-08ada2e91841",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
+    // Add 8-second timeout to prevent long waits
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    
+    try {
+        const response = await fetch(
+            "https://cloud.flowiseai.com/api/v1/prediction/7d1211ab-2aaa-47aa-bf76-08ada2e91841",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data),
+                signal: controller.signal
+            }
+        );
+        clearTimeout(timeoutId);
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            throw new Error("Sorry, it's taking too long. Please try again.");
         }
-    );
-    const result = await response.json();
-    return result;
+        throw error;
+    }
 }
-
-query({"question": "Hey, how are you?"}).then((response) => {
-    console.log(response);
-});
 
 
 
@@ -961,15 +971,29 @@ query({"question": "Hey, how are you?"}).then((response) => {
       return loadChatHistory();
     };
 
+    // Clean markdown syntax from bot replies
+    const cleanMarkdown = (text) => {
+      // Remove **bold** markdown
+      let cleaned = text.replace(/\*\*(.+?)\*\*/g, '$1');
+      // Remove leftover single asterisks
+      cleaned = cleaned.replace(/\*/g, '');
+      return cleaned;
+    };
+
     const sendMessage = async () => {
       const text = input.value.trim();
       if (!text) return;
+      
+      // Prevent double-send by disabling button
+      sendBtn.disabled = true;
+      sendBtn.style.opacity = "0.5";
+      sendBtn.style.cursor = "not-allowed";
       
       // Append user message to UI
       appendChatMessage(messages, "user", text);
       input.value = "";
       
-      // Show typing indicator
+      // Show typing indicator immediately (no delay)
       showTypingIndicator(messages);
       
       try {
@@ -1003,10 +1027,13 @@ query({"question": "Hey, how are you?"}).then((response) => {
           return;
         }
         
+        // Clean markdown syntax from bot reply
+        const cleanedBotReply = cleanMarkdown(botReply);
+        
         // Check if reply contains SAVE_TO_CALENDAR_NOW trigger
-        if (botReply.includes("SAVE_TO_CALENDAR_NOW")) {
+        if (cleanedBotReply.includes("SAVE_TO_CALENDAR_NOW")) {
           // Remove the trigger text from display
-          const displayReply = botReply.replace("SAVE_TO_CALENDAR_NOW", "").trim();
+          const displayReply = cleanedBotReply.replace("SAVE_TO_CALENDAR_NOW", "").trim();
           
           // Extract session data from the bot reply
           const sessionData = extractSessionDataFromBotReply(displayReply, text);
@@ -1017,6 +1044,7 @@ query({"question": "Hey, how are you?"}).then((response) => {
           
           // Display the message text
           const msgDiv = document.createElement("div");
+          msgDiv.style.whiteSpace = "pre-wrap";
           msgDiv.textContent = displayReply;
           bubble.appendChild(msgDiv);
           
@@ -1062,18 +1090,29 @@ query({"question": "Hey, how are you?"}).then((response) => {
           messages.appendChild(bubble);
           messages.scrollTop = messages.scrollHeight;
         } else {
-          // Display normal bot reply
-          appendChatMessage(messages, "bot", botReply);
+          // Display normal bot reply (cleaned)
+          appendChatMessage(messages, "bot", cleanedBotReply);
         }
         
-        // Save to chat history
+        // Re-enable send button
+        sendBtn.disabled = false;
+        sendBtn.style.opacity = "1";
+        sendBtn.style.cursor = "pointer";
+        
+        // Save to chat history (save cleaned version)
         const history = getChatHistory();
         history.push({ role: "user", content: text });
-        history.push({ role: "assistant", content: botReply });
+        history.push({ role: "assistant", content: cleanedBotReply });
         saveChatHistory(history);
         
       } catch (error) {
         removeTypingIndicator(messages);
+        
+        // Re-enable send button
+        sendBtn.disabled = false;
+        sendBtn.style.opacity = "1";
+        sendBtn.style.cursor = "pointer";
+        
         // Show the real error message instead of generic fallback
         const errorMessage = error?.message || String(error) || "Unknown error occurred";
         console.error("Flowise API error:", error);
