@@ -819,7 +819,68 @@ async function query(data) {
     const restorePersistedChat = () => {
       const history = loadChatHistory();
       history.forEach((msg) => {
-        appendChatMessage(messages, msg.role, msg.content);
+        // Check if this is a bot message with SAVE_TO_CALENDAR_NOW trigger
+        if (msg.role === "assistant" && msg.content.includes("SAVE_TO_CALENDAR_NOW")) {
+          // Remove the trigger text from display
+          const displayContent = msg.content.replace("SAVE_TO_CALENDAR_NOW", "").trim();
+          
+          // Extract session data from the message
+          const sessionData = extractSessionDataFromBotReply(displayContent, "");
+          
+          // Create a special chat bubble with button
+          const bubble = document.createElement("div");
+          bubble.className = "chat-bubble bot";
+          
+          // Display the message text
+          const msgDiv = document.createElement("div");
+          msgDiv.textContent = displayContent;
+          bubble.appendChild(msgDiv);
+          
+          // Create the "Add to Calendar" button
+          const btn = document.createElement("button");
+          btn.className = "chat-action-btn";
+          btn.textContent = "Add to Calendar 📅";
+          btn.style.marginTop = "12px";
+          btn.style.padding = "8px 16px";
+          btn.style.backgroundColor = "#6366f1";
+          btn.style.color = "white";
+          btn.style.border = "none";
+          btn.style.borderRadius = "6px";
+          btn.style.cursor = "pointer";
+          btn.style.fontSize = "14px";
+          btn.style.fontWeight = "600";
+          btn.style.transition = "background-color 0.2s";
+          
+          btn.addEventListener("mouseover", () => {
+            btn.style.backgroundColor = "#4f46e5";
+          });
+          btn.addEventListener("mouseout", () => {
+            btn.style.backgroundColor = "#6366f1";
+          });
+          
+          btn.addEventListener("click", () => {
+            // Save to localStorage with unique ID
+            const existingSessions = JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
+            sessionData.id = Date.now().toString();
+            existingSessions.push(sessionData);
+            localStorage.setItem("studyconnect_sessions", JSON.stringify(existingSessions));
+            
+            // Show toast
+            showToast("Saved to calendar ✅");
+            
+            // Redirect to calendar after a short delay
+            setTimeout(() => {
+              window.location.href = "calendar.html";
+            }, 500);
+          });
+          
+          bubble.appendChild(btn);
+          messages.appendChild(bubble);
+          messages.scrollTop = messages.scrollHeight;
+        } else {
+          // Regular message without special trigger
+          appendChatMessage(messages, msg.role, msg.content);
+        }
       });
     };
 
