@@ -574,29 +574,24 @@
 
 
 // Flowise API integration
-window.query = async function (question) {
-  try {
+async function query(data) {
     const response = await fetch(
-      "https://cloud.flowiseai.com/api/v1/prediction/e3ceb5b5-45ca-4013-add3-5d10e29c4090",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ question })
-      }
+        "https://cloud.flowiseai.com/api/v1/prediction/e3ceb5b5-45ca-4013-add3-5d10e29c4090",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }
     );
+    const result = await response.json();
+    return result;
+}
 
-    if (!response.ok) {
-      throw new Error(`API responded with status ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Flowise API Error:", error);
-    throw error;
-  }
-};
+query({"question": "Hey, how are you?"}).then((response) => {
+    console.log(response);
+});
 
 
   // Chatbot intents and responses
@@ -759,7 +754,7 @@ window.query = async function (question) {
       
       try {
         // Call Flowise API
-        const response = await window.query(text);
+        const response = await query({ question: text });
         removeTypingIndicator(messages);
         
         // Extract response text - Flowise returns various formats
