@@ -755,6 +755,20 @@ query({"question": "Hey, how are you?"}).then((response) => {
       return;
     }
 
+    // Build conversation history for context awareness
+    const buildConversationHistory = () => {
+      const bubbles = messages.querySelectorAll(".chat-bubble");
+      const history = [];
+      bubbles.forEach((bubble) => {
+        const role = bubble.classList.contains("user") ? "user" : "assistant";
+        const text = bubble.textContent || "";
+        if (text && text !== "..." && !bubble.classList.contains("typing-indicator")) {
+          history.push({ role, content: text });
+        }
+      });
+      return history;
+    };
+
     const sendMessage = async () => {
       const text = input.value.trim();
       if (!text) return;
@@ -766,8 +780,14 @@ query({"question": "Hey, how are you?"}).then((response) => {
       showTypingIndicator(messages);
       
       try {
-        // Call Flowise API
-        const response = await query({ question: text });
+        // Build chat history for context
+        const conversationHistory = buildConversationHistory();
+        
+        // Call Flowise API with conversation context
+        const response = await query({ 
+          question: text,
+          chatHistory: conversationHistory
+        });
         removeTypingIndicator(messages);
         
         // Extract response text - Flowise returns various formats
@@ -809,9 +829,10 @@ query({"question": "Hey, how are you?"}).then((response) => {
       if (widget.classList.contains("open")) {
         console.log("[chatbot] widget opened");
         input.focus();
-        if (!messages.dataset.welcome) {
+        // Use sessionStorage to persist welcome flag across toggles
+        if (!sessionStorage.getItem("chatbot_welcome_shown")) {
           appendChatMessage(messages, "bot", "Hi! I'm your Study Connect assistant. How can I help you today?");
-          messages.dataset.welcome = "true";
+          sessionStorage.setItem("chatbot_welcome_shown", "true");
         }
       } else {
         console.log("[chatbot] widget closed");
