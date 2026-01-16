@@ -589,38 +589,34 @@ async function query(data) {
     return result;
 }
 
-query({"question": "Hey, how are you?"}).then((response) => {
-    console.log(response);
-});
 
+  // Old hardcoded chatbot intents - DISABLED (now using Flowise only)
+  // const chatbotIntents = [
+  //   {
+  //     keywords: ["find", "study partner", "match", "partner"],
+  //     response: "To find a study partner, use the 'Find a Study Partner' section, filter by school/interest, and click Connect."
+  //   },
+  //   {
+  //     keywords: ["calendar", "schedule", "events"],
+  //     response: "Check the Calendar section to view upcoming study sessions and schedule your activities."
+  //   },
+  //   {
+  //     keywords: ["what", "campusconnect", "do"],
+  //     response: "CampusConnect centralises calendar, communities, and study partner matching with a proactive agent to guide you."
+  //   },
+  //   {
+  //     keywords: ["help", "navigation", "where"],
+  //     response: "Use the top navigation to jump to Calendar, Communities, Resources, or Connect for study partners."
+  //   }
+  // ];
 
-  // Chatbot intents and responses
-  const chatbotIntents = [
-    {
-      keywords: ["find", "study partner", "match", "partner"],
-      response: "To find a study partner, use the 'Find a Study Partner' section, filter by school/interest, and click Connect."
-    },
-    {
-      keywords: ["calendar", "schedule", "events"],
-      response: "Check the Calendar section to view upcoming study sessions and schedule your activities."
-    },
-    {
-      keywords: ["what", "campusconnect", "do"],
-      response: "CampusConnect centralises calendar, communities, and study partner matching with a proactive agent to guide you."
-    },
-    {
-      keywords: ["help", "navigation", "where"],
-      response: "Use the top navigation to jump to Calendar, Communities, Resources, or Connect for study partners."
-    }
-  ];
-
-  window.chatbotResponse = function(message) {
-    const msg = message.toLowerCase();
-    const match = chatbotIntents.find((intent) => intent.keywords.some((k) => msg.includes(k)));
-    return match
-      ? match.response
-      : "I'm here to help! Ask about study partners, calendar, or how to navigate CampusConnect.";
-  };
+  // window.chatbotResponse = function(message) {
+  //   const msg = message.toLowerCase();
+  //   const match = chatbotIntents.find((intent) => intent.keywords.some((k) => msg.includes(k)));
+  //   return match
+  //     ? match.response
+  //     : "I'm here to help! Ask about study partners, calendar, or how to navigate CampusConnect.";
+  // };
 
   const appendChatMessage = (container, role, text) => {
     const bubble = document.createElement("div");
