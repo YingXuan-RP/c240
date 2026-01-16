@@ -647,16 +647,26 @@ query({"question": "Hey, how are you?"}).then((response) => {
 
   // Extract session data from chatbot response
   const extractSessionData = (botReply, userMessage) => {
-    // Try to extract date, time, and other details from the conversation
-    const dateMatch = botReply.match(/\b(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4})\b/i);
-    const timeMatch = botReply.match(/\b(\d{1,2}:\d{2}(?:\s?[AP]M)?)\b/gi);
-    const locationMatch = botReply.match(/(?:at|in|location:?)\s+([A-Z][a-z]+(?:\s+[A-Z]?[a-z]+)*(?:\s+\d+)?)/i);
+    // Prefer extracting details from bot reply; fallback to user message
+    const dateMatch = botReply.match(/\b(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4})\b/i) ||
+                      userMessage.match(/\b(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4})\b/i);
+
+    // Time range like "2 PM to 4 PM" or "10:00–12:00"
+    const rangeMatch = botReply.match(/(\d{1,2}:\d{2}\s?(?:AM|PM)?|\d{1,2}\s?(?:AM|PM))\s*(?:–|-|to)\s*(\d{1,2}:\d{2}\s?(?:AM|PM)?|\d{1,2}\s?(?:AM|PM))/i) ||
+                       userMessage.match(/(\d{1,2}:\d{2}\s?(?:AM|PM)?|\d{1,2}\s?(?:AM|PM))\s*(?:–|-|to)\s*(\d{1,2}:\d{2}\s?(?:AM|PM)?|\d{1,2}\s?(?:AM|PM))/i);
+
+    const timeMatch = botReply.match(/\b(\d{1,2}:\d{2}(?:\s?[AP]M)?)\b/gi) || userMessage.match(/\b(\d{1,2}:\d{2}(?:\s?[AP]M)?)\b/gi);
+    const locationMatch = botReply.match(/(?:location:?\s*)([^\n]+)|(?:\b(?:at|in)\b)\s+([^\n]+?)(?:\.|$)/i) ||
+                          userMessage.match(/(?:location:?\s*)([^\n]+)|(?:\b(?:at|in)\b)\s+([^\n]+?)(?:\.|$)/i);
     
-    // Extract title from user message or response
+    // Extract title
     let title = "Study Session";
-    const titleMatch = userMessage.match(/(?:book|schedule|create)(?:\s+a)?\s+(?:session\s+for\s+)?(.+?)(?:\s+on|\s+at|$)/i);
-    if (titleMatch) {
-      title = titleMatch[1].trim();
+    const titleFromReply = botReply.match(/(?:title:?\s*)([^\n]+)/i) || botReply.match(/session\s+for\s+(.+?)(?:\s+on|\s+at|$)/i);
+    const titleFromUser = userMessage.match(/(?:book|schedule|create)(?:\s+a)?\s+(?:session\s+for\s+)?(.+?)(?:\s+on|\s+at|$)/i);
+    if (titleFromReply) {
+      title = (titleFromReply[1] || titleFromReply[0]).trim();
+    } else if (titleFromUser) {
+      title = titleFromUser[1].trim();
     }
     
     // Parse date
@@ -671,21 +681,23 @@ query({"question": "Hey, how are you?"}).then((response) => {
     // Parse times
     let startTime = "10:00";
     let endTime = "12:00";
-    if (timeMatch && timeMatch.length >= 1) {
+    if (rangeMatch) {
+      startTime = convertTo24Hour(rangeMatch[1]);
+      endTime = convertTo24Hour(rangeMatch[2]);
+    } else if (timeMatch && timeMatch.length >= 1) {
       startTime = convertTo24Hour(timeMatch[0]);
       if (timeMatch.length >= 2) {
         endTime = convertTo24Hour(timeMatch[1]);
       } else {
-        // Default to 2 hours later
         const [hours, mins] = startTime.split(":");
-        endTime = `${(parseInt(hours) + 2).toString().padStart(2, "0")}:${mins}`;
+        endTime = `${(parseInt(hours, 10) + 2).toString().padStart(2, "0")}:${mins}`;
       }
     }
     
     // Parse location
     let location = "";
     if (locationMatch) {
-      location = locationMatch[1].trim();
+      location = (locationMatch[1] || locationMatch[2] || "").trim();
     }
     
     return {
@@ -773,8 +785,10 @@ query({"question": "Hey, how are you?"}).then((response) => {
         
         appendChatMessage(messages, "bot", botReply);
         
-        // Save to calendar when Flowise reply includes explicit trigger
-        const shouldSave = typeof botReply === "string" && botReply.includes("SAVE_TO_CALENDAR_NOW");
+        // Save when Flowise confirmation contains both 'Confirmed' and 'saved your study session'
+        const shouldSave = typeof botReply === "string"
+          && botReply.includes("Confirmed")
+          && botReply.toLowerCase().includes("saved your study session");
         if (shouldSave) {
           const sessionData = extractSessionData(botReply, text);
           if (sessionData) {
@@ -2480,30 +2494,37 @@ query({"question": "Hey, how are you?"}).then((response) => {
 
   // Helper: Save session to localStorage (same key as calendar)
   const saveSessionToLocalStorage = (session) => {
-    const sessions = JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
-    
-    const newSession = {
-      id: Date.now().toString(),
-      title: session.title || "Study Session",
-      date: session.date || new Date().toISOString().split("T")[0],
-      startTime: session.startTime || "10:00",
-      endTime: session.endTime || "12:00",
-      location: session.location || "",
-      partnerId: session.partnerId || "",
-      partner: session.partner || "",
-      notes: session.notes || "",
-      createdAt: new Date().toISOString()
-    };
+    try {
+      const sessions = JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
+      
+      const newSession = {
+        id: Date.now().toString(),
+        title: session.title || "Study Session",
+        date: session.date || new Date().toISOString().split("T")[0],
+        startTime: session.startTime || "10:00",
+        endTime: session.endTime || "12:00",
+        location: session.location || "",
+        partnerId: session.partnerId || "",
+        partner: session.partner || "",
+        notes: session.notes || "",
+        createdAt: new Date().toISOString()
+      };
 
-    sessions.push(newSession);
-    localStorage.setItem("studyconnect_sessions", JSON.stringify(sessions));
-    
-    showToast("Saved ✅");
-    setTimeout(() => {
-      window.location.href = "calendar.html";
-    }, 1200);
-    
-    return newSession;
+      sessions.push(newSession);
+      localStorage.setItem("studyconnect_sessions", JSON.stringify(sessions));
+      
+      // Success feedback + redirect window (800–1200ms)
+      showToast("Saved ✅ Redirecting…");
+      setTimeout(() => {
+        window.location.href = "calendar.html";
+      }, 1000);
+      
+      return newSession;
+    } catch (err) {
+      console.error("[chatbot] save session failed", err);
+      // Do not show a fake saved message on failure
+      return null;
+    }
   };
 
   // Expose helper globally
