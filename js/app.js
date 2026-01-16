@@ -649,6 +649,78 @@ window.query = async function (question) {
     if (indicator) indicator.remove();
   };
 
+  // Extract session data from chatbot response
+  const extractSessionData = (botReply, userMessage) => {
+    // Try to extract date, time, and other details from the conversation
+    const dateMatch = botReply.match(/\b(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4})\b/i);
+    const timeMatch = botReply.match(/\b(\d{1,2}:\d{2}(?:\s?[AP]M)?)\b/gi);
+    const locationMatch = botReply.match(/(?:at|in|location:?)\s+([A-Z][a-z]+(?:\s+[A-Z]?[a-z]+)*(?:\s+\d+)?)/i);
+    
+    // Extract title from user message or response
+    let title = "Study Session";
+    const titleMatch = userMessage.match(/(?:book|schedule|create)(?:\s+a)?\s+(?:session\s+for\s+)?(.+?)(?:\s+on|\s+at|$)/i);
+    if (titleMatch) {
+      title = titleMatch[1].trim();
+    }
+    
+    // Parse date
+    let date = new Date().toISOString().split("T")[0]; // default to today
+    if (dateMatch) {
+      const parsedDate = new Date(dateMatch[1]);
+      if (!isNaN(parsedDate)) {
+        date = parsedDate.toISOString().split("T")[0];
+      }
+    }
+    
+    // Parse times
+    let startTime = "10:00";
+    let endTime = "12:00";
+    if (timeMatch && timeMatch.length >= 1) {
+      startTime = convertTo24Hour(timeMatch[0]);
+      if (timeMatch.length >= 2) {
+        endTime = convertTo24Hour(timeMatch[1]);
+      } else {
+        // Default to 2 hours later
+        const [hours, mins] = startTime.split(":");
+        endTime = `${(parseInt(hours) + 2).toString().padStart(2, "0")}:${mins}`;
+      }
+    }
+    
+    // Parse location
+    let location = "";
+    if (locationMatch) {
+      location = locationMatch[1].trim();
+    }
+    
+    return {
+      title,
+      date,
+      startTime,
+      endTime,
+      location,
+      notes: `Created via chatbot: ${userMessage}`
+    };
+  };
+
+  // Convert 12-hour time to 24-hour format
+  const convertTo24Hour = (time12h) => {
+    const [time, modifier] = time12h.trim().split(/\s+/);
+    let [hours, minutes] = time.split(":");
+    
+    if (!minutes) minutes = "00";
+    
+    if (modifier) {
+      if (modifier.toUpperCase() === "PM" && hours !== "12") {
+        hours = parseInt(hours, 10) + 12;
+      }
+      if (modifier.toUpperCase() === "AM" && hours === "12") {
+        hours = "00";
+      }
+    }
+    
+    return `${hours.toString().padStart(2, "0")}:${minutes}`;
+  };
+
   const initChatbotUI = () => {
     if (window.__chatbotInitialized) {
       console.log("[chatbot] already initialized");
@@ -704,6 +776,18 @@ window.query = async function (question) {
         }
         
         appendChatMessage(messages, "bot", botReply);
+        
+        // Check if response contains session confirmation and extract session data
+        const sessionConfirmed = /session.*confirmed|session.*created|session.*booked|session.*scheduled/i.test(botReply);
+        
+        if (sessionConfirmed) {
+          // Try to parse session data from response
+          const sessionData = extractSessionData(botReply, text);
+          if (sessionData) {
+            // Save to localStorage and redirect
+            window.saveSessionToLocalStorage(sessionData);
+          }
+        }
       } catch (error) {
         removeTypingIndicator(messages);
         console.error("Flowise API error:", error);
@@ -2401,27 +2485,40 @@ window.query = async function (question) {
     renderListView();
   };
 
-  // Chatbot integration for calendar session creation
-  window.createSessionFromChatbot = (sessionData) => {
-    let sessions = JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
+  // Helper: Save session to localStorage (same key as calendar)
+  const saveSessionToLocalStorage = (session) => {
+    const sessions = JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
     
     const newSession = {
       id: Date.now().toString(),
-      title: sessionData.title,
-      date: sessionData.date,
-      startTime: sessionData.startTime,
-      endTime: sessionData.endTime,
-      location: sessionData.location || "",
-      partnerId: sessionData.partnerId || "",
-      partner: sessionData.partner || "",
-      notes: sessionData.notes || "",
+      title: session.title || "Study Session",
+      date: session.date || new Date().toISOString().split("T")[0],
+      startTime: session.startTime || "10:00",
+      endTime: session.endTime || "12:00",
+      location: session.location || "",
+      partnerId: session.partnerId || "",
+      partner: session.partner || "",
+      notes: session.notes || "",
       createdAt: new Date().toISOString()
     };
 
     sessions.push(newSession);
     localStorage.setItem("studyconnect_sessions", JSON.stringify(sessions));
     
+    showToast("Saved ✅");
+    setTimeout(() => {
+      window.location.href = "calendar.html";
+    }, 1200);
+    
     return newSession;
+  };
+
+  // Expose helper globally
+  window.saveSessionToLocalStorage = saveSessionToLocalStorage;
+
+  // Chatbot integration for calendar session creation
+  window.createSessionFromChatbot = (sessionData) => {
+    return saveSessionToLocalStorage(sessionData);
   };
 
 })();
