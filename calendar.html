@@ -216,6 +216,91 @@
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       window.initCalendar();
+      
+      // Initialize session details modal
+      const sessionDetailsModal = document.getElementById("sessionDetailsModal");
+      const closeDetailsModal = document.getElementById("closeDetailsModal");
+      const closeDetailsBtn = document.getElementById("closeDetailsBtn");
+      
+      if (closeDetailsModal) {
+        closeDetailsModal.addEventListener("click", () => {
+          sessionDetailsModal.classList.remove("active");
+        });
+      }
+      
+      if (closeDetailsBtn) {
+        closeDetailsBtn.addEventListener("click", () => {
+          sessionDetailsModal.classList.remove("active");
+        });
+      }
+      
+      // Close modal on ESC key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          sessionDetailsModal.classList.remove("active");
+        }
+      });
+      
+      // Add event listener for session cards/items to show details
+      document.addEventListener("click", (e) => {
+        // Check if clicked on a session item (list view or calendar view)
+        const sessionCard = e.target.closest("[data-session-id]");
+        if (sessionCard) {
+          const sessionId = sessionCard.getAttribute("data-session-id");
+          window.showSessionDetails(sessionId);
+        }
+      });
+      
+      // Make showSessionDetails globally available
+      window.showSessionDetails = function(sessionId) {
+        const sessions = JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
+        const session = sessions[sessionId];
+        
+        if (!session) {
+          console.error("Session not found:", sessionId);
+          return;
+        }
+        
+        // Populate modal with session details
+        const detailsTitle = document.getElementById("detailsTitle");
+        const sessionDetails = document.getElementById("sessionDetails");
+        
+        if (detailsTitle) {
+          detailsTitle.textContent = session.title || "Study Session";
+        }
+        
+        if (sessionDetails) {
+          sessionDetails.innerHTML = `
+            <div class="detail-item">
+              <label>Title:</label>
+              <p>${session.title || "N/A"}</p>
+            </div>
+            <div class="detail-item">
+              <label>Date:</label>
+              <p>${session.date || "N/A"}</p>
+            </div>
+            <div class="detail-item">
+              <label>Time:</label>
+              <p>${session.startTime || "N/A"} – ${session.endTime || "N/A"}</p>
+            </div>
+            ${session.location ? `
+              <div class="detail-item">
+                <label>Location:</label>
+                <p>${session.location}</p>
+              </div>
+            ` : ""}
+            ${session.notes ? `
+              <div class="detail-item">
+                <label>Notes:</label>
+                <p>${session.notes}</p>
+              </div>
+            ` : ""}
+          `;
+        }
+        
+        // Show modal
+        sessionDetailsModal.classList.add("active");
+      };
     });
   </script>
 </body>

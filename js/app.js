@@ -724,6 +724,60 @@ async function query(data) {
     return `${hours.toString().padStart(2, "0")}:${minutes}`;
   };
 
+  // Extract session data from bot reply (new format for SAVE_TO_CALENDAR_NOW)
+  const extractSessionDataFromBotReply = (botReply, userMessage) => {
+    let title = "Study Session";
+    let date = new Date().toISOString().split("T")[0];
+    let startTime = "10:00";
+    let endTime = "12:00";
+    let location = "";
+    let notes = "";
+
+    // Extract Title: ...
+    const titleMatch = botReply.match(/Title:\s*(.+?)(?:\n|$)/i);
+    if (titleMatch) {
+      title = titleMatch[1].trim();
+    }
+
+    // Extract Date: ...
+    const dateMatch = botReply.match(/Date:\s*(.+?)(?:\n|$)/i);
+    if (dateMatch) {
+      const dateStr = dateMatch[1].trim();
+      const parsedDate = new Date(dateStr);
+      if (!isNaN(parsedDate)) {
+        date = parsedDate.toISOString().split("T")[0];
+      }
+    }
+
+    // Extract Time: ... – ... or Time: ... to ...
+    const timeMatch = botReply.match(/Time:\s*(.+?)\s*(?:–|-|to)\s*(.+?)(?:\n|$)/i);
+    if (timeMatch) {
+      startTime = convertTo24Hour(timeMatch[1].trim());
+      endTime = convertTo24Hour(timeMatch[2].trim());
+    }
+
+    // Extract Location: ...
+    const locationMatch = botReply.match(/Location:\s*(.+?)(?:\n|$)/i);
+    if (locationMatch) {
+      location = locationMatch[1].trim();
+    }
+
+    // Extract Notes: ...
+    const notesMatch = botReply.match(/Notes:\s*(.+?)(?:\n|$)/i);
+    if (notesMatch) {
+      notes = notesMatch[1].trim();
+    }
+
+    return {
+      title,
+      date,
+      startTime,
+      endTime,
+      location,
+      notes: notes || `Created via chatbot: ${userMessage}`
+    };
+  };
+
   const initChatbotUI = () => {
     if (window.__chatbotInitialized) {
       console.log("[chatbot] already initialized");
@@ -810,8 +864,67 @@ async function query(data) {
           botReply = "Flowise returned no message.";
         }
         
-        // Display ONLY the bot reply text in the chat bubble
-        appendChatMessage(messages, "bot", botReply);
+        // Check if reply contains SAVE_TO_CALENDAR_NOW trigger
+        if (botReply.includes("SAVE_TO_CALENDAR_NOW")) {
+          // Remove the trigger text from display
+          const displayReply = botReply.replace("SAVE_TO_CALENDAR_NOW", "").trim();
+          
+          // Extract session data from the bot reply
+          const sessionData = extractSessionDataFromBotReply(displayReply, text);
+          
+          // Create a special chat bubble with button
+          const bubble = document.createElement("div");
+          bubble.className = "chat-bubble bot";
+          
+          // Display the message text
+          const msgDiv = document.createElement("div");
+          msgDiv.textContent = displayReply;
+          bubble.appendChild(msgDiv);
+          
+          // Create the "Add to Calendar" button
+          const btn = document.createElement("button");
+          btn.className = "chat-action-btn";
+          btn.textContent = "Add to Calendar 📅";
+          btn.style.marginTop = "12px";
+          btn.style.padding = "8px 16px";
+          btn.style.backgroundColor = "#6366f1";
+          btn.style.color = "white";
+          btn.style.border = "none";
+          btn.style.borderRadius = "6px";
+          btn.style.cursor = "pointer";
+          btn.style.fontSize = "14px";
+          btn.style.fontWeight = "600";
+          btn.style.transition = "background-color 0.2s";
+          
+          btn.addEventListener("mouseover", () => {
+            btn.style.backgroundColor = "#4f46e5";
+          });
+          btn.addEventListener("mouseout", () => {
+            btn.style.backgroundColor = "#6366f1";
+          });
+          
+          btn.addEventListener("click", () => {
+            // Save to localStorage
+            const existingSessions = JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
+            existingSessions.push(sessionData);
+            localStorage.setItem("studyconnect_sessions", JSON.stringify(existingSessions));
+            
+            // Show toast
+            showToast("Saved to calendar ✅");
+            
+            // Redirect to calendar after a short delay
+            setTimeout(() => {
+              window.location.href = "calendar.html";
+            }, 500);
+          });
+          
+          bubble.appendChild(btn);
+          messages.appendChild(bubble);
+          messages.scrollTop = messages.scrollHeight;
+        } else {
+          // Display normal bot reply
+          appendChatMessage(messages, "bot", botReply);
+        }
         
         // Save to chat history
         const history = getChatHistory();
@@ -819,16 +932,6 @@ async function query(data) {
         history.push({ role: "assistant", content: botReply });
         saveChatHistory(history);
         
-        // Save when Flowise confirmation contains both 'Confirmed' and 'saved your study session'
-        const shouldSave = typeof botReply === "string"
-          && botReply.includes("Confirmed")
-          && botReply.toLowerCase().includes("saved your study session");
-        if (shouldSave) {
-          const sessionData = extractSessionData(botReply, text);
-          if (sessionData) {
-            window.saveSessionToLocalStorage(sessionData);
-          }
-        }
       } catch (error) {
         removeTypingIndicator(messages);
         // Show the real error message instead of generic fallback

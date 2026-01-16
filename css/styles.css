@@ -3037,6 +3037,31 @@ a:focus-visible {
   font-size: 14px;
 }
 
+.detail-item {
+  margin-bottom: 20px;
+}
+
+.detail-item label {
+  display: block;
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-item p {
+  margin: 0;
+  color: #0b1220;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.session-details {
+  padding: 16px 0;
+}
+
 .modal-actions {
   display: flex;
   gap: 12px;
