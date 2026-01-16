@@ -2883,6 +2883,18 @@ a:focus-visible {
   color: #1f2937;
 }
 
+.session-indicators {
+  margin-top: 4px;
+  font-size: 16px;
+  color: #26a65b;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.calendar-day.today .session-indicators {
+  color: white;
+}
+
 /* Modal Styles */
 .modal {
   display: none;

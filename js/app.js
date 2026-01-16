@@ -904,8 +904,9 @@ async function query(data) {
           });
           
           btn.addEventListener("click", () => {
-            // Save to localStorage
+            // Save to localStorage with unique ID
             const existingSessions = JSON.parse(localStorage.getItem("studyconnect_sessions") || "[]");
+            sessionData.id = Date.now().toString();
             existingSessions.push(sessionData);
             localStorage.setItem("studyconnect_sessions", JSON.stringify(existingSessions));
             
@@ -2390,12 +2391,14 @@ async function query(data) {
       for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const today = new Date().toISOString().split('T')[0];
-        const hasSessions = sessions.some(s => s.date === dateStr);
+        const daySessions = sessions.filter(s => s.date === dateStr);
+        const hasSessions = daySessions.length > 0;
         const isCurrentDay = dateStr === today;
 
         calendarGrid.innerHTML += `
           <div class="calendar-day ${isCurrentDay ? 'today' : ''} ${hasSessions ? 'has-sessions' : ''}" data-date="${dateStr}">
             <div class="day-number">${day}</div>
+            ${hasSessions ? `<div class="session-indicators">${'•'.repeat(Math.min(daySessions.length, 3))}</div>` : ''}
           </div>
         `;
       }
@@ -2414,6 +2417,7 @@ async function query(data) {
           const daySessions = sessions.filter(s => s.date === dateStr);
           
           if (daySessions.length > 0) {
+            // Show the first session's details (or can be enhanced to show a list)
             showSessionDetails(daySessions[0].id);
           } else {
             openCreateSessionModal(dateStr);
