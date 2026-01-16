@@ -579,13 +579,12 @@ async function query(data) {
         "https://cloud.flowiseai.com/api/v1/prediction/e3ceb5b5-45ca-4013-add3-5d10e29c4090",
         {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         }
     );
     const result = await response.json();
+    console.log("FLOWISE RAW RESULT:", result);
     return result;
 }
 
@@ -779,42 +778,44 @@ async function query(data) {
       const text = input.value.trim();
       if (!text) return;
       
-      // Get current history from localStorage
-      const history = getChatHistory();
-      
-      // Append user message to history and DOM
+      // Append user message to UI
       appendChatMessage(messages, "user", text);
-      history.push({ role: "user", content: text });
-      saveChatHistory(history);
-      
       input.value = "";
       
       // Show typing indicator
       showTypingIndicator(messages);
       
       try {
-        // Call Flowise API with both question and history
-        const response = await query({ 
-          question: text,
-          history: history
-        });
+        // Call Flowise API with just the question
+        const result = await query({ question: text });
         removeTypingIndicator(messages);
         
-        // Extract response text - Flowise returns various formats
-        let botReply = "I'm not sure how to respond. Please try again.";
+        // Extract bot reply safely - check multiple response fields
+        let botReply = "";
         
-        if (response.text) {
-          botReply = response.text;
-        } else if (response.answer) {
-          botReply = response.answer;
-        } else if (response.response) {
-          botReply = response.response;
-        } else if (typeof response === 'string') {
-          botReply = response;
+        if (result.text) {
+          botReply = result.text;
+        } else if (result.answer) {
+          botReply = result.answer;
+        } else if (result.response) {
+          botReply = result.response;
+        } else if (result.data?.text) {
+          botReply = result.data.text;
+        } else if (result.data?.answer) {
+          botReply = result.data.answer;
         }
         
-        // Append bot message to history and DOM
+        // If still empty, show error message
+        if (!botReply || botReply.trim() === "") {
+          botReply = "Flowise returned no message.";
+        }
+        
+        // Display ONLY the bot reply text in the chat bubble
         appendChatMessage(messages, "bot", botReply);
+        
+        // Save to chat history
+        const history = getChatHistory();
+        history.push({ role: "user", content: text });
         history.push({ role: "assistant", content: botReply });
         saveChatHistory(history);
         
@@ -830,8 +831,10 @@ async function query(data) {
         }
       } catch (error) {
         removeTypingIndicator(messages);
+        // Show the real error message instead of generic fallback
+        const errorMessage = error?.message || String(error) || "Unknown error occurred";
         console.error("Flowise API error:", error);
-        appendChatMessage(messages, "bot", "Sorry, I encountered an error. Please try again.");
+        appendChatMessage(messages, "bot", `Error: ${errorMessage}`);
       }
     };
 
