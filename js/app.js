@@ -589,6 +589,11 @@ async function query(data) {
     return result;
 }
 
+query({"question": "Hey, how are you?"}).then((response) => {
+    console.log(response);
+});
+
+
 
   // Old hardcoded chatbot intents - DISABLED (now using Flowise only)
   // const chatbotIntents = [
@@ -768,14 +773,11 @@ async function query(data) {
         
         appendChatMessage(messages, "bot", botReply);
         
-        // Check if response contains session confirmation and extract session data
-        const sessionConfirmed = /session.*confirmed|session.*created|session.*booked|session.*scheduled/i.test(botReply);
-        
-        if (sessionConfirmed) {
-          // Try to parse session data from response
+        // Save to calendar when Flowise reply includes explicit trigger
+        const shouldSave = typeof botReply === "string" && botReply.includes("SAVE_TO_CALENDAR_NOW");
+        if (shouldSave) {
           const sessionData = extractSessionData(botReply, text);
           if (sessionData) {
-            // Save to localStorage and redirect
             window.saveSessionToLocalStorage(sessionData);
           }
         }
