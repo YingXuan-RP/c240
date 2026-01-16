@@ -579,14 +579,17 @@ async function query(data) {
         "https://cloud.flowiseai.com/api/v1/prediction/e3ceb5b5-45ca-4013-add3-5d10e29c4090",
         {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(data)
         }
     );
     const result = await response.json();
-    console.log("FLOWISE RAW RESULT:", result);
     return result;
 }
+
+
 
 
 
