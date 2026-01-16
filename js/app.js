@@ -908,24 +908,30 @@ async function query(data) {
         const result = await query({ question: text });
         removeTypingIndicator(messages);
         
-        // Extract bot reply safely - check multiple response fields
-        let botReply = "";
+        // Log raw response for debugging
+        console.log("FLOWISE RAW RESULT:", result);
         
-        if (result.text) {
-          botReply = result.text;
-        } else if (result.answer) {
-          botReply = result.answer;
-        } else if (result.response) {
-          botReply = result.response;
-        } else if (result.data?.text) {
-          botReply = result.data.text;
-        } else if (result.data?.answer) {
-          botReply = result.data.answer;
-        }
+        // Extract bot reply - check ALL possible fields
+        const botReply = 
+          result?.text ||
+          result?.answer ||
+          result?.response ||
+          result?.data?.text ||
+          result?.data?.answer ||
+          result?.data?.response ||
+          result?.message ||
+          "";
         
         // If still empty, show error message
         if (!botReply || botReply.trim() === "") {
-          botReply = "Flowise returned no message.";
+          appendChatMessage(messages, "bot", "Flowise returned empty response.");
+          
+          // Save to chat history
+          const history = getChatHistory();
+          history.push({ role: "user", content: text });
+          history.push({ role: "assistant", content: "Flowise returned empty response." });
+          saveChatHistory(history);
+          return;
         }
         
         // Check if reply contains SAVE_TO_CALENDAR_NOW trigger
