@@ -1862,6 +1862,7 @@ a:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
 }
 
 .chat-header button {
@@ -1870,6 +1871,19 @@ a:focus-visible {
   color: #f9fbff;
   font-weight: 700;
   cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+}
+
+.chat-header button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+#clearChatBtn {
+  font-size: 16px;
+  padding: 4px 6px;
 }
 
 .chat-messages {

@@ -555,6 +555,11 @@
       logoutBtn.addEventListener("click", (e) => {
         e.preventDefault();
         if (confirm("Are you sure you want to logout?")) {
+          // Clear current user's chat history
+          const chatKey = getChatHistoryKey();
+          localStorage.removeItem(chatKey);
+          
+          // Clear other data
           localStorage.removeItem("studyconnect_profile");
           localStorage.removeItem("studyconnect_connections");
           localStorage.removeItem("studyconnect_favourites");
@@ -860,6 +865,13 @@ async function query(data) {
     };
   };
 
+  // Helper function to get user-specific chat history key
+  const getChatHistoryKey = () => {
+    const profile = JSON.parse(localStorage.getItem("studyconnect_profile") || "{}");
+    const userEmail = profile.email || "guest";
+    return `studyconnect_chat_history_${userEmail}`;
+  };
+
   const initChatbotUI = () => {
     if (window.__chatbotInitialized) {
       console.log("[chatbot] already initialized");
@@ -888,13 +900,15 @@ async function query(data) {
 
     // Load chat history from localStorage
     const loadChatHistory = () => {
-      const stored = localStorage.getItem("studyconnect_chat_history");
+      const key = getChatHistoryKey();
+      const stored = localStorage.getItem(key);
       return stored ? JSON.parse(stored) : [];
     };
 
     // Save chat history to localStorage
     const saveChatHistory = (history) => {
-      localStorage.setItem("studyconnect_chat_history", JSON.stringify(history));
+      const key = getChatHistoryKey();
+      localStorage.setItem(key, JSON.stringify(history));
     };
 
     // Restore persisted chat history to DOM on init
@@ -970,6 +984,20 @@ async function query(data) {
     const getChatHistory = () => {
       return loadChatHistory();
     };
+
+    // Clear chat history for current user
+    const clearChatHistory = () => {
+      const key = getChatHistoryKey();
+      localStorage.removeItem(key);
+      messages.innerHTML = "";
+      showToast("Chat cleared ✅");
+    };
+
+    // Add Clear Chat button event listener if it exists
+    const clearChatBtn = document.getElementById("clearChatBtn");
+    if (clearChatBtn) {
+      clearChatBtn.addEventListener("click", clearChatHistory);
+    }
 
     // Clean markdown syntax from bot replies
     const cleanMarkdown = (text) => {
