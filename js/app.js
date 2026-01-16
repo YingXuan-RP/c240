@@ -628,7 +628,17 @@ query({"question": "Hey, how are you?"}).then((response) => {
   const appendChatMessage = (container, role, text) => {
     const bubble = document.createElement("div");
     bubble.className = `chat-bubble ${role}`;
-    bubble.textContent = text;
+    
+    // Auto-format numbered steps: detect patterns like "1. ... 2. ... 3. ..."
+    let formattedText = text;
+    if (role === "bot" || role === "assistant") {
+      // Insert line break before each step number (except the first)
+      formattedText = formattedText.replace(/([^\n])\s+(\d+\.\s)/g, '$1\n$2');
+    }
+    
+    // Use innerText to preserve line breaks
+    bubble.style.whiteSpace = "pre-wrap";
+    bubble.textContent = formattedText;
     container.appendChild(bubble);
     container.scrollTop = container.scrollHeight;
   };
@@ -674,9 +684,10 @@ query({"question": "Hey, how are you?"}).then((response) => {
     // Parse date
     let date = new Date().toISOString().split("T")[0]; // default to today
     if (dateMatch) {
-      const parsedDate = new Date(dateMatch[1]);
-      if (!isNaN(parsedDate)) {
-        date = parsedDate.toISOString().split("T")[0];
+      // Manually parse date to avoid timezone shifts
+      const parsedDate = parseLocalDate(dateMatch[1]);
+      if (parsedDate) {
+        date = parsedDate;
       }
     }
     
@@ -710,6 +721,59 @@ query({"question": "Hey, how are you?"}).then((response) => {
       location,
       notes: `Created via chatbot: ${userMessage}`
     };
+  };
+
+  // Parse date string manually to avoid timezone shifts
+  const parseLocalDate = (dateStr) => {
+    // Try various date formats: "20 Jan 2026", "Jan 20 2026", "2026-01-20", "01/20/2026"
+    const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+    
+    // Format: "20 Jan 2026" or "Jan 20 2026"
+    const monthTextMatch = dateStr.match(/(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+(\d{4})/i) ||
+                           dateStr.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+(\d{1,2}),?\s+(\d{4})/i);
+    
+    if (monthTextMatch) {
+      let day, month, year;
+      if (/^\d/.test(monthTextMatch[1])) {
+        // "20 Jan 2026"
+        day = parseInt(monthTextMatch[1], 10);
+        month = monthNames.indexOf(monthTextMatch[2].toLowerCase());
+        year = parseInt(monthTextMatch[3], 10);
+      } else {
+        // "Jan 20 2026"
+        month = monthNames.indexOf(monthTextMatch[1].toLowerCase());
+        day = parseInt(monthTextMatch[2], 10);
+        year = parseInt(monthTextMatch[3], 10);
+      }
+      
+      if (month >= 0 && day >= 1 && day <= 31 && year >= 1900) {
+        return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      }
+    }
+    
+    // Format: "2026-01-20"
+    const isoMatch = dateStr.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (isoMatch) {
+      const year = parseInt(isoMatch[1], 10);
+      const month = parseInt(isoMatch[2], 10);
+      const day = parseInt(isoMatch[3], 10);
+      if (year >= 1900 && month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+        return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      }
+    }
+    
+    // Format: "01/20/2026" or "1/20/2026"
+    const slashMatch = dateStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (slashMatch) {
+      const month = parseInt(slashMatch[1], 10);
+      const day = parseInt(slashMatch[2], 10);
+      const year = parseInt(slashMatch[3], 10);
+      if (year >= 1900 && month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+        return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      }
+    }
+    
+    return null;
   };
 
   // Convert 12-hour time to 24-hour format
@@ -750,9 +814,10 @@ query({"question": "Hey, how are you?"}).then((response) => {
     const dateMatch = botReply.match(/Date:\s*(.+?)(?:\n|$)/i);
     if (dateMatch) {
       const dateStr = dateMatch[1].trim();
-      const parsedDate = new Date(dateStr);
-      if (!isNaN(parsedDate)) {
-        date = parsedDate.toISOString().split("T")[0];
+      // Manually parse date to avoid timezone shifts
+      const parsedDate = parseLocalDate(dateStr);
+      if (parsedDate) {
+        date = parsedDate;
       }
     }
 
