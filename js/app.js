@@ -982,6 +982,19 @@ async function query(data) {
   // Expose for optional explicit calls from pages
   window.initChatbotUI = initChatbotUI;
 
+  // Clear chat history
+  window.clearChatHistory = function() {
+    localStorage.removeItem("studyconnect_chat_history");
+    localStorage.removeItem("chatbot_welcome_shown");
+    const messages = document.getElementById("chatMessages");
+    if (messages) {
+      messages.innerHTML = "";
+      appendChatMessage(messages, "bot", "Hi! I'm your Study Connect assistant. How can I help you today?");
+      localStorage.setItem("chatbot_welcome_shown", "true");
+    }
+    showToast("Chat history cleared!");
+  };
+
   // Agent recommendations (proactive)
   const runAgentRecommendations = (user) => {
     if (!user) return;
