@@ -576,7 +576,7 @@
 // Flowise API integration
 async function query(data) {
     const response = await fetch(
-        "https://cloud.flowiseai.com/api/v1/prediction/e3ceb5b5-45ca-4013-add3-5d10e29c4090",
+        "https://cloud.flowiseai.com/api/v1/prediction/7d1211ab-2aaa-47aa-bf76-08ada2e91841",
         {
             method: "POST",
             headers: {
@@ -588,6 +588,10 @@ async function query(data) {
     const result = await response.json();
     return result;
 }
+
+query({"question": "Hey, how are you?"}).then((response) => {
+    console.log(response);
+});
 
 
 
